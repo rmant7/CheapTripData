@@ -4,12 +4,19 @@ import functional.classes.Location;
 import functional.classes.Route;
 import functional.classes.TransportationType;
 import functional.classes.TravelData;
+import visual.Console;
+import visual.MenuInitializer;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.List;
 
 public class SQLMaker {
+
+    public static Console console = MenuInitializer.console;
+    public static PrintStream stream = new PrintStream(console);
+
     public static String locationsToString(List<Location> locations) {
         String result = "INSERT INTO locations (id, name, latitude, longitude) VALUES ";
         for (int i = 0; i < locations.size(); i++) {
@@ -42,6 +49,7 @@ public class SQLMaker {
                 input + "\n" +
                 "UNLOCK TABLES;";
         sqlToFile(result, folder + "/locations.sql");
+        stringMaker("locations.sql created");
     }
 
     public static String transportationTypesToString(List<TransportationType> types) {
@@ -72,6 +80,7 @@ public class SQLMaker {
                 input + "\n" +
                 "UNLOCK TABLES;";
         sqlToFile(result, folder + "/transportation_types.sql");
+        stringMaker("transportation_types.sql created");
     }
 
     public static String routesToString(List<Route> routes, String routeTable) {
@@ -111,6 +120,7 @@ public class SQLMaker {
                 input + "\n" +
                 "UNLOCK TABLES;";
         sqlToFile(result, folder + "/" + routeTable + ".sql");
+        stringMaker(routeTable + ".sql created");
     }
 
     public static String travelDataToString(List<TravelData> datas) {
@@ -150,6 +160,7 @@ public class SQLMaker {
                 input + "\n" +
                 "UNLOCK TABLES;";
         sqlToFile(result, path + "/travel_data.sql");
+        stringMaker("travel_data.sql created");
     }
 
     public static void sqlToFile(String input, String filename) {
@@ -159,5 +170,10 @@ public class SQLMaker {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void stringMaker (String input) {
+        System.out.println(input);
+        stream.println(input);
     }
 }

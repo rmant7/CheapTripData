@@ -5,13 +5,19 @@ import functional.classes.Location;
 import functional.classes.Route;
 import functional.classes.TransportationType;
 import functional.classes.TravelData;
+import visual.Console;
+import visual.MenuInitializer;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
 public class JSONMaker {
+
+    public static Console console = MenuInitializer.console;
+    public static PrintStream stream = new PrintStream(console);
 
     public static ArrayList<JsonObject> locationsJson(List<Location> locations) {
         ArrayList<JsonObject> list = new ArrayList<>();
@@ -77,13 +83,18 @@ public class JSONMaker {
         for (int i = 0; i < k; i++) {
             general.add(String.valueOf(i + 1), list.get(i));
         }
-
         try (FileWriter file = new FileWriter(folder + "/" + filename + ".json")) {
             System.out.println(general.toString());
             file.write(general.toString());
             file.flush();
+            stringMaker(filename + ".json created");
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void stringMaker (String input) {
+        System.out.println(input);
+        stream.println(input);
     }
 }

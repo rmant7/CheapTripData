@@ -53,10 +53,8 @@ public class Validator {
                     if (path == null) continue;
                     List<DefaultEdge> edgeList = path.getEdgeList();
                     if (edgeList == null || edgeList.size() == 0) {
-                        System.out.println("edgelist = null");
                         continue;
                     }
-                    System.out.println("edgelist_size = " + edgeList.size());
                     for (int k = 0; k < edgeList.size(); k++) {
                         DefaultEdge edge = edgeList.get(k);
                         int edgeFrom = routeGraph.getEdgeSource(edge);

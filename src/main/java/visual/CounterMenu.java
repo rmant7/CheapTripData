@@ -11,16 +11,21 @@ import maker.SQLMaker;
 import maker.classes.TTMaker;
 import parser.ParserForCounter;
 import visual.classes.LoadType;
+import visual.classes.LocationsFolderChecker;
 import visual.classes.RoutesType;
+import visual.classes.TravelDataFolderChecker;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 
+
 public class CounterMenu {
+
     Font font = new Font("Arial",Font.PLAIN,14);
     LoadType loadTypes;
     RoutesType routesTypes;
@@ -179,12 +184,8 @@ public class CounterMenu {
                 String jsonFolderPath = jsonPathField.getText();
                 String sqlFolderPath = sqlPathField.getText();
                 String validationFolderPath = validationPathField.getText();
-                if (locationsPath.equals("")) {
-                    System.out.println("No file with locations");
-                } else {
-                    if (travelDataPath.equals("")) {
-                        System.out.println("No file with travel_data");
-                    } else {
+                if (LocationsFolderChecker.locationsChecker(locationsPath)) {
+                    if (TravelDataFolderChecker.travelDataChecker(travelDataPath)) {
                         if (routesCheck.isSelected()) {
                             routesTypes.setRoutesDefault(true);
                         }
@@ -210,7 +211,6 @@ public class CounterMenu {
                         try {
                             locations = ParserForCounter.insertLocations(
                                     ParserForCounter.CSVoString(locationsPath));
-                            System.out.println("Locations are ready");
                         } catch (IOException exc1) {
                             System.out.println("Problem with location insert");
                         }
@@ -218,7 +218,6 @@ public class CounterMenu {
                         try {
                             travelData = ParserForCounter.insertTravelData(
                                     ParserForCounter.CSVoString(travelDataPath));
-                            System.out.println("Travel data are ready");
                         } catch (IOException exc2) {
                             System.out.println("Problem with travel_data insert");
                         }
@@ -297,7 +296,7 @@ public class CounterMenu {
 
         CMFrame.add(CMPanel,BorderLayout.CENTER);
         CMFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        CMFrame.setBounds(300, 60, 40, 40);
+        CMFrame.setBounds(200, 60, 40, 40);
         CMFrame.setPreferredSize(new Dimension(400,600));
         CMFrame.pack();
         CMFrame.setVisible(true);

@@ -25,9 +25,6 @@ public class Calculator {
                                    String routeType) {
 
         ArrayList<Route> routes_final = new ArrayList<>();
-//        String finalString = "";
-//        StringBuilder builder = new StringBuilder();
-//        String obj = null;
         int finalCount = 1;
 
         System.out.println("Started scanning routes");
@@ -111,7 +108,6 @@ public class Calculator {
                                 currentToID,
                                 minPrice);
                         routes.add(route);
-                        System.out.println("Маршрут идет по следующим direct routes " + routes);
                     } else if (currentFromID == fromID) {
                         if (minPrice > euroPrice) {
                             minPrice = euroPrice;
@@ -148,14 +144,8 @@ public class Calculator {
                     }
                     duration = duration + minutes;
                 }
-//               System.out.println("travelData " + travelData);
                 Route route1 = new Route(finalCount, from.getId(), to.getId(), totalPrice, duration,
                         travelData.toString());
-//                System.out.println("route = " + route1.toString());
-//                obj = "(" + finalCount + "," + from.getId() + "," + to.getId() + "," + totalPrice + "," + duration + ","
-//                        + travelData + ")";
-//                builder.append(obj);
-//                builder.append(",");
                 finalCount++;
                 routes_final.add(route1);
             }
@@ -164,21 +154,6 @@ public class Calculator {
             CSVMaker.validationToFile(Validator.validate(counter,directRoutes,routeGraph),folder,routeType);
         }
         return routes_final;
-//        System.out.println(routes_final);
-//        JSONMaker.jsonToFile(JSONMaker.locationsMakerWBase(locations), FINAL_PATH + "/locations.json");
-//        JSONMaker.jsonToFile(JSONMaker.travelDataMakerWBase(directRoutes), FINAL_PATH + "/travel_data.json");
-//        JSONMaker.jsonToFile(JSONMaker.transportationTypeMakerWBase(JSONMaker.typesMaker()),
-//                FINAL_PATH + "/transportation_types.json");
-//        SQLMaker.locationsSQL(SQLMaker.locationsToString(locations), SQL_PATH);
-//        SQLMaker.transportationTypesSQL(SQLMaker.transportationTypesToString(JSONMaker.typesMaker()),
-//                SQL_PATH);
-//        SQLMaker.travelDataSQL(SQLMaker.travelDataToString(directRoutes), SQL_PATH);
-//        SQLMaker.routesSQL(SQLMaker.routesToString(routes_final, filename), filename, SQL_PATH);
-//        JSONMaker.jsonToFile(JSONMaker.routesMaker(routes_final), FINAL_PATH + "/" + filename + ".json");
-//        counterPostEvaluation(counter, directRoutes);
-//        stringToFile(builder.toString(), filename);
-//        List<TravelDataCombination> combinations = getCombination(directRoutes, counter);
-//        Validator.validate(counter, directRoutes, routeGraph, filename);
     }
 
     public static ArrayList<TravelData> getFlyingData(ArrayList<TravelData> input) {

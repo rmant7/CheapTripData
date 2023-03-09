@@ -2,14 +2,16 @@ package parser;
 
 import functional.classes.Location;
 import functional.classes.TravelData;
+import visual.Console;
+import visual.MenuInitializer;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 
 public class ParserForCounter {
+
+    public static Console console = MenuInitializer.console;
+    public static PrintStream stream = new PrintStream(console);
 
     public static String[] CSVoString(String fileName) throws IOException {
         File file = new File(fileName);
@@ -49,6 +51,7 @@ public class ParserForCounter {
             );
             locations.add(location);
         }
+        stringMaker("Locations successfully parsed");
         return locations;
     }
 
@@ -67,6 +70,7 @@ public class ParserForCounter {
             );
             datas.add(data);
         }
+        stringMaker("Travel data successfully parsed");
         return datas;
     }
 
@@ -96,5 +100,9 @@ public class ParserForCounter {
             result = result + add;
         }
         return result;
+    }
+    public static void stringMaker (String input) {
+        System.out.println(input);
+        stream.println(input);
     }
 }
