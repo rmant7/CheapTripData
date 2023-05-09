@@ -277,6 +277,7 @@ def get_prompts_GPT(prompt_json):
     with open(prompt_json, 'r') as file:
         return json.load(file)
     
+    
 
 def limit_calls_per_minute(max_calls):
     """
@@ -286,8 +287,9 @@ def limit_calls_per_minute(max_calls):
     """
     calls = []
     def decorator(func):
-        def wrapper(prompt, api_key='OPENAI_API_KEY_CT_0'):
+        def wrapper(prompt, api_key='OPENAI_API_KEY_CT_1'):
             # Remove any calls from the call history that are older than 1 minute
+            
             calls[:] = [call for call in calls if call > time.time() - 60]
             if len(calls) >= max_calls:
                 # Too many calls in the last minute, calculate delay before allowing additional calls
@@ -297,20 +299,22 @@ def limit_calls_per_minute(max_calls):
                     time.sleep(delay_seconds)
             # Call the function and add the current time to the call history
             try:
-                result = func(prompt, api_key='OPENAI_API_KEY_CT_0')
+                result = func(prompt, api_key='OPENAI_API_KEY_CT_1')
             except Exception:
                 # An exception was raised, trigger a delay and recursive function call with the same parameter
                 time.sleep(60)
-                return wrapper(prompt, api_key='OPENAI_API_KEY_CT_0')
+                return wrapper(prompt, api_key='OPENAI_API_KEY_CT_1')
+            
             calls.append(time.time())
             print('\n',result)
+            
             return result
         return wrapper
     return decorator
     
   
 @limit_calls_per_minute(3)    
-def get_response_GPT(prompt: str, api_key='OPENAI_API_KEY_CT_0'):
+def get_response_GPT(prompt: str, api_key='OPENAI_API_KEY_CT_1'):
     openai.organization = os.getenv('OPENAI_ID_CT')
     openai.api_key = os.getenv(api_key)
     
