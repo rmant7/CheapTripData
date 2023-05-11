@@ -1,8 +1,7 @@
-.ctenv/
 .vscode/
 .venv
 files/output/
-files/csv/arch/
+files/csv/
 notebooks/
 output_4run/
 output_5run/
@@ -20,3 +19,6 @@ cities_data/seo/
 cities_data/option_lists/attractions
 cities_data/option_lists/attractions_children
 cities_data/prompts
+files/
+logs/
+cities_data/

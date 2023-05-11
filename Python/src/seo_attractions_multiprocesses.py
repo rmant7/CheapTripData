@@ -51,14 +51,13 @@ def run_processes(key_numbers=1):
     files = sorted(list(Path(ATTRACTIONS_LIST_DIR).glob('*.json')))
 
     # Get the list of API keys
-    # api_keys = ["key1", "key2", "key3"]
-    api_keys = [f'OPENAI_API_KEY_CT_{i + 4}' for i in range(key_numbers)]
+    api_keys = [f'OPENAI_API_KEY_CT_{i}' for i in range(key_numbers)]
 
     # Create a pool of processes with as many workers as there are API keys
     pool = multiprocessing.Pool(len(api_keys))
 
     # Loop through the files and create a thread for each one
-    for i, file in enumerate(files[:10]):
+    for i, file in enumerate(files):
         # Get the corresponding API key by cycling through the list
         api_key = api_keys[i % len(api_keys)]
         # Create a thread object with the target function and the file name and API key as arguments
@@ -72,4 +71,6 @@ def run_processes(key_numbers=1):
 if __name__ == '__main__':
     start = perf_counter()
     run_processes()
-    print(f'\nTime elapsed: {perf_counter() - start} sec.')
+    hours = (perf_counter() - start) // 3600
+    remained_seconds = (perf_counter() - start) % 3600 
+    print(f'\nTime elapsed: {hours} h {remained_seconds // 60} min.')
