@@ -19,10 +19,11 @@ def recursive_replace(d, old_str, new_str):
 
 # Define a function that takes a file name and an API key as arguments and processes the file
 def process_file(city, api_key, city_number):
-    
+# def process_file():   
+    # for city_number, city in enumerate(get_cities(), start=1):
     print(f'\nProcess: {city_number}, City: {city}')
     
-    # getting attractions from list
+    # getting json content
     file = Path(f'{CHILDREN_ATTRACTIONS_LIST_DIR}/{city}.json')
     with open(file, 'r') as json_file:
         content = json.load(json_file)
@@ -35,15 +36,19 @@ def process_file(city, api_key, city_number):
     prompts = recursive_replace(get_prompts_GPT(PROMPTS_DIR/'children_attractions_pmt.json'), '[city]', city)
 
     # generation attractions' descriptions
-    data = dict()
+    data = {}
     for attraction in attractions:
-        data[attraction] = json.loads(get_response_GPT(prompts['SEO'].replace('[attraction]', attraction), api_key))
-        
+        try:
+            data[attraction] = json.loads(get_response_GPT(prompts['SEO'].replace('[attraction]', attraction), api_key), strict=False)
+        except Exception as error:
+            print(f'\nDuring processing {city_number}.{city}: {attraction} there was an error: {error}')
+            continue
+    
     # write result in json
     SEO_CHILDREN_ATTRACTIONS_DIR.mkdir(parents=True, exist_ok=True)  
     with open(f'{SEO_CHILDREN_ATTRACTIONS_DIR}/{city}.json', 'w') as json_file:
-        json.dump(data, json_file, indent=4)
-            
+        json.dump(data, json_file, indent=4) 
+                        
     print(f'{city} processed successfully!')
 
 
@@ -52,14 +57,15 @@ def run_processes(key_numbers):
     cities = get_cities()
 
     # Get the list of API keys
-    api_keys = [f'OPENAI_API_KEY_CT_{i + 3}' for i in range(key_numbers)]
+    # api_keys = [f'OPENAI_API_KEY_CT_{i + 2}' for i in range(key_numbers)]
+    api_keys = ['OPENAI_API_KEY_CT_4', 'OPENAI_API_KEY_CT_5', 'OPENAI_API_KEY_CT_10', 'OPENAI_API_KEY_CT_11']
     print(api_keys)
 
     # Create a pool of processes with as many workers as there are API keys
     pool = multiprocessing.Pool(len(api_keys))
 
     # Loop through the files and create a thread for each one
-    for i, city in enumerate(cities):
+    for i, city in enumerate(cities[:10]):
         # Get the corresponding API key by cycling through the list
         api_key = api_keys[i % len(api_keys)]
         # Create a thread object with the target function and the file name and API key as arguments
@@ -72,7 +78,8 @@ def run_processes(key_numbers):
 
 if __name__ == '__main__':
     start = perf_counter()
-    run_processes(1)
+    run_processes(3)
+    #process_file()
     hours = (perf_counter() - start) // 3600
     remained_seconds = (perf_counter() - start) % 3600 
     print(f'\nTime elapsed: {hours} h {remained_seconds // 60} min.\n')
