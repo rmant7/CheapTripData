@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import functools
 import sys
 import time
 
@@ -19,7 +20,7 @@ URL = "https://www.kiwi.com/en/"
 
 
 def get_headless_options() -> Options:
-    """Return chrome options for Selenium. Chrome options for headless browser is enabled."""
+    """Return chrome options for Selenium. Chrome options for a headless browser is enabled."""
 
     chrome_options = Options()
     user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36"  # noqa: E501
@@ -35,6 +36,8 @@ def get_headless_options() -> Options:
 
 
 def create_chrome_driver(headless: bool = True) -> webdriver.Chrome:
+    """Create and return Chrome driver. Specify options corresponding to `headless` parameter."""
+
     if headless:
         driver = webdriver.Chrome(
             service=Service(ChromeDriverManager().install()), options=get_headless_options()
@@ -53,6 +56,24 @@ def close_modal(driver: webdriver.Chrome) -> None:
     driver.find_element(By.CSS_SELECTOR, 'button[data-test="ModalCloseButton"]').click()
 
 
+def silent_shutdown_on_failure(scrape_func):
+    """Return a decorator that silently shuts down the execution process, providing description."""
+
+    @functools.wraps(scrape_func)
+    def wrapper(*args, **kwargs):
+        try:
+            return scrape_func(*args, **kwargs)
+        except NoSuchElementException as exc:
+            sys.exit(
+                f"{exc}The element was not found. Maybe the driver had no time to render results. "
+                f"Consider increasing timeout parameters.\n"
+                f"Otherwise a source code of a website has been changed and can not be parsed."
+            )
+
+    return wrapper
+
+
+@silent_shutdown_on_failure
 def scrape_min_price(
     driver: webdriver.Chrome, city_from: str, city_to: str, currency_code: str = "eur"
 ) -> str:
@@ -114,21 +135,11 @@ def scrape_min_price(
     return elem_min_price.get_attribute("innerText") or "Prices are not available at the moment"
 
 
-def main(city_from: str, city_to: str, currency_code: str = "eur", headless: bool = True) -> None:
-    driver = create_chrome_driver(headless)
-
-    try:
-        min_price = scrape_min_price(driver, city_from, city_to, currency_code)
-    except NoSuchElementException as exc:
-        sys.exit(
-            f"{exc}The element was not found. Maybe the driver had no time to render results. "
-            f"Consider increasing `seconds_waiting_` parameters.\n"
-            f"Otherwise a source code of a website has been changed and can not be parsed."
-        )
-    print(min_price)
-
-
 if __name__ == "__main__":
     city_from = "London"
     city_to = "Paris"
-    main(city_from, city_to)
+    currency_code = "eur"
+
+    driver = create_chrome_driver(headless=True)
+    min_price = scrape_min_price(driver, city_from, city_to, currency_code)
+    print(f"Minimal price for a flight between {city_from} and {city_to} is {min_price}")
