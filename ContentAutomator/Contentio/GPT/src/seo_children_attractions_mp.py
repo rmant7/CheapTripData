@@ -57,8 +57,8 @@ def run_processes(key_numbers):
     cities = get_cities()
 
     # Get the list of API keys
-    # api_keys = [f'OPENAI_API_KEY_CT_{i + 2}' for i in range(key_numbers)]
-    api_keys = ['OPENAI_API_KEY_CT_4', 'OPENAI_API_KEY_CT_5', 'OPENAI_API_KEY_CT_10', 'OPENAI_API_KEY_CT_11']
+    api_keys = [f'OPENAI_API_KEY_CT_{i}' for i in range(key_numbers)]
+    # api_keys = ['OPENAI_API_KEY_CT_4', 'OPENAI_API_KEY_CT_5', 'OPENAI_API_KEY_CT_10', 'OPENAI_API_KEY_CT_11']
     print(api_keys)
 
     # Create a pool of processes with as many workers as there are API keys
@@ -78,7 +78,7 @@ def run_processes(key_numbers):
 
 if __name__ == '__main__':
     start = perf_counter()
-    run_processes(3)
+    run_processes(10)
     #process_file()
     hours = (perf_counter() - start) // 3600
     remained_seconds = (perf_counter() - start) % 3600 
