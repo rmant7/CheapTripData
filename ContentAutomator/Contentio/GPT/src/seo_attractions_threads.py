@@ -6,7 +6,6 @@ from functions import get_prompts_GPT, get_response_GPT
 from config import ATTRACTIONS_LIST_DIR, PROMPTS_DIR, SEO_CITY_ATTRACTIONS_DIR
 
 
-
 def recursive_replace(d, old_str, new_str):
     for k, v in d.items():
         if isinstance(v, dict):
