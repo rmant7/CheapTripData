@@ -26,12 +26,8 @@ def process_file(city, api_key, city_number):
     # getting json content
     file = Path(f'{CHILDREN_ATTRACTIONS_LIST_DIR}/{city}.json')
     with open(file, 'r') as json_file:
-        content = json.load(json_file)
-    
-    # getting a list of unique attractions  
-    attractions = list(set(functools.reduce(lambda a, b: a + b, content.values())))
-    print('\n', attractions)
-    
+        attractions = json.load(json_file).values()
+
     # getting all prompts and replace [city] tag with input city name    
     prompts = recursive_replace(get_prompts_GPT(PROMPTS_DIR/'children_attractions_pmt.json'), '[city]', city)
 
@@ -39,7 +35,7 @@ def process_file(city, api_key, city_number):
     data = {}
     for attraction in attractions:
         try:
-            data[attraction] = json.loads(get_response_GPT(prompts['SEO'].replace('[attraction]', attraction), api_key), strict=False)
+            data[attraction] = json.loads(get_response_GPT(prompts['SEO_opt'].replace('[attraction]', attraction), api_key), strict=False)
         except Exception as error:
             print(f'\nDuring processing {city_number}.{city}: {attraction} there was an error: {error}')
             continue

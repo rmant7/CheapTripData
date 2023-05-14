@@ -92,7 +92,7 @@ SEO_CHILDREN_ATTRACTIONS_DIR = Path('../cities_data/seo/texts/children_attractio
 SEO_CITY_ATTRACTIONS_BENGALI = Path('../cities_data/seo/texts/city_attractions_bengali')
 OPTION_LISTS_DIR = Path('../cities_data/option_lists')
 ATTRACTIONS_LIST_DIR = Path(OPTION_LISTS_DIR/'attractions')
-CHILDREN_ATTRACTIONS_LIST_DIR = Path(OPTION_LISTS_DIR/'attractions_children')
+CHILDREN_ATTRACTIONS_LIST_DIR = Path(OPTION_LISTS_DIR/'children_attractions')
 
 # directory for images from pexel
 PEXEL_IMG_DIR = Path('../output/cities_info/images')
