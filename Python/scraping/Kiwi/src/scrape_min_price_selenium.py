@@ -75,12 +75,15 @@ def silent_shutdown_on_failure(scrape_func):
 
 @silent_shutdown_on_failure
 def scrape_min_price(
-    driver: webdriver.Chrome, city_from: str, city_to: str, currency_code: str = "eur"
+    city_from: str, city_to: str, currency_code: str = "eur", driver: webdriver.Chrome = None
 ) -> str:
     """
     Scrape and return a minimal price for a flight between `city_from` and `city_to`.
-    Return a string, consisting of a price value(int) and `currency_code` like "60 €".
+    Return a string, consisting of a price value and a `currency_code` like "60 €".
     """
+
+    if driver is None:
+        driver = create_chrome_driver()
 
     driver.get(URL)
 
@@ -141,5 +144,5 @@ if __name__ == "__main__":
     currency_code = "eur"
 
     driver = create_chrome_driver(headless=True)
-    min_price = scrape_min_price(driver, city_from, city_to, currency_code)
+    min_price = scrape_min_price(city_from, city_to, currency_code, driver)
     print(f"Minimal price for a flight between {city_from} and {city_to} is {min_price}")
