@@ -1,11 +1,10 @@
 import multiprocessing
 import json
-from pathlib import Path
 from time import perf_counter
 
 
 from functions import get_prompts_GPT, get_response_GPT, get_cities
-from config import SEO_ACCOMODATIONS_DIR, PROMPTS_DIR
+from config import SEO_TRANSPORTATIONS_DIR, PROMPTS_DIR
 
 
 def recursive_replace(d, old_str, new_str):
@@ -19,12 +18,13 @@ def recursive_replace(d, old_str, new_str):
 
 missing_cities = {"cities":[]}
 def process_file(city, api_key, city_number):
-# def process_file():   
-    # for city_number, city in enumerate(get_cities(), start=1):
+
     print(f'\nProcess: {city_number}, City: {city}')
     
     # getting all prompts and replace [city] tag with input city name    
-    prompts = recursive_replace(get_prompts_GPT(PROMPTS_DIR/'accomodations_seo_pmt.json'), '[city]', city)
+    prompts = recursive_replace(get_prompts_GPT(PROMPTS_DIR/'transportations_seo_pmt.json'), '[city]', city)
+    
+    # print(prompts['prompt'])
     
     data = dict()
     try:
@@ -35,20 +35,20 @@ def process_file(city, api_key, city_number):
         print(f'\nDuring processing {city_number}.{city} there was an error: {error}')
     
     # write result in json
-    SEO_ACCOMODATIONS_DIR.mkdir(parents=True, exist_ok=True)  
-    with open(f'{SEO_ACCOMODATIONS_DIR}/{city}.json', 'w') as json_file:
+    SEO_TRANSPORTATIONS_DIR.mkdir(parents=True, exist_ok=True)  
+    with open(f'{SEO_TRANSPORTATIONS_DIR}/{city}.json', 'w') as json_file:
         json.dump(data, json_file, indent=4) 
                         
     print(f'{city} processed successfully!')
 
 
 def run_processes(key_numbers):
-    # Get the list of input files
+    # Get the list of cities
     cities = get_cities()
 
     # Get the list of API keys
     api_keys = [f'OPENAI_API_KEY_CT_{i + 2}' for i in range(key_numbers)]
-    # api_keys = ['OPENAI_API_KEY_CT_2']
+    # api_keys = ['OPENAI_API_KEY']
     print(api_keys)
 
     # Create a pool of processes with as many workers as there are API keys
@@ -65,13 +65,13 @@ def run_processes(key_numbers):
     pool.close()
     pool.join()
 
-    with open(f'{SEO_ACCOMODATIONS_DIR}/missing_cities.json', 'w') as json_file:
+    with open(f'{SEO_TRANSPORTATIONS_DIR}/missing_cities.json', 'w') as json_file:
         json.dump(missing_cities, json_file)
     
 
 if __name__ == '__main__':
     start = perf_counter()
-    run_processes(2)
+    run_processes(1)
     #process_file()
     hours = (perf_counter() - start) // 3600
     remained_seconds = (perf_counter() - start) % 3600 
