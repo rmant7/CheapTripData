@@ -2,10 +2,10 @@ import multiprocessing
 import json
 from pathlib import Path
 from time import perf_counter
-import functools
+
 
 from functions import get_prompts_GPT, get_response_GPT, get_cities
-from config import PROMPTS_DIR, SEO_CHILDREN_ATTRACTIONS_DIR, CHILDREN_ATTRACTIONS_LIST_DIR
+from config import SEO_ACCOMODATIONS_DIR, PROMPTS_DIR
 
 
 def recursive_replace(d, old_str, new_str):
@@ -17,37 +17,27 @@ def recursive_replace(d, old_str, new_str):
     return d
 
 
-# Define a function that takes a file name and an API key as arguments and processes the file
+missing_cities = {"cities":[]}
 def process_file(city, api_key, city_number):
 # def process_file():   
     # for city_number, city in enumerate(get_cities(), start=1):
     print(f'\nProcess: {city_number}, City: {city}')
     
-    # getting json content
-    file = Path(f'{CHILDREN_ATTRACTIONS_LIST_DIR}/{city}.json')
-    with open(file, 'r') as json_file:
-        attractions = list(json.load(json_file).values())
-
-    print(attractions)
-    
     # getting all prompts and replace [city] tag with input city name    
-    prompts = recursive_replace(get_prompts_GPT(PROMPTS_DIR/'children_attractions_pmt.json'), '[city]', city)
+    prompts = recursive_replace(get_prompts_GPT(PROMPTS_DIR/'accomodations_pmt.json'), '[city]', city)
     
-    # generation attractions' descriptions
-    data = {}
-    for attraction in attractions:
-        try:
-            data[attraction] = json.loads(get_response_GPT(prompts['SEO_opt'].replace('[attraction]', attraction), api_key), strict=False)
-            
-            # data[attraction] = json.loads(get_response_GPT(prompts['SEO_opt'].format(attraction), api_key), strict=False)
-        except Exception as error:
-            print(f'\nDuring processing {city_number}.{city}: {attraction} there was an error: {error}')
-            continue
+    data = dict()
+    try:
+        data = json.loads(get_response_GPT(prompts['prompt'], api_key), strict=False)
+
+    except Exception as error:
+        missing_cities['cities'].append(city)
+        print(f'\nDuring processing {city_number}.{city} there was an error: {error}')
     
     # write result in json
-    # SEO_CHILDREN_ATTRACTIONS_DIR.mkdir(parents=True, exist_ok=True)  
-    # with open(f'{SEO_CHILDREN_ATTRACTIONS_DIR}/{city}.json', 'w') as json_file:
-    #     json.dump(data, json_file, indent=4) 
+    SEO_ACCOMODATIONS_DIR.mkdir(parents=True, exist_ok=True)  
+    with open(f'{SEO_ACCOMODATIONS_DIR}/{city}.json', 'w') as json_file:
+        json.dump(data, json_file, indent=4) 
                         
     print(f'{city} processed successfully!')
 
@@ -75,6 +65,9 @@ def run_processes(key_numbers):
     pool.close()
     pool.join()
 
+    with open(f'{SEO_ACCOMODATIONS_DIR}/missing_cities.json', 'w') as json_file:
+        json.dump(missing_cities, json_file)
+    
 
 if __name__ == '__main__':
     start = perf_counter()
