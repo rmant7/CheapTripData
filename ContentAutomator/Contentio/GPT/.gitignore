@@ -22,3 +22,4 @@ cities_data/prompts
 files/
 logs/
 cities_data/
+__pycache__/

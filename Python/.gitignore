@@ -1,4 +1,3 @@
-.ctenv/
 .vscode/
 .venv
 files/output/
@@ -20,3 +19,4 @@ cities_data/seo/
 cities_data/option_lists/attractions
 cities_data/option_lists/attractions_children
 cities_data/prompts
+__pycache__/
