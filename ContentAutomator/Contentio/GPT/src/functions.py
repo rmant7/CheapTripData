@@ -30,7 +30,7 @@ def get_city_id(name):
         return NOT_FOUND
 
     
-def get_prompts_GPT(prompt_json):
+def get_prompts_GPT(prompt_json: str) -> dict:
     with open(prompt_json, 'r') as file:
         return json.load(file)
     
@@ -43,7 +43,7 @@ def limit_calls_per_minute(max_calls):
     """
     calls = []
     def decorator(func):
-        def wrapper(prompt, api_key):
+        def wrapper(*args, **kwargs):
             # Remove any calls from the call history that are older than 1 minute
             
             calls[:] = [call for call in calls if call > time.time() - 60]
@@ -55,12 +55,12 @@ def limit_calls_per_minute(max_calls):
                     time.sleep(delay_seconds)
             # Call the function and add the current time to the call history
             try:
-                result = func(prompt, api_key)
+                result = func(*args, **kwargs)
             except Exception as error:
                 # An exception was raised, trigger a delay and recursive function call with the same parameter
                 print(f'\nDuring request there was an error: {error}')
                 time.sleep(60)
-                return wrapper(prompt, api_key)
+                return wrapper(*args, **kwargs)
             
             calls.append(time.time())
             print('\n',result)
@@ -85,10 +85,20 @@ def get_response_GPT(prompt: str, api_key: str):
     
     return response['choices'][0]['message']['content']
      
+
+@limit_calls_per_minute(1)    
+def get_images_DALLE(prompt, n, size, api_key):
+    openai.organization = os.getenv('OPENAI_ID_CT')
+    openai.api_key = os.getenv(api_key)
+    
+    response = openai.Image.create(
+                                    prompt=prompt,
+                                    n=n,
+                                    size=size
+    )
+    return [item['url'] for item in response['data']]
     
     
 if __name__ == '__main__':
-    
-       
     print(get_cities())
     pass
