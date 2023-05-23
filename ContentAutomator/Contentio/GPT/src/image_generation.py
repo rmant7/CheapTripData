@@ -1,7 +1,6 @@
 import requests
 import os
 import json
-import openai
 
 from functions import get_response_GPT, get_prompts_GPT, get_images_DALLE
 
@@ -29,7 +28,7 @@ def generate_image():
     api_key = 'OPENAI_API_KEY_CT_2'
     prompts = get_prompts_GPT(PROMPTS_DIR/'children_attractions_images_pmt.json')
     json_files = [file for file in os.listdir(SEO_CHILDREN_ATTRACTIONS_DIR) if file.endswith('.json')]
-    for json_file in sorted(json_files)[1:]:
+    for json_file in sorted(json_files)[46:]:
         city = json_file.partition('.')[0]
         json_path = os.path.join(SEO_CHILDREN_ATTRACTIONS_DIR, json_file)
         with open(json_path, 'r') as file:

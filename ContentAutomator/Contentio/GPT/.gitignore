@@ -24,3 +24,4 @@ logs/
 cities_data/
 __pycache__/
 prompts/
+.venvgpt/
