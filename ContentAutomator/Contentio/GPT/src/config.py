@@ -8,6 +8,10 @@ AIRPORT_CODES_CSV = Path(INPUT_CSV_DIR/'airport_codes.csv')
 IATA_CODES_CSV = Path('../files/airports/iata_codes.csv')
 BBOXES_CSV = Path(INPUT_CSV_DIR/'bounding_boxes.csv')
 CITIES_COUNTRIES_CSV = Path(INPUT_CSV_DIR/'cities_countries.csv')
+INPUT_JSONS_DIR = Path('../files/json')
+
+# setup outputs
+OUTPUT_IMAGES_DIR = Path('../output/images')
 
 # logging set up 
 LOGS_DIR = Path('../logs')

@@ -59,9 +59,9 @@ def limit_calls_per_minute(max_calls):
             except Exception as error:
                 # An exception was raised, trigger a delay and recursive function call with the same parameter
                 print(f'\nDuring request there was an error: {error}')
-                time.sleep(60)
-                return wrapper(*args, **kwargs)
-            
+                # time.sleep(60)
+                # return wrapper(*args, **kwargs)
+                
             calls.append(time.time())
             print('\n',result)
             
@@ -86,7 +86,7 @@ def get_response_GPT(prompt: str, api_key: str):
     return response['choices'][0]['message']['content']
      
 
-@limit_calls_per_minute(1)    
+@limit_calls_per_minute(5)    
 def get_images_DALLE(prompt, n, size, api_key):
     openai.organization = os.getenv('OPENAI_ID_CT')
     openai.api_key = os.getenv(api_key)

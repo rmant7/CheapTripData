@@ -25,3 +25,4 @@ cities_data/
 __pycache__/
 prompts/
 .venvgpt/
+src/cats_image_generation.py
