@@ -86,8 +86,8 @@ def get_response_GPT(prompt: str, api_key: str):
     return response['choices'][0]['message']['content']
      
 
-@limit_calls_per_minute(5)    
-def get_images_DALLE(prompt, n, size, api_key):
+@limit_calls_per_minute(3)    
+def get_images_DALLE(prompt: str, n: int, size: str, api_key: str) -> list[str]:
     openai.organization = os.getenv('OPENAI_ID_CT')
     openai.api_key = os.getenv(api_key)
     

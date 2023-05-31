@@ -40,27 +40,23 @@ def json_restructuring():
 def post_composition(attraction_number: str):
     cities = get_cities()
     j = 0
-    for i, city in enumerate(cities, start=1):
-        with open(f'{SMM_CITY_ATTRACTIONS_FP_DIR}/{city}.json', 'r') as json_file:
-            content = json.load(json_file)
-        data = dict()
+    for city in cities:
         try:
-            data['location'] = f"{content[attraction_number]['name']}, {city}"
-            data['text'] = content[attraction_number]['text']
-            data['hashtags'] = content[attraction_number]['hashtags']
+            image = next(Path(CITY_ATTRACTIONS_IMG_DIR/city).glob(f'{attraction_number}_*.jpg'))
             j += 1
             destination = Path(f'{SMM_POSTS_DIR}/city_attractions_{attraction_number}/post_{j}')
             destination.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(image, Path(f'{destination}/image.jpg'))
+            
+            with open(f'{SMM_CITY_ATTRACTIONS_FP_DIR}/{city}.json', 'r') as json_file:
+                content = json.load(json_file)
+            content[attraction_number]['location'] = content[attraction_number].pop('name')
+            content[attraction_number]['location'] += f', {city}'
             with open(f'{destination}/text.json', 'w') as json_file:
-                json.dump(data, json_file, indent=4)
-            images = list(Path(CITY_ATTRACTIONS_IMG_DIR/city).glob('*.jpg'))
-            for image in images:
-                image_name = image.name.partition('.')[0]
-                if image_name.split('_')[0] == attraction_number:
-                    shutil.copyfile(image, Path(f'{destination}/image.jpg'))
-                    break
-        except Exception as err:
-            print(f'\nDuring {city} processing there was an error: {err}')
+                json.dump(content[attraction_number], json_file, indent=4)
+            
+        except StopIteration as err:
+            # print(f'\nDuring {city} processing there was an error: {err.value}')
             continue
              
 

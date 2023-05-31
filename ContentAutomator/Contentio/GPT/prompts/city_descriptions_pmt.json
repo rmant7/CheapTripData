@@ -1,0 +1,8 @@
+{
+    "description":"Create an attractive seo-frendly description in at least 8 sentences of the city of [city] relevant for budget travellers. Give an exciting description of its own culture, traditions, architecture, festivals, art, national food. Also, include some of the facts about [city] that might surprise or intrigue your readers. Mention some options of the free or low-cost attractions. Appeal to the senses and emotions with descriptive language. Highlight the unique features with comparisons and contrasts. Avoid mentioning any prices. Do not add any accompanying phrases to your reply.",
+
+    "lists":{
+            "attractions":"Suggest the most popular free and then low-cost attractions for the city of [city]. Write their comma-separated names in a line. Avoid descripting the attractions."
+                             
+    }
+}
