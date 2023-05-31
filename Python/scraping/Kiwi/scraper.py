@@ -150,7 +150,7 @@ def fill_city_fields(driver: webdriver.Chrome, city_from: str, city_to: str):
 def convert_to_minutes(time_str) -> int:
     """Convert a string representation of hours and minutes into the total number of minutes."""
 
-    pattern = r'(?:(\d+)h)?\s?(?:(\d+)m)?'
+    pattern = r"(?:(\d+)h)?\s?(?:(\d+)m)?"
     match = re.match(pattern, time_str)
     if match:
         hours = int(match.group(1) or 0)
@@ -231,7 +231,7 @@ def get_min_prices(
             elem_duration = card_elem.find_element(
                 By.CSS_SELECTOR, 'div[data-test="TripDurationBadge"]'
             )
-            df[duration_colname] = convert_to_minutes(elem_duration.text)
+            df[duration_colname].at[row.Index] = convert_to_minutes(elem_duration.text)
         except NoSuchElementException:
             logger.error(f"Failed to obtain the duration for route {city_from}->{city_to}")
 
@@ -240,7 +240,9 @@ def get_min_prices(
             transfers = card_elem.find_element(
                 By.CSS_SELECTOR, 'div[data-test|="StopCountBadge"]'
             ).text
-            df[transfers_colname] = "0" if transfers == "Direct" else transfers.split()[0]
+            df[transfers_colname].at[row.Index] = (
+                "0" if transfers == "Direct" else transfers.split()[0]
+            )
         except NoSuchElementException:
             logger.error(f"Failed to obtain transfers for route {city_from}->{city_to}")
 
