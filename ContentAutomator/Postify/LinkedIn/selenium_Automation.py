@@ -35,20 +35,15 @@ driver.get(company_url)
 time.sleep(3)
 
 
-post_data = {
-    "location": "your_location",
-    "text": "your_text",
-    "hashtags": ["#test"]
-}
-# Convert the JSON data to a string
-post_data_string = json.dumps(post_data)
+post_data = "add your text here !!"
+
 
 post_input = driver.find_element(By.XPATH,"//button[@class='artdeco-button artdeco-button--muted artdeco-button--4 artdeco-button--tertiary ember-view share-box-feed-entry__trigger']")
 time.sleep(3)
 post_input.click()
 time.sleep(3)
 post_text = driver.find_element(By.XPATH, "//div[@class='ql-editor ql-blank']")
-post_text.send_keys(post_data_string)
+post_text.send_keys(post_data)
 time.sleep(3)
 # image_button = driver.find_element(By.XPATH,"//button[@class='artdeco-button artdeco-button--circle artdeco-button--muted artdeco-button--2 artdeco-button--tertiary ember-view']")
 # image_button.click()
