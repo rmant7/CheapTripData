@@ -17,7 +17,7 @@ CITIES_COUNTRIES_CSV = Path(INPUT_CSV_DIR/'cities_countries.csv')
 CITIES_CSV = Path(INPUT_CSV_DIR/'cities.csv')
 
 # set up outputs folders
-OUTPUT_JSON_DIR = Path('../output_5run/jsons')
+OUTPUT_JSON_DIR = Path('../output/output_5run/jsons')
 OUTPUT_CSV_DIR = Path('../output/csv')
 INNER_JSON_DIR = Path('../output/routes_info')
 HOTELS_DIR = Path('../files/hotels')

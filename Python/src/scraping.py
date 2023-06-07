@@ -29,31 +29,25 @@ def missed_pairs(missed_pairs):
 
 # scrapping for each city_country pair
 def scrap_routine(cities_countries_pairs, injection=''):
-    
-    from_city_id, to_city_id, from_city, from_country, to_city, to_country = cities_countries_pairs
-        
+    from_city_id, to_city_id, from_city, from_country, to_city, to_country = cities_countries_pairs 
     way = f'{from_city}-{from_country}/{to_city}-{to_country}' + injection # in order to avoid missing pairs  
-    
     tmp_url = BASE_URL + way
-    
     print('Scraping path: ', way)
-    
     # extract all avaliable pathes for each pair
     try:      
-        
         r = session.get(tmp_url) # get response
-        
+        r.raise_for_status()
         soup = BeautifulSoup(r.text, 'html.parser')
-        
         pathes_info = soup.find('meta', id="deeplinkTrip") # this tag contists info about all pathes
-              
         parsed = json.loads(pathes_info["content"])[2][1]
-        
         print(f'Recording path in {from_city_id}-{to_city_id}-{from_city}-{to_city}.json.gz')
-        
         target_file = f'{OUTPUT_JSON_DIR}/{from_city_id}-{to_city_id}-{from_city}-{to_city}.json.gz'
         compress_json.dump(parsed, target_file)
-        
+    
+    except requests.HTTPError as e:
+        print(f"Request failed with HTTP error: {e}")
+        missed_pairs(cities_countries_pairs)
+    
     except TypeError:
         logging.error(f'On {tmp_url} exception occurred: ', exc_info=True)
         scrap_routine(cities_countries_pairs, injection=next(inject))

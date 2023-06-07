@@ -70,7 +70,7 @@ def extract_routine(input_data: tuple, euro_rates: dict) -> list():
                 price_min = route[11][0][0]
                 price_avg = route[11][1][0]
                 price_max = route[11][2][0]
-                # if bad_price_value(price_min): continue # the price has invalid value
+                if bad_price_value(price_min): continue # the price has invalid value
                 price_min_EUR = round(price_min / euro_rates[currency]['value']) # convertation to EUR
                 price_avg_EUR = round(price_avg / euro_rates[currency]['value'])
                 price_max_EUR = round(price_max / euro_rates[currency]['value'])
@@ -83,8 +83,8 @@ def extract_routine(input_data: tuple, euro_rates: dict) -> list():
                 transport_id = TRANSPORT_TYPES_ID[ttype]
                 
                 # to avoid duplicating routes
-                if (from_id, to_id, transport_id, price_min_EUR) in unique_routes: continue
-                unique_routes.add((from_id, to_id, transport_id, price_min_EUR))
+                if tuple(from_id, to_id, transport_id, price_min_EUR) in unique_routes: continue
+                unique_routes.add(tuple(from_id, to_id, transport_id, price_min_EUR))
                          
                 distance_km = round(hs.haversine(route[2][3:5], route[3][3:5])) # for flights only
                 frequency_tpw = route[7]
@@ -194,10 +194,18 @@ def extract_routine(input_data: tuple, euro_rates: dict) -> list():
                     price_max = route[13][2][0]
                     if bad_price_value(price_min): continue
                     price_min_EUR = price_min / euro_rates[currency]['value']
-                    if 0 < price_min_EUR < 1: price_min_EUR == 1
+                    if price_min_EUR < 1: price_min_EUR = 1
                     price_min_EUR = round(price_min_EUR)
-                    price_avg_EUR = round(price_avg / euro_rates[currency]['value'])
-                    price_max_EUR = round(price_max / euro_rates[currency]['value'])
+                    
+                    if bad_price_value(price_avg): price_avg = 0
+                    price_avg_EUR = price_avg / euro_rates[currency]['value']
+                    if price_avg_EUR < 1: price_avg_EUR = 1
+                    price_avg_EUR = round(price_avg_EUR)
+                    
+                    if bad_price_value(price_max): price_max = 0
+                    price_max_EUR = price_max / euro_rates[currency]['value']
+                    if price_max_EUR < 1: price_max_EUR = 1
+                    price_max_EUR = round(price_max_EUR)
                     
                     duration_min = round(route[3] / 60) # sec to min
                     
@@ -308,8 +316,9 @@ def extract_data(jsons_dir=OUTPUT_JSON_DIR):
     
         # main extraction loop: get data and output in csv
         for item in gen_jsons(jsons_dir):
-            data = extract_routine(item, euro_rates)
-            csv_writer.writerows(data)
+            if item[0] == 12:
+                data = extract_routine(item, euro_rates)
+                csv_writer.writerows(data)
         
     #output no id transport and unknown currencies
     with open(OUTPUT_CSV_DIR/'no_id_transport.csv', mode='w') as f:
@@ -327,5 +336,5 @@ def extract(*, source: Path | str = OUTPUT_JSON_DIR):
     
 if __name__ == '__main__':
     
-    extract(source='../output_5run/jsons')
+    extract(source='../output/output_5run/jsons')
     

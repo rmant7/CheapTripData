@@ -55,6 +55,7 @@ def limit_calls_per_minute(max_calls):
                     time.sleep(delay_seconds)
             # Call the function and add the current time to the call history
             try:
+                print('\n', args[0])
                 result = func(*args, **kwargs)
             except Exception as error:
                 # An exception was raised, trigger a delay and recursive function call with the same parameter
