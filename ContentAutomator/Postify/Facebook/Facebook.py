@@ -1,14 +1,14 @@
+import asyncio
+import logging
 from datetime import datetime, timedelta
 import facebook
 import requests
 from aiogram import types
 
-from ContentAutomator.Postify.utils.methods import add_task
+from ContentAutomator.Postify.utils.methods import add_task, get_post_data, record_post_info
 
 
-async def add_task_facebook(message: types.Message,
-                            photo_path: str,
-                            post_text: str,
+async def add_task_facebook(post_path: str,
                             post_date: datetime,
                             page_name: str,
                             acc_token: str):
@@ -73,19 +73,32 @@ async def add_task_facebook(message: types.Message,
             if response.status_code == 200:
                 return True
             else:
-                await message.answer(f'Failed to schedule the post. (planned) Response:\n{response.json()}')
+                logging.warning(f'Failed to schedule the post. (planned) Response:\n{response.json()}')
                 return False
+        except facebook.GraphAPIError:
+            logging.warning('facebook.GraphAPIError\n Continue in 20 minutes')
+            await asyncio.sleep(1200)
+            await post_facebook_planned(acc_token, photo_path, post_text, page_name)
         except Exception as e:
-            await message.answer(f'Failed to schedule the post. (planned) Error\n{e}')
+            logging.warning(f'Failed to schedule the post. (planned) Error\n{e}')
             raise e
 
+    social = 'Facebook'
+    if not record_post_info(path=post_path, social=social):
+        logging.warning(f'{post_path} post already exists')
+        return False
+
+    post_text, photo_path = await get_post_data(post_path)
+
     if post_date <= datetime.now():
-        await message.answer('Post date is in the past.')
+        logging.warning('Post date is in the past.')
         return False
     elif post_date <= datetime.now() + timedelta(minutes=10):
         await add_task(acc_token, photo_path, post_text, page_name, task=post_facebook_immediate, post_date=post_date,
-                       trigger='date', message=message)
-        await message.answer(f'Post Planned for {post_date.strftime("%m/%d/%Y, %H:%M:%S")} on Facebook. (immediate)')
+                       trigger='date')
+        logging.warning(f'{post_path}\n{post_date.strftime("%m/%d/%Y, %H:%M:%S")}\n{social} (immediate)\n')
+        return True
     else:
         await post_facebook_planned(acc_token, photo_path, post_text, page_name)
-        await message.answer(f'Post Planned for {post_date.strftime("%m/%d/%Y, %H:%M:%S")} on Facebook. (planned)')
+        logging.warning(f'{post_path}\n{post_date.strftime("%m/%d/%Y, %H:%M:%S")}\n{social} (planned)\n')
+        return True
