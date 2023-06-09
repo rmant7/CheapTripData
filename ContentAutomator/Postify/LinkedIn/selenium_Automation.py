@@ -1,4 +1,5 @@
 import json
+import traceback
 
 import selenium
 from selenium import webdriver
@@ -13,80 +14,85 @@ chrome_options.add_argument("--headless=new")  # Enable headless mode
 from selenium.webdriver.common import by
 chrome_options.add_argument("--disable-popup-blocking")
 
-driver = webdriver.Chrome(r"C:\Users\faisal\Downloads\chromedriver_win32\chromedriver.exe",options=chrome_options) # add your chrome driver path
-driver.get("https://www.linkedin.com")
-time.sleep(3)
+driver = webdriver.Chrome(r"C:\Users\faisal\Downloads\chromedriver_win32\chromedriver.exe",options=chrome_options)
 
-email=driver.find_element(By.XPATH,"//input[@name = 'session_key']")
-password=driver.find_element(By.XPATH,"//input[@name = 'session_password']")
+def page_post(url,retry,email_ ,password_,text):
 
-email.send_keys("youremail@gmail.com") # replace with your email
-time.sleep(3)
-password.send_keys("yourpassowrd") # replace with your password
-time.sleep(3)
-login_button = driver.find_element(By.XPATH,'//button[@type="submit"]')
-login_button.click()
-time.sleep(3)
-# input("Please complete any security checks and press Enter to continue...")
+    try:
+        driver.get("https://www.linkedin.com")
+        time.sleep(3)
 
+        email=driver.find_element(By.XPATH,"//input[@name = 'session_key']")
+        password=driver.find_element(By.XPATH,"//input[@name = 'session_password']")
 
-company_url = 'https://www.linkedin.com/company/<your company id>/'  # Update with your company URL
-driver.get(company_url)
-time.sleep(3)
-
-
-post_data = "add your text here !!"
+        email.send_keys(email_) # replace with your email
+        time.sleep(3)
+        password.send_keys(password_) # replace with your password
+        time.sleep(3)
+        login_button = driver.find_element(By.XPATH,'//button[@type="submit"]')
+        login_button.click()
+        time.sleep(3)
+        # input("Please complete any security checks and press Enter to continue...")
 
 
-post_input = driver.find_element(By.XPATH,"//button[@class='artdeco-button artdeco-button--muted artdeco-button--4 artdeco-button--tertiary ember-view share-box-feed-entry__trigger']")
-time.sleep(3)
-post_input.click()
-time.sleep(3)
-post_text = driver.find_element(By.XPATH, "//div[@class='ql-editor ql-blank']")
-post_text.send_keys(post_data)
-time.sleep(3)
-# image_button = driver.find_element(By.XPATH,"//button[@class='artdeco-button artdeco-button--circle artdeco-button--muted artdeco-button--2 artdeco-button--tertiary ember-view']")
-# image_button.click()
-# time.sleep(3)
+        # company_url = 'https://www.linkedin.com/company/94836531/'  # Update with your company URL
+        #company_url= 'https://www.linkedin.com/groups/9379071/'
+        company_url = url
+        driver.get(company_url)
+        time.sleep(3)
 
-image_input = driver.find_element(By.XPATH,"//button[@class='artdeco-button artdeco-button--circle artdeco-button--muted artdeco-button--2 artdeco-button--tertiary ember-view']")
-image_input.click()
-time.sleep(3)
-#<input id="image-sharing-detour-container__file-input" class="image-sharing-detour-container__media-button visually-hidden" name="file" multiple="" filecountlimit="20" accept="image/gif,image/jpeg,image/jpg,image/png" type="file">
-image_url= driver.find_element(By.XPATH,"//input[@class='image-sharing-detour-container__media-button visually-hidden']")
-image_url.send_keys(r"C:\Users\faisal\PycharmProjects\automateLinkedInPosts\example.jpg") # replace with your relevant path
-time.sleep(3)
-# < button
-# id = "ember906"
-#
-#
-# class ="share-box-footer__primary-btn artdeco-button artdeco-button--2 artdeco-button--primary ember-view" type="button" > < !---->
-#
-# < span
-#
-#
-# class ="artdeco-button__text" >
-#
-#
-# Done
-#
-# < / span > < / button >
-done_button= driver.find_element(By.XPATH,"//button[@class='share-box-footer__primary-btn artdeco-button artdeco-button--2 artdeco-button--primary ember-view']").click()
-time.sleep(3)
 
-# <button id="ember903" class="artdeco-button artdeco-button--2 artdeco-button--secondary ember-view" type="button"><!---->
-# <span class="artdeco-button__text">
-#     Back
-# </span></button>
-# back_button = driver.find_element(By.XPATH,"//button[@class='artdeco-button artdeco-button--2 artdeco-button--secondary ember-view']")
-# back_button.click()
-# time.sleep(3)
+        post_data = text
+
+
+        post_input = driver.find_element(By.XPATH,"//button[@class='artdeco-button artdeco-button--muted artdeco-button--4 artdeco-button--tertiary ember-view share-box-feed-entry__trigger']")
+        time.sleep(3)                                               #artdeco-button artdeco-button--muted artdeco-button--4 artdeco-button--tertiary ember-view share-box-feed-entry__trigger
+        post_input.click()
+        time.sleep(3)
+        post_text = driver.find_element(By.XPATH, "//div[@class='ql-editor ql-blank']")
+        post_text.send_keys(post_data)
+        time.sleep(3)
+        # image_button = driver.find_element(By.XPATH,"//button[@class='artdeco-button artdeco-button--circle artdeco-button--muted artdeco-button--2 artdeco-button--tertiary ember-view']")
+        # image_button.click()
+        # time.sleep(3)
+
+        image_input = driver.find_element(By.XPATH,"//button[@class='artdeco-button artdeco-button--circle artdeco-button--muted artdeco-button--2 artdeco-button--tertiary ember-view']")
+        image_input.click()
+        time.sleep(3)
+        #<input id="image-sharing-detour-container__file-input" class="image-sharing-detour-container__media-button visually-hidden" name="file" multiple="" filecountlimit="20" accept="image/gif,image/jpeg,image/jpg,image/png" type="file">
+        image_url= driver.find_element(By.XPATH,"//input[@class='image-sharing-detour-container__media-button visually-hidden']")
+        image_url.send_keys(r"C:\Users\faisal\PycharmProjects\automateLinkedInPosts\example.jpg")
+        time.sleep(3)
+        done_button= driver.find_element(By.XPATH,"//button[@class='share-box-footer__primary-btn artdeco-button artdeco-button--2 artdeco-button--primary ember-view']").click()
+        time.sleep(3)
+
+
+        post_button = driver.find_element(By.XPATH,"//button[@class='share-actions__primary-action artdeco-button artdeco-button--2 artdeco-button--primary ember-view']")
+        post_button.click()
+        time.sleep(5)
+        #post_button = driver.find_element('xpath','/html/body/div[3]/div/div/div[3]/button/span').click()
+        print("posted!")
+        driver.quit()
+    except Exception as e:
+        print("error accured")
+        error_message = traceback.format_exc()  # Get the formatted error message
+        with open("error_log.txt", "w") as file:
+            file.write(error_message)
+        if retry>0:
+            page_post(url,retry-1,email_,password_,text)
 
 
 
-post_button = driver.find_element(By.XPATH,"//button[@class='share-actions__primary-action artdeco-button artdeco-button--2 artdeco-button--primary ember-view']")
-post_button.click()
-time.sleep(5)
-#post_button = driver.find_element('xpath','/html/body/div[3]/div/div/div[3]/button/span').click()
-print("posted!")
-driver.quit()
+
+page_url="https://www.linkedin.com/company/94836531/admin/"
+email="youremail@gmail.com"
+password="yourpassword"
+text="add your content here !!"
+for i in range(24):
+    # Your code to be executed every 5 minutes
+    # ...
+    # ...
+
+    page_post(page_url, 5,email,password,text)
+
+    time.sleep(300)  # Sleep for 300 seconds (5 minutes)
