@@ -6,7 +6,7 @@ import os
 from pathlib import Path
 
 
-from config import NOT_FOUND, CITIES_COUNTRIES_CSV
+from config import NOT_FOUND, CITIES_COUNTRIES_CSV, IMG_DIR
 
 
 # set up all dataframes
@@ -29,6 +29,16 @@ def get_city_id(name):
         return df_cities_countries.filter(pl.col('city') == name)['id_city'][0]
     except Exception:
         return NOT_FOUND
+
+
+def correct_image_names():
+    rep = {"'":"", ".":"", "__":"_"}
+    for file in Path(f'{IMG_DIR}/city_attractions').rglob('*.jpg'):
+        new_stem = file.stem
+        for key, value in rep.items():
+            if key in file.stem:
+                new_stem = new_stem.replace(key, value)
+        file.rename(file.with_stem(new_stem))
 
     
 def get_prompts_GPT(prompt_json_path: Path | str) -> dict:
@@ -86,7 +96,7 @@ def get_response_GPT(prompt: str, api_key: str='OPENAI_API_KEY_CT_2'):
      
 
 @limit_calls_per_minute(3)    
-def get_images_DALLE(prompt: str, n: int, size: str, api_key: str) -> list[str]:
+def get_images_DALLE(prompt: str, n: int=1, size: str='512x512', api_key: str='OPENAI_API_KEY_CT_2') -> list:
     openai.organization = os.getenv('OPENAI_ID_CT')
     openai.api_key = os.getenv(api_key)
     response = openai.Image.create(

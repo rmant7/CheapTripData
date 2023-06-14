@@ -9,7 +9,7 @@ from functions import get_cities, get_prompts_GPT, get_response_GPT, elapsed_tim
 
 def get_options(city: str) -> dict:    
     with open(f'{CITY_ATTRACTIONS_LIST_DIR}/{city}.json', 'r') as f:
-            options = json.load(f)
+        options = json.load(f)
     return options
 
 
@@ -46,7 +46,7 @@ def generate_texts(city: str, options: dict, prompt: str) -> dict:
             continue
         except Exception as err:
             print("TypeError:",err)
-    return  data
+    return data
 
 
 @elapsed_time
@@ -54,14 +54,14 @@ def main(index: int=0, prompts_file: str='', output_dir: str='.'):
     prompts = get_prompts_GPT(f'{PROMPTS_DIR}/{prompts_file}')
     output_path = Path(f'{SMM_DIR}/{output_dir}')
     output_path.mkdir(parents=True, exist_ok=True)
-    for city in get_cities(from_=index):
+    for city in get_cities():
         options = get_options(city)
         texts = generate_texts(city, options, prompts['prompt_ru'])
         output_data(texts, city, output_path)
 
 
 if __name__ == "__main__":
-    from_city_index = 287
+    # from_city_index = 0
     prompts_file = 'smm_city_attractions_fp_pmt_ru.json'
     output_dir = 'city_attractions_first_person_ru'
-    main(from_city_index, prompts_file, output_dir)
+    main(prompts_file, output_dir)

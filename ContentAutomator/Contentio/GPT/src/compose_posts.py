@@ -1,58 +1,70 @@
 from pathlib import Path
 import json
-import shutil
 import traceback
 
-from functions import get_cities, elapsed_time
-from config import SMM_DIR, IMG_DIR, POSTS_DIR
+
+from functions import get_cities, elapsed_time, get_city_id
+from config import POSTS_DIR, SMM_CITY_ATTRACTIONS_FP_DIR, CITY_ATTRACTIONS_IMG_DIR
      
 
-missing_images = dict()
-count = 0
+posts_dir = Path(f'{POSTS_DIR}/city_attractions/ru')
+base_url = 'http://20.240.63.21/files/images/city_attractions'
 
-def compose_posts(cities: list, option_name: str, option_number: str, 
-                  texts_dir: Path | str, images_dir: Path | str, posts_dir: Path | str) -> None:
-    # j = 0
-    global count
-    for city in cities:
-        city = city.replace(' ', '_').replace('-', '_')
+
+def get_posts(city: str) -> dict:
+    print('get_posts starting...')
+    with open(f'{SMM_CITY_ATTRACTIONS_FP_DIR}/{city}.json', 'r') as f:
+        return json.load(f)
+
+
+def get_images(city: str) -> list:
+    print('get_images starting...')
+    return Path(f'{CITY_ATTRACTIONS_IMG_DIR}/{city}').glob('[0-9]*.jpg')
+
+
+def post_to_json(count: int, data: dict, city_id: int) -> None:
+    post_number = city_id * 100 + count
+    with open(f'{posts_dir}/{post_number}.json', 'w', encoding='utf-8') as f:
+            json.dump(data, f, indent=4, ensure_ascii=False)
+
+
+def compose_post(city: str, images: list, posts: dict) -> None:
+    print('compose starting...')
+    for image in images:
         try:
-            image = next(Path(images_dir/city).glob(f'{option_number}_*.jpg'))
-            count += 1
-            # destination = Path(f'{posts_dir}/{option_name}_{option_number}/post_{j}')
-            destination = Path(f'{posts_dir}/post_{count}')
-            destination.mkdir(parents=True, exist_ok=True)
-            with open(f'{texts_dir}/{city}.json', 'r') as f:
-                texts = json.load(f)                                 
-            with open(f'{destination}/text_ru.json', 'w', encoding='utf-8') as f:
-                json.dump(texts[option_number], f, indent=4, ensure_ascii=False)
-            shutil.copyfile(image, Path(f'{destination}/image.jpg'))
-        except StopIteration as err:
-            print(f'\nDuring {city} processing there was an error: {err.value}')
-            if city not in missing_images.keys(): missing_images[city] = list()
-            missing_images[city].append(option_number)
-            continue
+            option_number = image.name.split('_')[0]        
+            url = f'{base_url}/{city}/{image.name}'
+            # remove hashtags and links from the text
+            paragraphs = posts[option_number]['text'].split('\n\n')
+            for paragraph in posts[option_number]['text'].split('\n\n'):
+                if '#' in paragraph or 'http' in paragraph:
+                    paragraphs.remove(paragraph)
+            posts[option_number]['text'] = '\n\n'.join(paragraphs)
+            # make hashtags as a list if aren't
+            if not isinstance(posts[option_number]['hashtags'], list):
+                posts[option_number]['hashtags'] = posts[option_number]['hashtags'].split(" ")
+            # add a list of images' urls    
+            posts[option_number]['images'] = list()
+            posts[option_number]['images'].append(url)                                
         except KeyError as err:
             print(err.args[0], city)
-            exception_traceback = traceback.format_exc()
-            print("Full Exception Description:")
-            print(exception_traceback)
+            print(f'Full Exception Description: {traceback.format_exc()}')
+            continue
+    return posts
             
-                   
+                      
 @elapsed_time
 def main():
-    texts_dir = SMM_DIR/'city_attractions_first_person_ru'
-    images_dir = IMG_DIR/'city_attractions'
-    posts_dir = POSTS_DIR/'city_attractions_ru_'
-    option_name = 'attraction'
-    number_of_options = 10
-    cities = get_cities()
-    for i in range(1, number_of_options + 1):
-        compose_posts(cities, option_name, str(i), texts_dir, images_dir, posts_dir)
-    with open('missing_images.json', 'w') as f:
-        json.dump(missing_images, f, sort_keys=True, indent=4)    
-
-
+    posts_dir.mkdir(parents=True, exist_ok=True)
+    for city in get_cities():
+        city_id = get_city_id(city)
+        city = city.replace(' ', '_').replace('-', '_')
+        posts = compose_post(city, get_images(city), get_posts(city))
+        for key, post in posts.items():
+            post_to_json(int(key), post, city_id)
+          
+                
+                
 if __name__ == '__main__':
     main()
     

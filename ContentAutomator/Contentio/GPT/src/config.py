@@ -40,7 +40,7 @@ SEO_FESTIVALS_DIR = Path(SEO_TEXTS_DIR/'events_festivals_seo')
 # SMM folders setup
 SMM_DIR = Path('../content/smm')
 POSTS_DIR = Path(SMM_DIR/'posts')
-SMM_CITY_ATTRACTIONS_FP_DIR = Path(SMM_DIR/'smm_city_attractions_first_person_ru')
+SMM_CITY_ATTRACTIONS_FP_DIR = Path(SMM_DIR/'city_attractions_first_person_ru')
 
 # image directories setup
 IMG_DIR = Path('../content/images')
