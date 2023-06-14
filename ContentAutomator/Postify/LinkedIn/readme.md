@@ -5,7 +5,3 @@ selenium_Automation.py:
 - insert your email and password in order to complete the automation
 - insert your chrome driver path 
 - insert the path of the image you want to attach to the post
-
-api_posting.py:
-
-- insert authorization_code and other required parameters 
