@@ -1,48 +1,69 @@
 import requests
-import os
+from pathlib import Path 
 import json
+from io import BytesIO
+from PIL import Image
 
-from functions import get_response_GPT, get_prompts_GPT, get_images_DALLE
+from functions import get_prompts_GPT, get_images_DALLE, get_cities, elapsed_time
+from logger import logger_setup
+from config import IMG_DIR, PROMPTS_DIR, CHILDREN_ATTRACTIONS_LIST_DIR
 
-from config import SEO_CHILDREN_ATTRACTIONS_DIR, PROMPTS_DIR
+
+logger = logger_setup(Path(__file__).stem)
 
 
-def download_image(url: str, city: str, anum: str, attraction: str, num: int) -> None:
-    city = "_".join(city.split(" "))
-    attraction = "_".join(attraction.split(" "))
-    save_directory = f'../cities_data/images/children_attractions/{city}/{anum} {attraction}'
-    image_name = f'{num}.jpeg'
-    save_path = os.path.join(save_directory, image_name)
-    if not os.path.exists(save_directory):
-        os.makedirs(save_directory)
+def download_image(url: str, city: str, number: str, attraction: str) -> None:
+    save_dir = Path(f'{IMG_DIR}/children_attractions/{city}')
+    save_dir.mkdir(parents=True, exist_ok=True)
+    image_name = Path(f'{number}_{attraction}.jpg')
+    save_path = save_dir/image_name
     try:
-        response = requests.get(url, stream=True)
-        response.raise_for_status()
-        with open(save_path, 'wb') as file:
-            for chunk in response.iter_content(chunk_size=8192):
-                file.write(chunk)
-        print(f"Image {image_name} downloaded and saved to: {save_path}")       
-    except requests.exceptions.HTTPError as error:
-        print(f"\nDuring file '{url}' processing there was an error: {error}")
+        response = requests.get(url)
+        # Open the downloaded image using PIL
+        with Image.open(BytesIO(response.content)) as image:
+            # define the desired size and save
+            new_size = (1024, 1024)
+            resized_image = image.resize(new_size)
+            resized_image.save(save_path, format='JPEG')
+            logger.info(f"Resized and saved succcessfully to {save_path}")
+    except IOError as err:
+        logger.error(f'An error occurred while saving the file: {err}')
+    except Exception as err:
+        logger.error(f'An unexpected error occurred: {err}')
         
 
+@elapsed_time
 def generate_image():
-    api_key = 'OPENAI_API_KEY_CT_2'
     prompts = get_prompts_GPT(PROMPTS_DIR/'children_attractions_images_pmt.json')
-    json_files = [file for file in os.listdir(SEO_CHILDREN_ATTRACTIONS_DIR) if file.endswith('.json')]
-    for json_file in sorted(json_files)[52:]:
-        city = json_file.partition('.')[0]
-        json_path = os.path.join(SEO_CHILDREN_ATTRACTIONS_DIR, json_file)
-        with open(json_path, 'r') as file:
-            content = json.load(file)
-        for key, value in content.items():
-            for attraction, data in value.items():
-                summarised = get_response_GPT(prompts['summarise'].format(text=data['description']), api_key)
-                created_images = get_images_DALLE(summarised, 2, '512x512', api_key)
-                for i, image_url in enumerate(created_images, start=1):
-                    download_image(image_url, city, key, attraction, i)
+    cities = get_cities()
+    j = 0
+    for city in cities:
+        logger.info(f'Processing...{city.upper()}')
+        city_ = city.replace(' ', '_').replace('-', '_')
+        try:
+            file_path = Path(f'{CHILDREN_ATTRACTIONS_LIST_DIR}/{city_}.json')
+            with open(file_path, 'r') as fp:
+                attractions = json.load(fp)
+            logger.info(f'Got attraction list succesfully...')    
+            for number, attraction in attractions.items():
+                prompt = prompts['child_attractions'].format(attraction=attraction, city=city)
+                try:
+                    url = get_images_DALLE(prompt)
+                    if not url: raise Exception(f'No image generated for {number}:"{attraction}"')
+                    logger.info(f'Generated succesfully: {number}:"{attraction}"')
+                    attraction = attraction.replace(' ', '_').replace('-', '_').replace("'", "")
+                    download_image(url[0], city, number, attraction)
+                except Exception as err:
+                    logger.error(err)
+                    continue        
+        except FileNotFoundError as err:
+            logger.error(err)
+            continue
+        
+        logger.info(f'Processed successfully...{city}, total score: {j + 1}/{len(cities)}')
+        j += 1
 
 
 if __name__ == '__main__':
     generate_image()
-    ...
+    

@@ -1,3 +1,4 @@
 {
-    "summarise":"Summarise this text: '''{text}'''. Based on the summary craft a detailed prompt to generate an image relevant to it. The image must NOT contain any writing or letters. Return only the prompt without any accompanying text."    
+    "summarise":"Summarise this text: '''{text}'''. Based on the summary craft a detailed prompt to generate an image relevant to it. The image must NOT contain any writing or letters. Return only the prompt without any accompanying text.",
+    "child_attractions":"inside view of {attraction} in the city of {city}"    
 }

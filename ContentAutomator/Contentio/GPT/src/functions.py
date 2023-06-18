@@ -4,6 +4,8 @@ import time
 import openai
 import os
 from pathlib import Path
+from PIL import Image
+import requests
 
 
 from config import NOT_FOUND, CITIES_COUNTRIES_CSV, IMG_DIR
@@ -17,7 +19,7 @@ def get_cities(from_: int=0, to_: int=df_cities_countries.shape[0]) -> list:
     """
     Returns sorted list of the cities. Parameters:'from_' and 'to_' define a list slice.
     """
-    return sorted(df_cities_countries['city'])[from_:to_]
+    return sorted(df_cities_countries['city'])[from_:to_ + 1]
 
    
 def get_city_name(id):
@@ -40,7 +42,51 @@ def correct_image_names():
                 new_stem = new_stem.replace(key, value)
         file.rename(file.with_stem(new_stem))
 
-    
+
+def resize_images(folder_path: Path | str, to_size: tuple=(1024, 1024)) -> None:
+    if isinstance(folder_path, str):
+        folder_path = Path(folder_path)
+    try:
+        for file_path in folder_path.rglob('*.jpeg'):
+            print(file_path)
+            try:
+                img = Image.open(file_path)
+                if img.size == to_size:
+                    print(f"Skipping {file_path.name} (already {to_size}.")
+                else:
+                    img = img.resize(to_size, Image.ANTIALIAS)
+                    img.save(file_path)
+                    print(f"Resized {file_path.name} successfully.")
+            except Exception as e:
+                print(f"Error resizing {file_path.name}: {str(e)}")
+    except StopIteration as err:
+        print(err)
+    except Exception as err:
+        print(f'\n It was something wrong with {file_path}: {err}')
+        
+
+def resize_image(file_path: Path | str, to_size: tuple=(1024, 1024)) -> None:
+    try:
+        img = Image.open(file_path)
+        if img.size == to_size:
+            print(f"Skipping {file_path.name} (already {to_size}.")
+        else:
+            img = img.resize(to_size, Image.ANTIALIAS)
+            img.save(file_path)
+            print(f"Resized {file_path.name} to {to_size} successfully.")
+    except Exception as e:
+        print(f"Error resizing {file_path.name}: {str(e)}")
+
+
+def is_valid_link(url: str, timeout: int=10) -> bool:
+    try:
+        requests.head(url, timeout=timeout, allow_redirects=False).raise_for_status()
+        return True
+    except requests.exceptions.RequestException as err:
+        print("An error occurred during the request:", err)
+        return False
+
+
 def get_prompts_GPT(prompt_json_path: Path | str) -> dict:
     with open(prompt_json_path, 'r') as f:
         return json.load(f)
@@ -123,5 +169,5 @@ def elapsed_time(func):
 
     
 if __name__ == '__main__':
-    # print(get_cities())
+    resize_images('../content/images/children_attractions')
     pass

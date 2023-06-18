@@ -16,7 +16,8 @@ OUTPUT_IMAGES_DIR = Path('../output/images')
 # logging set up 
 LOGS_DIR = Path('../logs')
 LOG_CRITICAL = Path(LOGS_DIR/'critical_errors.log')
-LOG_CRITICAL_FORMAT = '%(asctime)s - %(levelname)s - %(message)s'
+LOG_FORMATTER = '%(asctime)s - %(levelname)s - %(message)s'
+LOG_DEBUG = Path(LOGS_DIR/'debug.log')
 
 # prompts folder setup
 PROMPTS_DIR = Path('../prompts')
@@ -29,7 +30,7 @@ CHILDREN_ATTRACTIONS_LIST_DIR = Path(OPTION_LISTS_DIR/'children_attractions')
 # SEO folders setup
 SEO_TEXTS_DIR = Path('../content/seo/texts')
 SEO_HTMLS_DIR = Path('../content/seo/htmls')
-SEO_CITY_DESCRIPTIONS_DIR = Path(SEO_TEXTS_DIR/'city_descriptions/en_old')
+SEO_CITY_DESCRIPTIONS_DIR = Path(SEO_TEXTS_DIR/'seo_city_descriptions/en')
 SEO_CITY_ATTRACTIONS_DIR = Path(SEO_TEXTS_DIR/'city_attractions/en')
 SEO_CITY_ATTRACTIONS_BENGALI = Path(SEO_TEXTS_DIR/'city_attractions_bengali')
 SEO_CHILDREN_ATTRACTIONS_DIR = Path(SEO_TEXTS_DIR/'children_attractions/en')
