@@ -19,7 +19,16 @@ def get_cities(from_: int=0, to_: int=df_cities_countries.shape[0]) -> list:
     """
     Returns sorted list of the cities. Parameters:'from_' and 'to_' define a list slice.
     """
-    return sorted(df_cities_countries['city'])[from_:to_ + 1]
+    cities = sorted(df_cities_countries['city'])
+    return cities[from_:to_]
+
+
+def get_cities_countries(from_: int=0, to_: int=df_cities_countries.shape[0]) -> list:
+    """
+    Returns sorted list of the cities and countries. Parameters:'from_' and 'to_' define a list slice.
+    """
+    cities_countries = df_cities_countries[['city', 'country']].sort('city')
+    return cities_countries[from_:to_].rows()
 
    
 def get_city_name(id):
@@ -169,5 +178,6 @@ def elapsed_time(func):
 
     
 if __name__ == '__main__':
-    resize_images('../content/images/children_attractions')
+    print(get_cities_countries(), type(get_cities_countries()))
+    # print(get_cities())
     pass
