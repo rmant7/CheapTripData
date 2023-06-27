@@ -1,3 +1,0 @@
-{
-    "prompt":"Your task Write a list of all hashtags extracted from the following text: '''[text]'''. A hashtag is a word or phrase that starts with a # symbol and is used to categorize or tag a message on social media. The list should include only the hashtags with the # symbol. The list should be separated by commas and ordered alphabetically."
-}
