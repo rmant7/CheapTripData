@@ -6,41 +6,31 @@ import os
 from pathlib import Path
 from PIL import Image
 import requests
+from io import BytesIO
+
+from config import IMG_DIR
 
 
-from config import NOT_FOUND, CITIES_COUNTRIES_CSV, IMG_DIR
-
-
-# set up all dataframes
-df_cities_countries = pl.read_csv(CITIES_COUNTRIES_CSV)
-
-   
-def get_cities(from_: int=0, to_: int=df_cities_countries.shape[0]) -> list:
-    """
-    Returns sorted list of the cities. Parameters:'from_' and 'to_' define a list slice.
-    """
-    cities = sorted(df_cities_countries['city'])
-    return cities[from_:to_]
-
-
-def get_cities_countries(from_: int=0, to_: int=df_cities_countries.shape[0]) -> list:
-    """
-    Returns sorted list of the cities and countries. Parameters:'from_' and 'to_' define a list slice.
-    """
-    cities_countries = df_cities_countries[['city', 'country']].sort('city')
-    return cities_countries[from_:to_].rows()
-
-   
-def get_city_name(id):
-    return df_cities_countries.filter(pl.col('id_city') == id)['city'][0]
-    
-    
-def get_city_id(name):
+def download_image(url: str, category: str, city: str, number: str, option: str) -> None:
+    category, city, option = map(lambda x: x.replace(' ', '_').replace('-', '_') , [category, city, option])
+    save_dir = Path(f'{IMG_DIR}/{category}/{city}')
+    save_dir.mkdir(parents=True, exist_ok=True)
+    image_name = Path(f'{number}_{option}.jpg')
+    save_path = save_dir/image_name
     try:
-        return df_cities_countries.filter(pl.col('city') == name)['id_city'][0]
-    except Exception:
-        return NOT_FOUND
-
+        response = requests.get(url)
+        # Open the downloaded image using PIL
+        with Image.open(BytesIO(response.content)) as image:
+            # Define the desired size and save
+            new_size = (1024, 1024)
+            resized_image = image.resize(new_size)
+            resized_image.save(save_path, format='JPEG')
+        return image_name   
+    except IOError as err:
+        print(f'An error {err} was occured while downloading image of {number}.{option} for {city}')
+    except Exception as err:
+        print(f'Unexpected error was occured while downloading image {url}')
+        
 
 def correct_image_names():
     rep = {"'":"", ".":"", "__":"_"}
@@ -111,7 +101,6 @@ def limit_calls_per_minute(max_calls):
     def decorator(func):
         def wrapper(*args, **kwargs):
             # Remove any calls from the call history that are older than 1 minute
-            
             calls[:] = [call for call in calls if call > time.time() - 60]
             if len(calls) >= max_calls:
                 # Too many calls in the last minute, calculate delay before allowing additional calls
@@ -120,45 +109,42 @@ def limit_calls_per_minute(max_calls):
                 if delay_seconds > 0:
                     time.sleep(delay_seconds)
             # Call the function and add the current time to the call history
-            try:
-                # print('\n', args[0])
-                result = func(*args, **kwargs)
-            except openai.OpenAIError as err:
-                print("An error occurred during the OpenAI request:", err)
-                result = None
-                # An exception was raised, trigger a delay and recursive function call with the same parameter
-                # time.sleep(60)
-                # return wrapper(*args, **kwargs)
-            finally:    
-                calls.append(time.time())
-                print('\n',result)
-                return result
+            result = func(*args, **kwargs)
+            calls.append(time.time())
+            return result
         return wrapper
     return decorator
     
   
 @limit_calls_per_minute(3)    
-def get_response_GPT(prompt: str, api_key: str='OPENAI_API_KEY_CT_2'):
+def get_response_GPT(prompt: str, api_key: str='OPENAI_API_KEY_CT_2') -> str:
     openai.organization = os.getenv('OPENAI_ID_CT')
     openai.api_key = os.getenv(api_key)
-    response = openai.ChatCompletion.create(model='gpt-3.5-turbo',
-                                            messages=[
-                                                        #{"role": "system", "content": f"Act as an {role}"},
-                                                        {'role': 'user', 'content': prompt}
-                                                    ],
-                                            temperature=0)   
-    return response['choices'][0]['message']['content']
+    # print(f'prompt = ')
+    try:
+        response = openai.ChatCompletion.create(model='gpt-3.5-turbo',
+                                                messages=[
+                                                            #{"role": "system", "content": f"Act as an {role}"},
+                                                            {'role': 'user', 'content': prompt}
+                                                        ],
+                                                temperature=0)  
+        print(f"\n{response['choices'][0]['message']['content']}") 
+        return response['choices'][0]['message']['content']
+    except openai.OpenAIError as err:
+        print("An error occurred during the OpenAI request:", err)
+        return None 
      
 
 @limit_calls_per_minute(3)    
 def get_images_DALLE(prompt: str, n: int=1, size: str='512x512', api_key: str='OPENAI_API_KEY_CT_2') -> list:
     openai.organization = os.getenv('OPENAI_ID_CT')
     openai.api_key = os.getenv(api_key)
-    response = openai.Image.create(
-                                    prompt=prompt,
-                                    n=n,
-                                    size=size)
-    return [item['url'] for item in response['data']]
+    try:
+        response = openai.Image.create(prompt=prompt, n=n, size=size)
+        return [item['url'] for item in response['data']]
+    except openai.OpenAIError as err:
+        print("An error occurred during the OpenAI request:", err)
+        return None
     
 
 def elapsed_time(func):
@@ -177,7 +163,31 @@ def elapsed_time(func):
     return wrapper
 
     
+def load_json(path: str) -> dict:
+    """
+    This function loads a JSON file from a given path. The purpose of this function is to provide a convenient way to load JSON data from a file, while also handling potential errors that may occur during the loading process.
+
+    Args:
+        path (str): given path
+
+    Returns:
+        _type_: JSON data from a file
+    """
+    try:
+        with open(Path(path), 'r') as f:
+            return json.load(f)
+        
+    except (FileNotFoundError, PermissionError, IsADirectoryError, TypeError) as e:
+        print(f"Error loading JSON file '{path}': {str(e)}")
+        
+    except json.JSONDecodeError as e:
+        print(f"Error decoding JSON file '{path}': {str(e)}")
+        
+    except Exception as e:
+        print(f"An unexpected error occurred while loading JSON file '{path}': {str(e)}")
+    
+    
+    
 if __name__ == '__main__':
-    print(get_cities_countries(), type(get_cities_countries()))
     # print(get_cities())
     pass

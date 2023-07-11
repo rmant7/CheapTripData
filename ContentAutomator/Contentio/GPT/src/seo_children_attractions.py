@@ -29,7 +29,8 @@ def change_to():
         exit()
     # cities countries loop
     j = 0
-    for city, country in cities_countries:
+    # cities_countries = [cc for cc in cities_countries if ' ' in cc[0] or '-' in cc[0]]
+    for city, country in cities_countries[324:]:
         logger.info(f'\nProcessing {city.upper()}, {country.upper()}...')
         city_ = city.replace('-', '_').replace(' ', '_')
         try:
