@@ -38,21 +38,20 @@ def get_page(acc_token, page_name):
     return page
 
 
-def get_hashtags_old(json_data: dict):
+def get_hashtags(json_data: dict):
     # Extract hashtags, name, and location from the JSON data
 
     def process_strings(string_list):
-        symbol_list = ["'", ":", "&"]
-        for i in range(len(string_list)):
-            s = string_list[i]
-            for symbol in symbol_list:
-                if symbol in s:
-                    symbol_index = s.index(symbol)
-                    if symbol_index < len(s) - 1:  # Ensure there is a character after symbol
-                        next_char = s[symbol_index + 1]
-                        s = s[:symbol_index] + next_char.upper() + s[symbol_index + 2:]
-            string_list[i] = s
-        return string_list
+        processed_list = []
+        for string in string_list:
+            words = string.split()
+            processed_words = []
+            for i, word in enumerate(words):
+                if i > 0 and word.isalpha():
+                    word = word.capitalize()
+                processed_words.append(re.sub(r'[^\w\s]', '', word))
+            processed_list.append(''.join(processed_words))
+        return processed_list
 
     hashtags = ' '.join([hashtag for hashtag in json_data['hashtags']])
     name_raw = [item.capitalize() for item in (json_data['name'].split(' '))]
@@ -65,22 +64,27 @@ def get_hashtags_old(json_data: dict):
     return locations_str, hashtags
 
 
-def get_hashtags(json_data: dict):
+def get_hashtags_old(json_data: dict):
     # Extract hashtags, name, and location from the JSON data
 
     def process_strings(string_list):
-        for i in range(len(string_list)):
-            string_list[i] = re.sub(r'[^\w\s]', '', string_list[i])
-        return string_list
+        processed_list = []
+        for string in string_list:
+            words = string.split()
+            processed_words = []
+            for i, word in enumerate(words):
+                if i > 0 and word.isalpha():
+                    word = word.capitalize()
+                processed_words.append(re.sub(r'[^\w\s]', '', word))
+            processed_list.append(''.join(processed_words))
+        return processed_list
 
     hashtags = ' '.join([hashtag for hashtag in json_data['hashtags']])
-    name_raw = [item.capitalize() for item in (json_data['name'].split(' '))]
     locations_list_raw = [item.capitalize() for item in (json_data['location'].split(', '))]
     locations_list = process_strings(locations_list_raw)
-    names_list = process_strings(name_raw)
+    # print(locations_list)
 
-    name = '#' + ''.join(names_list)
-    locations_str = '#' + ' #'.join(locations_list) + ' ' + name
+    locations_str = '#' + ' #'.join(locations_list)
     return locations_str, hashtags
 
 
@@ -107,6 +111,35 @@ def get_text_image_bytes(json_data: dict, path: str):
         raise e
 
 
+def cut_text(text: str, additional_chars: int, char_limit: int) -> str:
+    """
+    Cut text message by message from end to char limit
+
+    :param text: some text
+    :param additional_chars: count of chars for geolocation/links/hashtags
+    :param char_limit: max count of chars
+    :return: cutted text
+    """
+    text_len = len(text)
+    text_paragraphs = text.split("\n")
+
+    splited_text = list(map(lambda x: re.split(r'(?<=[.?!])\s+', x), text_paragraphs))
+
+    for i in range(len(splited_text) - 2, 0, -1):
+        for j in range(len(splited_text[i]) - 1, -1, -1):
+            deleted_text = splited_text[i].pop(j)
+            text_len -= len(deleted_text)
+
+            if text_len + additional_chars + 10 < char_limit:
+                break
+        if text_len + additional_chars + 10 < char_limit:
+            break
+
+    result_text = "\n".join(list(map(lambda x: " ".join(x), splited_text)))
+
+    return result_text
+
+
 # Get the text and images from the provided JSON data and path
 def get_text_images(json_data: dict, path: str, social: str):
     footers = {
@@ -123,7 +156,13 @@ https://cheaptrip.guru
         location, hashtags = get_hashtags(json_data)
 
         # Generate the text using location, JSON text, footer, and hashtags
-        text = location + '\n' + json_data["text"] + '\n\n' + footer + '\n\n' + hashtags
+        inner_text = json_data['text']
+
+        if social == "Instagram":
+            addition_chars = len(location) + len(footer) + len(hashtags)
+            inner_text = cut_text(inner_text, addition_chars, 2200)
+
+        text = location + '\n' + inner_text + '\n\n' + footer + '\n\n' + hashtags
         images = []
 
         image_url_list = json_data['images']
@@ -148,6 +187,16 @@ async def get_post_data_by_path(path: str, social: str):
         raise e
 
 
+async def get_post_data_by_path_old(path: str, social: str):
+    try:
+        with open(f'{path}/text.json', 'r') as f:
+            text, image = get_text_images_old(json_data=json.load(f), path=path, social=social)
+        return text, image
+    except Exception as e:
+        logging.warning(f'Error. {e}, \n {path}')
+        raise e
+
+
 # Iterate over folders and return paths with data
 async def get_data_directory(path: str, all_paths=None):
     if all_paths is None:
@@ -156,6 +205,24 @@ async def get_data_directory(path: str, all_paths=None):
         new_path = path + '/' + element
         if os.path.isdir(new_path):
             await get_data_directory(all_paths=all_paths, path=new_path)
+        else:
+            if '.json' not in element:
+                break
+
+            post_path = path + '/'
+            all_paths[post_path] = {}
+            break
+    return all_paths
+
+
+# iterates over folders and return paths with data
+async def get_data_directory_old(all_paths: dict, path: str):
+    for element in os.listdir(path):
+        new_path = path + '/' + element
+        # if the element is a folder, we go deeper
+        if os.path.isdir(new_path):
+            await get_data_directory(all_paths=all_paths, path=new_path)
+        # else if the element is a file, we save path to the file and repeating the loop
         else:
             if '.json' not in element:
                 break
@@ -256,8 +323,109 @@ def check_if_post_exists(path, social=None):
     return False
 
 
+def record_post_info_old(path: str, social: str, date: datetime = datetime.now(), published=False):
+    try:
+        with open('utils/posts_info.json', 'r') as json_file:
+            posts = json.load(json_file)
+    except Exception:
+        with open('utils/posts_info.json', 'w') as json_file:
+            posts = {}
+
+    fileName = path.split('/')[-3:]
+    name = f'{fileName[0]}/{fileName[1]}'
+
+    post = posts.get(name, None)
+
+    if post:
+        posts[name].append(
+            {
+                'social': social,
+                'published': published,
+                'publish_date': date.strftime('%m/%d/%Y %H:%M')
+            }
+        )
+    else:
+        posts[name] = [
+            {
+                'social': social,
+                'published': published,
+                'publish_date': date.strftime('%m/%d/%Y %H:%M')
+            }
+        ]
+
+    with open('utils/posts_info.json', 'w') as output_json:
+        output_json.write(json.dumps(posts, indent=4))
+        return True
+
+
+def check_if_post_exists_old(path, social=None):
+    fileName = path.split('/')[-3:]
+    name = f'{fileName[0]}/{fileName[1]}'
+
+    with open('utils/posts_info.json') as json_file:
+        all_posts = json.load(json_file)
+        post_socials = all_posts.get(name)
+        if not social:
+            return True if post_socials else False
+        elif post_socials:
+            for post in post_socials:
+                if post['social'] == social:
+                    logging.warning('The post already exists!')
+                    return True
+        else:
+            return False
+    return False
+
+
+def update_post_info_old(path: str, social: str, value: bool):
+    try:
+        with open('utils/posts_info.json', 'r') as json_file:
+            posts = json.load(json_file)
+    except Exception as e:
+        return e
+    fileName = path.split('/')[-3:]
+    strFilename = f'{fileName[0]}/{fileName[1]}'
+
+    if strFilename in posts:
+        for i in range(len(posts[strFilename])):
+            if posts[strFilename][i]['social'] == social:
+                posts[strFilename][i]['published'] = value
+
+        with open('utils/posts_info.json', 'w') as output_json:
+            output_json.write(json.dumps(posts, indent=4))
+        return True
+    return False
+
+
+def get_text_images_old(json_data: dict, path: str, social: str):
+    footers = {
+        'Vkontakte': """Узнай больше на
+https://cheaptrip.guru
+
+#cheaptrip #cheaptripguru #бюджетноепутешествие #экономичныепутешествия #бюджетныйтуризм #путешествиенахаляву #дешевыепоездки #сэкономитьнапутешествии #бюджетноепутешествиепо #бюджетныйотдых #путешествиядешево""",
+        'Facebook': """Больше о нас:\nhttps://cheaptrip.guru""",
+        'Instagram': """Больше о нас:\nhttps://cheaptrip.guru"""
+    }
+    try:
+        footer = footers[social]
+
+        location, hashtags = get_hashtags_old(json_data)
+        print(location)
+
+        # Generate the text using location, JSON text, footer, and hashtags
+        text = location + '\n' + json_data["text"] + '\n\n' + footer + '\n\n' + hashtags
+        image = f'{path}/image.jpg'
+
+        return text, image
+
+    except Exception as e:
+        logging.warning(f'Error. {e}, \n {path}')
+        raise e
+
+
+
 # Get the scheduled tasks for a Facebook page
-def get_scheduled_tasks(acc_token: str, page_name: str):
+def get_scheduled_tasks_fb(acc_token: str, page_name: str):
     page = get_page(acc_token, page_name)
     page_id = page['id']
     access_token = page['access_token']
@@ -286,7 +454,7 @@ def get_scheduled_tasks(acc_token: str, page_name: str):
 
 
 def remove_scheduled_tasks_fb(acc_token, page_name):
-    posts_to_remove = get_scheduled_tasks(acc_token=acc_token, page_name=page_name)
+    posts_to_remove = get_scheduled_tasks_fb(acc_token=acc_token, page_name=page_name)
 
     page = get_page(acc_token, page_name)
     access_token = page['access_token']
@@ -336,12 +504,17 @@ async def start_func(data_folder_path: str, start_date: datetime, interval: time
     post_date = start_date
 
     for path in all_paths:
-        our_task = await task(post_path=path, post_date=post_date, **kwargs)
+        try:
+            our_task = await task(post_path=path, post_date=post_date, **kwargs)
 
-        if our_task:
-            post_date = post_date + interval
-            await asyncio.sleep(1)
-        else:
+            if our_task:
+                post_date = post_date + interval
+                await asyncio.sleep(1)
+            else:
+                continue
+
+        except Exception as e:
+            logging.error(f'\n{e}\n')
             continue
 
     await asyncio.sleep(post_date.timestamp() - datetime.now().timestamp())
