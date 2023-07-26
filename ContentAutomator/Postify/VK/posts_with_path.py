@@ -94,7 +94,7 @@ def add_post_with_pic(token, owner_id, post, pic_name, pub_date=None):
                               token=token,
                               api_version=ApiData.API_VERSION).get_upload_url()
 
-    # без создания экземпляра класса?
+
     photo, server, photo_hash = VkApiMethods(api_url=ApiData.API_URL,
                                              token=token,
                                              api_version=ApiData.API_VERSION).send_pic_to_url(
@@ -113,5 +113,3 @@ def add_post_with_pic(token, owner_id, post, pic_name, pub_date=None):
 
     return post_id
 
-add_post_with_pic(owner_id=-56877160, post='text.json', pic_name='image.jpg', token='vk1.a.GejAv1tQrm4gotI8uRxENm13sEobFKmXHrelkefVpEr-31wzVVqv5bI80I5quXwOFPZLpo2EqMPyviFI4Es4W8hcRzOmLHBwbvdBXLrxOMw7ji36KtNNAzfAb4Catq3EXaxjqNcXmJGIyIV_rBUeCNt15_jcSvaY0F2uADg76sJvOd7y9K_ka_HEAtLmkf4yGrgpYbWmE3anU3xt6gZ1Mg')
-# add_post_with_pic(owner_id=-221143405, post='text.json', pic_name='image.jpg', token='vk1.a.qn_NnTpjIv8Tzn2_Y4S2ZXbLxT4AeLLmA5dBq64EX5PWVjaoA3MEQBdsgnNZwiUtOpSU0xx3HjZ6Lqe8nftLnJEJy8gZo4QUx-w5GKodRjQowtKGvsRCFw478Qv_p3bbHT1ZtKmAXicXYsv53pNXSyZgharMXiLUtIKOcAHHMDnbFRdI2Jcdp0GIMmAfyB57fzvXK_tgjhjMO8uO9IhTRw')
