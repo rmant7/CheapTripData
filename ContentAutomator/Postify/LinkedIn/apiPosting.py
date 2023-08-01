@@ -30,7 +30,7 @@ def get_url():
 
     response = requests.post(api_url, headers=headers, json=post_body)
     if response.status_code == 200:
-        print('Post successfully created!\n')
+        print('Url successfully created!\n')
         print(response.text)
         # Parse the JSON string into a Python dictionary
         data = json.loads(response.text)
@@ -46,7 +46,24 @@ def get_url():
     else:
         print(f'Post creation failed with status code {response.status_code}: {response.text}')
 
+def add_hashtags_location(input_string):
+    # Remove leading and trailing whitespaces and split the string by commas and spaces
+    parts = input_string.strip().split(", ")
 
+    # Extract the attraction and location names
+    attraction = parts[0]
+    location = parts[1]
+
+    # Remove spaces from attraction name and add a '#' in front of it
+    attraction_hashtag = "#" + attraction.replace(" ", "")
+
+    # Remove spaces from location name and add a '#' in front of it
+    location_hashtag = "#" + location.replace(" ", "")
+
+    # Concatenate the attraction and location hashtags
+    result_string = attraction_hashtag + " " + location_hashtag
+
+    return result_string
 def upload_binary(image_path, upload_url):
     # Replace 'YOUR_IMAGE_PATH' with the path to your image file
     image_path = image_path
@@ -77,19 +94,19 @@ def add_hashtags_to_words(input_string):
     return result_string
 
 api_url = 'https://api.linkedin.com/v2/ugcPosts'
-with open('text.json', 'r') as file:
+with open('text1.json', 'r') as file:
     data = json.load(file)
 
 hashtags= "#CheapTripGuru #travel #cheaptrip #budgettravel #travelonabudget #lowcosttravel #affordabletravel #backpackerlife #travelhacks #cheapholidays #travelbudgeting #frugaltravel #savvytraveler #travelblogger #traveltips #traveladvice #travelhacks #travelinspiration #wanderlust #explore #seetheworld"
 text = data['text']
-hashtags += ''.join(data['hashtags'])
+hashtags +=' '+ ' '.join(data['hashtags'])
 location = data['location']
-location = add_hashtags_to_words(location)
-
+location = add_hashtags_location(location)
+post_text = f"{location}\n{text}\n\nFind out more at https://cheaptrip.guru\n\n{hashtags}"
 url,urn=get_url()
-upload_binary(r"C:\Users\faisal\PycharmProjects\pythonProject6\image.jpg",url)
+upload_binary(r"C:\Users\faisal\Desktop\CheapTripData\ContentAutomator\Postify\LinkedIn\image1.jpg",url)
 
-post_text = f"{location}\n{text}\nFind out more at https://cheaptrip.guru \n{hashtags}"
+
 headers = {
     'Authorization': f'Bearer {access_token}',
     'Connection': 'Keep-Alive',
