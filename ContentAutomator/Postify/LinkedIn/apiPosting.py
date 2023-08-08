@@ -63,7 +63,7 @@ def add_hashtags_location(input_string):
     # Concatenate the attraction and location hashtags
     result_string = attraction_hashtag + " " + location_hashtag
 
-    return result_string
+    return result_string,location
 def upload_binary(image_path, upload_url):
     # Replace 'YOUR_IMAGE_PATH' with the path to your image file
     image_path = image_path
@@ -93,18 +93,40 @@ def add_hashtags_to_words(input_string):
     result_string = ' '.join(modified_words)  # Join the modified words back into a single string
     return result_string
 
+
+def generate_hashtag_string(attraction, city, country):
+    # Generate hashtags based on conditions
+    attraction_hashtag = f"#{attraction.replace(' ', '')}" if ' ' in attraction else f"#{attraction}"
+    city_hashtag = f"#{city.replace(' ', '')}" if ' ' in city else f"#{city}"
+    country_hashtag = f"#{country.replace(' ', '')}" if ' ' in country else f"#{country}"
+    attraction_hashtag= attraction_hashtag.strip().split(",")[0]
+    # Combine the hashtags
+    hashtag_string = f"{attraction_hashtag} {city_hashtag} {country_hashtag}"
+    return hashtag_string
+
 api_url = 'https://api.linkedin.com/v2/ugcPosts'
-with open('text1.json', 'r') as file:
+with open('text.json', 'r') as file:
     data = json.load(file)
+
+with open('locations.json', 'r') as file:
+    locations = json.load(file)
 
 hashtags= "#CheapTripGuru #travel #cheaptrip #budgettravel #travelonabudget #lowcosttravel #affordabletravel #backpackerlife #travelhacks #cheapholidays #travelbudgeting #frugaltravel #savvytraveler #travelblogger #traveltips #traveladvice #travelhacks #travelinspiration #wanderlust #explore #seetheworld"
 text = data['text']
 hashtags +=' '+ ' '.join(data['hashtags'])
 location = data['location']
-location = add_hashtags_location(location)
+city_name = location.split(',')[1].strip()
+# Find the matching city data in the JSON
+matching_city_data = None
+for key, city_data in locations.items():
+    if city_data["name"].lower() == city_name.lower():
+        matching_city_data = city_data
+        break
+country_name = matching_city_data["country_name"]
+location=generate_hashtag_string(location,city_name,country_name)
 post_text = f"{location}\n{text}\n\nFind out more at https://cheaptrip.guru\n\n{hashtags}"
 url,urn=get_url()
-upload_binary(r"C:\Users\faisal\Desktop\CheapTripData\ContentAutomator\Postify\LinkedIn\image1.jpg",url)
+upload_binary(r"C:\Users\faisal\Desktop\CheapTripData\ContentAutomator\Postify\LinkedIn\image.jpg",url)
 
 
 headers = {
