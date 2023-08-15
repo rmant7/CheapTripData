@@ -38,9 +38,8 @@ def get_page(acc_token, page_name):
     return page
 
 
+# Extract hashtags and locations from the JSON data
 def get_hashtags(json_data: dict):
-    # Extract hashtags, name, and location from the JSON data
-
     def process_strings(string_list):
         processed_list = []
         for string in string_list:
@@ -64,9 +63,8 @@ def get_hashtags(json_data: dict):
     return locations_str, hashtags
 
 
+# Extract hashtags, name, and location from the JSON data
 def get_hashtags_old(json_data: dict):
-    # Extract hashtags, name, and location from the JSON data
-
     def process_strings(string_list):
         processed_list = []
         for string in string_list:
@@ -187,6 +185,8 @@ async def get_post_data_by_path(path: str, social: str):
         raise e
 
 
+# Old Version
+# Read files from the path, structure them, and return the text and photos ready for publication
 async def get_post_data_by_path_old(path: str, social: str):
     try:
         with open(f'{path}/text.json', 'r') as f:
@@ -197,7 +197,7 @@ async def get_post_data_by_path_old(path: str, social: str):
         raise e
 
 
-# Iterate over folders and return paths with data
+# Iterate over folders and return paths of .json files
 async def get_data_directory(path: str, all_paths=None):
     if all_paths is None:
         all_paths = {}
@@ -215,7 +215,8 @@ async def get_data_directory(path: str, all_paths=None):
     return all_paths
 
 
-# iterates over folders and return paths with data
+# Old version
+# Iterate over folders and return paths of .json files
 async def get_data_directory_old(all_paths: dict, path: str):
     for element in os.listdir(path):
         new_path = path + '/' + element
@@ -233,7 +234,7 @@ async def get_data_directory_old(all_paths: dict, path: str):
     return all_paths
 
 
-# Get the list of JSON file names in the specified directory
+# returns the list of names of JSON files in the specified directory
 async def get_json_names_list(path: str, all_paths=None):
     if all_paths is None:
         all_paths = {}
@@ -282,6 +283,8 @@ def record_post_info(path: str, social: str, date: datetime = datetime.now(), pu
         return True
 
 
+# May not work properly
+# Updating post information in JSON file
 def update_post_info(path: str, social: str, value: bool):
     try:
         with open('utils/posts_info.json', 'r') as json_file:
@@ -302,8 +305,7 @@ def update_post_info(path: str, social: str, value: bool):
     return False
 
 
-# Check if a post exists in the recorded post information
-
+# Check if post exists in posts_info.json
 def check_if_post_exists(path, social=None):
     fileName = path.split('/')[-2:]
     name = f'{fileName[0]}/{fileName[1]}'
@@ -323,6 +325,8 @@ def check_if_post_exists(path, social=None):
     return False
 
 
+# Old Version
+# Record post information to a JSON file
 def record_post_info_old(path: str, social: str, date: datetime = datetime.now(), published=False):
     try:
         with open('utils/posts_info.json', 'r') as json_file:
@@ -358,6 +362,8 @@ def record_post_info_old(path: str, social: str, date: datetime = datetime.now()
         return True
 
 
+# Old Version
+# Check if post exists in posts_info.json
 def check_if_post_exists_old(path, social=None):
     fileName = path.split('/')[-3:]
     name = f'{fileName[0]}/{fileName[1]}'
@@ -377,6 +383,8 @@ def check_if_post_exists_old(path, social=None):
     return False
 
 
+# Old Version. May not work properly
+# Updating post information in JSON file
 def update_post_info_old(path: str, social: str, value: bool):
     try:
         with open('utils/posts_info.json', 'r') as json_file:
@@ -397,6 +405,8 @@ def update_post_info_old(path: str, social: str, value: bool):
     return False
 
 
+# Old Version
+# Get the text and images from the provided JSON data and path
 def get_text_images_old(json_data: dict, path: str, social: str):
     footers = {
         'Vkontakte': """Узнай больше на
@@ -423,8 +433,7 @@ https://cheaptrip.guru
         raise e
 
 
-
-# Get the scheduled tasks for a Facebook page
+# Get already scheduled tasks by Facebook API
 def get_scheduled_tasks_fb(acc_token: str, page_name: str):
     page = get_page(acc_token, page_name)
     page_id = page['id']
@@ -453,6 +462,7 @@ def get_scheduled_tasks_fb(acc_token: str, page_name: str):
         print(f"Request failed with status code {response.status_code}")
 
 
+# Remove all scheduled tasks by Facebook API
 def remove_scheduled_tasks_fb(acc_token, page_name):
     posts_to_remove = get_scheduled_tasks_fb(acc_token=acc_token, page_name=page_name)
 
@@ -473,11 +483,7 @@ def remove_scheduled_tasks_fb(acc_token, page_name):
             print(f"Failed to delete post with ID: {post_id}")
 
 
-# Clear the scheduled tasks
-async def clear_tasks():
-    aioschedule.clear()
-
-
+# Already outdated
 # Get file names from a link
 async def get_names_from_link(url):
     try:
@@ -494,6 +500,7 @@ async def get_names_from_link(url):
         logging.warning(f'Failed to parse files from the link. Error:\n{e}')
 
 
+# Method for automatic planning of several posts. Check uses
 async def start_func(data_folder_path: str, start_date: datetime, interval: timedelta, task, **kwargs):
     all_paths = await get_json_names_list(path=data_folder_path)
 
@@ -520,7 +527,8 @@ async def start_func(data_folder_path: str, start_date: datetime, interval: time
     await asyncio.sleep(post_date.timestamp() - datetime.now().timestamp())
 
 
-def get_last_post_date(social):
+# returns last post's date by name of social. Input example 'Vkontakte' or 'Facebook'
+def get_last_post_date(social: str):
     with open('utils/posts_info.json') as json_file:
         posts = json.load(json_file)
         posts_list = list(posts)

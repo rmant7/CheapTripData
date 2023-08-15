@@ -16,8 +16,7 @@ async def main():
     # page_name = 'Chiptriptest'
     facebook = {'page_name': page_name, 'acc_token': config.fb_token.get_secret_value(), 'task': add_task_facebook}
 
-    '08/13/2023 07:00'
-    post_date = datetime.strptime('8/13/2023, 8:00:00', '%m/%d/%Y, %H:%M:%S')
+    post_date = datetime.strptime('8/16/2023, 16:00:00', '%m/%d/%Y, %H:%M:%S')
     post_date = post_date
 
     for path in all_paths_list:
