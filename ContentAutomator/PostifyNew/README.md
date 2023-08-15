@@ -17,6 +17,11 @@ logging: For logging errors and messages.
 
 ### Facebook
 The fb.py module is used for posting content on Facebook. The add_task_facebook function is used to schedule a post on Facebook. It uses the post_facebook_immediate and post_facebook_planned functions for immediate and scheduled posts, respectively​1​.
+### [startFB.py](startFB.py)
+For automatic planning of posts on ru language to Facebook. Just enter start posting date in future and renew the Facebook API Token in .env file.
+### [startFB_EN.py](startFB_EN.py)
+For automatic planning of English posts to Facebook. Just enter start posting date in future and renew the Facebook API Token in .env file.
+
 
 ### Instagram
 The inst.py module is used for posting content on Instagram. The make_post function is used to create a post on Instagram. This module also includes functions for downloading and saving images and for uploading a single photo or an album​2​.
