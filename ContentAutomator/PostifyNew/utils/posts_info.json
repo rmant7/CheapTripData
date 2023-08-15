@@ -10252,6 +10252,11 @@
             "social": "Vkontakte",
             "published": true,
             "publish_date": "08/04/2023 13:00"
+        },
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/16/2023 10:30"
         }
     ],
     "ru/12203.json": [
@@ -10259,6 +10264,11 @@
             "social": "Vkontakte",
             "published": true,
             "publish_date": "08/04/2023 14:00"
+        },
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/16/2023 11:30"
         }
     ],
     "ru/3802.json": [
@@ -10266,6 +10276,11 @@
             "social": "Vkontakte",
             "published": true,
             "publish_date": "08/04/2023 15:00"
+        },
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/16/2023 12:30"
         }
     ],
     "ru/28607.json": [
@@ -10273,6 +10288,11 @@
             "social": "Vkontakte",
             "published": true,
             "publish_date": "08/04/2023 16:00"
+        },
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/16/2023 13:30"
         }
     ],
     "ru/27008.json": [
@@ -10280,6 +10300,11 @@
             "social": "Vkontakte",
             "published": true,
             "publish_date": "08/04/2023 17:00"
+        },
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/16/2023 14:30"
         }
     ],
     "ru/7007.json": [
@@ -10287,6 +10312,11 @@
             "social": "Vkontakte",
             "published": true,
             "publish_date": "08/04/2023 18:00"
+        },
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/16/2023 15:30"
         }
     ],
     "ru/8608.json": [
@@ -10294,6 +10324,11 @@
             "social": "Vkontakte",
             "published": true,
             "publish_date": "08/04/2023 19:00"
+        },
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/16/2023 16:30"
         }
     ],
     "ru/2205.json": [
@@ -10301,6 +10336,11 @@
             "social": "Vkontakte",
             "published": true,
             "publish_date": "08/04/2023 20:00"
+        },
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/16/2023 17:30"
         }
     ],
     "ru/37008.json": [
@@ -10308,6 +10348,11 @@
             "social": "Vkontakte",
             "published": true,
             "publish_date": "08/04/2023 21:00"
+        },
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/16/2023 18:30"
         }
     ],
     "ru/7904.json": [
@@ -10315,6 +10360,11 @@
             "social": "Vkontakte",
             "published": true,
             "publish_date": "08/04/2023 22:00"
+        },
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/16/2023 19:30"
         }
     ],
     "ru/16305.json": [
@@ -10322,6 +10372,11 @@
             "social": "Vkontakte",
             "published": true,
             "publish_date": "08/04/2023 23:00"
+        },
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/16/2023 20:30"
         }
     ],
     "ru/13107.json": [
@@ -10329,6 +10384,11 @@
             "social": "Vkontakte",
             "published": true,
             "publish_date": "08/05/2023 00:00"
+        },
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/16/2023 21:30"
         }
     ],
     "ru/10402.json": [
@@ -34430,6 +34490,748 @@
             "social": "Facebook",
             "published": true,
             "publish_date": "08/16/2023 15:00"
+        }
+    ],
+    "city_attractions_5/post_80": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/16/2023 16:00"
+        }
+    ],
+    "city_attractions_5/post_10": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/16/2023 17:00"
+        }
+    ],
+    "city_attractions_5/post_323": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/16/2023 18:00"
+        }
+    ],
+    "city_attractions_5/post_111": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/16/2023 19:00"
+        }
+    ],
+    "city_attractions_5/post_116": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/16/2023 20:00"
+        }
+    ],
+    "city_attractions_5/post_324": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/16/2023 21:00"
+        }
+    ],
+    "city_attractions_5/post_17": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/16/2023 22:00"
+        }
+    ],
+    "city_attractions_5/post_28": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/16/2023 23:00"
+        }
+    ],
+    "city_attractions_5/post_129": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/17/2023 00:00"
+        }
+    ],
+    "city_attractions_5/post_21": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/17/2023 01:00"
+        }
+    ],
+    "city_attractions_5/post_120": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/17/2023 02:00"
+        }
+    ],
+    "city_attractions_5/post_312": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/17/2023 03:00"
+        }
+    ],
+    "city_attractions_5/post_315": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/17/2023 04:00"
+        }
+    ],
+    "city_attractions_5/post_127": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/17/2023 05:00"
+        }
+    ],
+    "city_attractions_5/post_26": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/17/2023 06:00"
+        }
+    ],
+    "city_attractions_5/post_19": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/17/2023 07:00"
+        }
+    ],
+    "city_attractions_5/post_118": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/17/2023 08:00"
+        }
+    ],
+    "city_attractions_5/post_173": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/17/2023 09:00"
+        }
+    ],
+    "city_attractions_5/post_72": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/17/2023 10:00"
+        }
+    ],
+    "city_attractions_5/post_86": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/17/2023 11:00"
+        }
+    ],
+    "city_attractions_5/post_187": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/17/2023 12:00"
+        }
+    ],
+    "city_attractions_5/post_180": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/17/2023 13:00"
+        }
+    ],
+    "city_attractions_5/post_81": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/17/2023 14:00"
+        }
+    ],
+    "city_attractions_5/post_75": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/17/2023 15:00"
+        }
+    ],
+    "city_attractions_5/post_174": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/17/2023 16:00"
+        }
+    ],
+    "city_attractions_5/post_189": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/17/2023 17:00"
+        }
+    ],
+    "city_attractions_5/post_88": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/17/2023 18:00"
+        }
+    ],
+    "city_attractions_5/post_142": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/17/2023 19:00"
+        }
+    ],
+    "city_attractions_5/post_43": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/17/2023 20:00"
+        }
+    ],
+    "city_attractions_5/post_44": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/17/2023 21:00"
+        }
+    ],
+    "city_attractions_5/post_145": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/17/2023 22:00"
+        }
+    ],
+    "city_attractions_5/post_205": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/17/2023 23:00"
+        }
+    ],
+    "city_attractions_5/post_202": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/18/2023 00:00"
+        }
+    ],
+    "city_attractions_5/post_234": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/18/2023 01:00"
+        }
+    ],
+    "city_attractions_5/post_233": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/18/2023 02:00"
+        }
+    ],
+    "city_attractions_5/post_258": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/18/2023 03:00"
+        }
+    ],
+    "city_attractions_5/post_293": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/18/2023 04:00"
+        }
+    ],
+    "city_attractions_5/post_267": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/18/2023 05:00"
+        }
+    ],
+    "city_attractions_5/post_260": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/18/2023 06:00"
+        }
+    ],
+    "city_attractions_5/post_294": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/18/2023 07:00"
+        }
+    ],
+    "city_attractions_5/post_269": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/18/2023 08:00"
+        }
+    ],
+    "city_attractions_5/post_256": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/18/2023 09:00"
+        }
+    ],
+    "city_attractions_5/post_251": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/18/2023 10:00"
+        }
+    ],
+    "city_attractions_5/post_232": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/18/2023 11:00"
+        }
+    ],
+    "city_attractions_5/post_235": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/18/2023 12:00"
+        }
+    ],
+    "city_attractions_5/post_203": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/18/2023 13:00"
+        }
+    ],
+    "city_attractions_5/post_204": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/18/2023 14:00"
+        }
+    ],
+    "city_attractions_5/post_250": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/18/2023 15:00"
+        }
+    ],
+    "city_attractions_5/post_268": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/18/2023 16:00"
+        }
+    ],
+    "city_attractions_5/post_257": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/18/2023 17:00"
+        }
+    ],
+    "city_attractions_5/post_295": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/18/2023 18:00"
+        }
+    ],
+    "city_attractions_5/post_261": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/18/2023 19:00"
+        }
+    ],
+    "city_attractions_5/post_259": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/18/2023 20:00"
+        }
+    ],
+    "city_attractions_5/post_266": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/18/2023 21:00"
+        }
+    ],
+    "city_attractions_5/post_292": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/18/2023 22:00"
+        }
+    ],
+    "city_attractions_4/post_222": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/18/2023 23:00"
+        }
+    ],
+    "city_attractions_4/post_225": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/19/2023 00:00"
+        }
+    ],
+    "city_attractions_4/post_213": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/19/2023 01:00"
+        }
+    ],
+    "city_attractions_4/post_214": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/19/2023 02:00"
+        }
+    ],
+    "city_attractions_4/post_240": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/19/2023 03:00"
+        }
+    ],
+    "city_attractions_4/post_247": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/19/2023 04:00"
+        }
+    ],
+    "city_attractions_4/post_278": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/19/2023 05:00"
+        }
+    ],
+    "city_attractions_4/post_271": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/19/2023 06:00"
+        }
+    ],
+    "city_attractions_4/post_285": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/19/2023 07:00"
+        }
+    ],
+    "city_attractions_4/post_282": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/19/2023 08:00"
+        }
+    ],
+    "city_attractions_4/post_276": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/19/2023 09:00"
+        }
+    ],
+    "city_attractions_4/post_249": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/19/2023 10:00"
+        }
+    ],
+    "city_attractions_4/post_215": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/19/2023 11:00"
+        }
+    ],
+    "city_attractions_4/post_212": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/19/2023 12:00"
+        }
+    ],
+    "city_attractions_4/post_224": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/19/2023 13:00"
+        }
+    ],
+    "city_attractions_4/post_223": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/19/2023 14:00"
+        }
+    ],
+    "city_attractions_4/post_277": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/19/2023 15:00"
+        }
+    ],
+    "city_attractions_4/post_283": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/19/2023 16:00"
+        }
+    ],
+    "city_attractions_4/post_248": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/19/2023 17:00"
+        }
+    ],
+    "city_attractions_4/post_284": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/19/2023 18:00"
+        }
+    ],
+    "city_attractions_4/post_270": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/19/2023 19:00"
+        }
+    ],
+    "city_attractions_4/post_246": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/19/2023 20:00"
+        }
+    ],
+    "city_attractions_4/post_279": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/19/2023 21:00"
+        }
+    ],
+    "city_attractions_4/post_241": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/19/2023 22:00"
+        }
+    ],
+    "city_attractions_4/post_101": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/19/2023 23:00"
+        }
+    ],
+    "city_attractions_4/post_139": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/20/2023 00:00"
+        }
+    ],
+    "city_attractions_4/post_7": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/20/2023 01:00"
+        }
+    ],
+    "city_attractions_4/post_38": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/20/2023 02:00"
+        }
+    ],
+    "city_attractions_4/post_106": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/20/2023 03:00"
+        }
+    ],
+    "city_attractions_4/post_302": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/20/2023 04:00"
+        }
+    ],
+    "city_attractions_4/post_130": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/20/2023 05:00"
+        }
+    ],
+    "city_attractions_4/post_31": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/20/2023 06:00"
+        }
+    ],
+    "city_attractions_4/post_108": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/20/2023 07:00"
+        }
+    ],
+    "city_attractions_4/post_9": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/20/2023 08:00"
+        }
+    ],
+    "city_attractions_4/post_36": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/20/2023 09:00"
+        }
+    ],
+    "city_attractions_4/post_137": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/20/2023 10:00"
+        }
+    ],
+    "city_attractions_4/post_305": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/20/2023 11:00"
+        }
+    ],
+    "city_attractions_4/post_197": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/20/2023 12:00"
+        }
+    ],
+    "city_attractions_4/post_96": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/20/2023 13:00"
+        }
+    ],
+    "city_attractions_4/post_62": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/20/2023 14:00"
+        }
+    ],
+    "city_attractions_4/post_163": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/20/2023 15:00"
+        }
+    ],
+    "city_attractions_4/post_164": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/20/2023 16:00"
+        }
+    ],
+    "city_attractions_4/post_65": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/20/2023 17:00"
+        }
+    ],
+    "city_attractions_4/post_91": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/20/2023 18:00"
+        }
+    ],
+    "city_attractions_4/post_190": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/20/2023 19:00"
+        }
+    ],
+    "city_attractions_4/post_53": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/20/2023 20:00"
+        }
+    ],
+    "city_attractions_4/post_152": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/20/2023 21:00"
+        }
+    ],
+    "city_attractions_4/post_98": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/20/2023 22:00"
+        }
+    ],
+    "city_attractions_4/post_199": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/20/2023 23:00"
+        }
+    ],
+    "city_attractions_4/post_155": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/21/2023 00:00"
+        }
+    ],
+    "city_attractions_4/post_54": [
+        {
+            "social": "Facebook",
+            "published": true,
+            "publish_date": "08/21/2023 01:00"
         }
     ]
 }

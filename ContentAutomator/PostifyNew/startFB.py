@@ -15,7 +15,7 @@ async def main():
     social = facebook
     posting_interval = timedelta(hours=1)
 
-    data_folder_path = 'files/posts/city_attractions/ru'
+    data_folder_path = '/Users/dima/PycharmProjects/PostifyNew/files/posts/city_attractions/ru'
     # posting_start_date = get_last_post_date('Facebook') + posting_interval
     posting_start_date = datetime.strptime('8/16/2023, 10:30:00', '%m/%d/%Y, %H:%M:%S')
 
