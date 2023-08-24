@@ -1,0 +1,455 @@
+p {
+  text-align: justify;
+  text-indent: 2em;
+  font-size: 1.1rem;
+  color: black;
+  margin-top: 15px;
+  overflow-x: hidden;
+}
+
+img {
+  border-radius: 20px;
+}
+
+.header {
+  background-color: #ff5722;
+}
+
+.headline {
+  display: flex;
+  align-items: center;
+  height: 65px;
+}
+
+.headline__logo {
+  font-style: italic;
+  font-weight: bold;
+  color: #fff;
+  font-size: 3.5rem;
+}
+
+.headline__slogan {
+  margin-left: 80px;
+  font-style: italic;
+  font-weight: bold;
+  color: #fff;
+  font-size: 2rem;
+  margin-top: 5px;
+  letter-spacing: 2px;
+  font-family: "Roboto", sans-serif;
+}
+
+
+.section {
+  text-align: center;
+}
+
+
+/*==================================================================================================*/
+
+.section-btn {
+  text-align: center;
+  margin: 20px auto;
+  display: flex;
+  justify-content: center;
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+
+.action-btn {
+  color: #ff5722;
+  padding: 7px;
+  border: #ff5722 solid 2px;
+  border-radius: 15px;
+  margin: 2px 2px;
+}
+
+.action-btn:hover {
+  color: white;
+  background-color: #ff5722;
+}
+
+.budget-btn {
+  padding: 7px;
+  border: #ff5722 solid 2px;
+  border-radius: 15px;
+  background-color: #ff5722;
+  margin: 2px 2px;
+  color: white;
+}
+
+.budget-btn:hover {
+  color: white;
+}
+
+.action-btn-active {
+  color: #ffffff;
+  padding: 7px;
+  border: #ff5722 solid 1px;
+  border-radius: 15px;
+  background-color: #ff5722;
+  font-size: 1.3rem;
+}
+
+.action-btn-active:hover {
+  color: white;
+}
+
+.here-btn:hover{
+  color: black;
+}
+
+.budget-btn:hover {
+  color: white;
+}
+
+/*==================================================================================================*/
+
+.section-title {
+  color: #000;
+  margin: 10px;
+  font-size: 3rem;
+  text-align: center;
+}
+
+.city-details {
+  text-align: center;
+  margin: 32px auto 0;
+  max-width: 60%;
+  font-size: 1.4rem;
+}
+
+/*=================================================================================================*/
+
+.flex-container {
+  margin: 10vh 10vw;
+}
+
+.city-img-main {
+  object-fit: contain;
+  float: left;
+  margin: 0 15px 15px 0;
+  width: 30%;
+}
+
+.city-img-attractions {
+  object-fit: contain;
+  float: right;
+  margin: 0 0 15px 15px;
+  width: 50%;
+}
+
+@media (max-width: 480px) {
+  .city-img-attraction {
+    width: 10%; 
+  }
+}
+
+.city-img-attractions-kids {
+  width: 50%;
+  float: left;
+  margin: 0 15px 15px 0;
+}
+
+.city-img-routes {
+  width: 50%;
+  float: right;
+  margin: 0 0 15px 15px;
+}
+
+.city-details__text {
+  text-align: justify;
+}
+
+.city-details-main {
+  color: #000;
+  text-align: center;
+}
+
+.city-details__title {
+  font-weight: bolder;
+  color: #000;
+}
+
+.city-details__subtitle {
+  font-weight: bold;
+  font-size: 1.1rem;
+  color: black;
+ 
+}
+
+.city-details__map-view {
+  display: inline-block;
+  color: #ff5722;
+  margin-bottom: 30px;
+  text-decoration: underline;
+}
+
+.attraction-title {
+  color: black;
+}
+
+.attraction-item {
+  margin-bottom: 20px;
+}
+
+.attractions-container {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.attraction-website {
+  font-size: 14px;
+  color: #ff5722;
+  text-decoration: underline;
+}
+
+.city-item__image {
+  /*width: 100%;*/
+  /*min-height: 120px;*/
+  /*height: 100%;*/
+  object-fit: cover;
+  overflow: hidden;
+}
+
+.city-item__name {
+  position: absolute;
+  bottom: 10px;
+  left: 0;
+  width: 100%;
+  padding: 10px;
+  font-size: 18px;
+  color: #000;
+  background-color: rgba(255, 255, 255, 0.7);
+  text-align: center;
+  transition: background-color 0.3s ease;
+}
+
+.city-item__name:hover {
+  background-color: rgba(255, 255, 255, 0.9);
+}
+
+.city-carousel {
+  width: 100%;
+}
+
+/*=============================================MEDIA-960=========================================================*/
+
+@media screen and (max-width: 960px) {
+  p {
+    font-size: 0.9rem;
+  }
+  .headline__logo {
+    font-size: 2.5rem;
+    margin-left: 10px;
+  }
+
+  .headline__slogan {
+    margin-left: 70px;
+    font-size: 1.4rem;
+    letter-spacing: 1.4px;
+  }
+}
+
+/*=============================================MEDIA-600=========================================================*/
+
+@media screen and (max-width: 600px) {
+  p {
+    font-size: 0.8rem;
+  }
+  .headline {
+    height: 55px;
+  }
+
+  .headline__logo {
+    font-size: 1.5rem;
+  }
+
+  .headline__slogan {
+    margin-left: 50px;
+    font-size: 1.1rem;
+    letter-spacing: 1.4px;
+  }
+
+  .action-btn-container {
+    font-size: 0.8rem;
+  }
+
+  .action-btn {
+    padding: 5px;
+  }
+
+  .section-title {
+    font-size: 2rem;
+  }
+
+  
+
+  .city-img-attraction {
+    width: 50%;
+  }
+
+  .city-img-attractions-kids {
+    width: 100%;
+  }
+
+  .city-img-routes {
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  p {
+    font-size: 0.7rem;
+  }
+  .headline__slogan {
+    margin-left: 15px;
+    font-size: 0.7rem;
+    letter-spacing: normal;
+  }
+}
+
+/* ==============Aalborg================ */
+.aalborg-example {
+  display: flex;
+  align-items: center;
+  justify-content: left;
+}
+.aalborg-example__img {
+  width: 16rem;
+  height: 18rem;
+  align-self: start;
+}
+.aalborg-example__title {
+  text-align: center;
+  text-indent: 0;
+  font-size: 1.1rem;
+  color: #000;
+}
+
+
+/*=============================================MEDIA-710=========================================================*/
+
+@media screen and (max-width: 710px) {
+  .headline {
+      height: 50px;
+  }
+
+  .headline__logo {
+      font-size: 2rem;
+  }
+
+  .headline__slogan {
+      font-size: 1.2rem;
+      letter-spacing: normal;
+      margin-left: 10px;
+  }
+}
+
+/*==========================================Updated code=============================================*/
+
+/* Media Query for button size */
+@media screen and (min-width: 768px) {
+.action-btn:first-child,
+.action-btn:nth-child(2) {
+  padding: 12px;
+  font-size: 18px;
+}
+}
+
+
+p {
+  text-indent: 0;
+  overflow-x: hidden;
+}
+.section-title {
+  margin: 2.2rem;
+}
+
+.section-title > a {
+  color: #e9bc17;
+}
+
+.flex-container {
+  display: flex;
+  align-items: center;
+  margin: 0;
+}
+
+img {
+  height: 100%;
+  width: 50%;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+.content {
+  
+  align-self: flex-start;
+  text-align: left;
+  margin-left: 2rem;
+  
+}
+
+.content li{
+  border: 2px solid #f44336;;
+  margin: 10px;
+  border-radius: 30px;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px;
+
+}
+
+ul {
+  padding: 0;
+}
+
+li {
+  list-style: none;
+}
+
+.list-link {
+  font-size: 1.4em;
+  color: #c69e0f;
+}
+
+.list-month {
+  color: #ff5722;
+  font-size: 0.6em;
+}
+
+.list-description {
+  color: #000;
+  text-align: center; /* Add this line to center the text */
+}
+
+
+.arrow-back {
+  margin-left: 0;
+}
+
+.flex-container {
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  gap: 20px;
+}
+
+.flex-container > img {
+  max-width: 100%;
+  text-align: center;
+}
+
+.flex-container > .content {
+  max-width: 100%;
+  text-align: center;
+  margin: 0 auto; /* Add this line to center the content */
+  
+}
+
+
+.custom-divider {
+  height: 1px;
+  background-color: #000;
+  margin: 20px 0;
+}
+
