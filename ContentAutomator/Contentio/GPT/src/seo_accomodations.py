@@ -1,78 +1,99 @@
-import multiprocessing
 import json
 from pathlib import Path
-from time import perf_counter
+from data_provider import CSVDataProvider
+from datetime import datetime
+from logger import logger_setup
+import functions
+from config import PROMPTS_DIR, SEO_TEXTS_DIR
 
 
-from functions import get_prompts_GPT, get_response_GPT, get_cities
-from config import SEO_ACCOMODATIONS_DIR, PROMPTS_DIR
+dp = CSVDataProvider()
+timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+logger = logger_setup(f'{Path(__file__).stem}_{timestamp}')
 
 
-def recursive_replace(d, old_str, new_str):
-    for k, v in d.items():
-        if isinstance(v, dict):
-            recursive_replace(v, old_str, new_str)
-        if isinstance(v, str):
-            d[k] = v.replace(old_str, new_str)
-    return d
-
-
-missing_cities = {"cities":[]}
-def process_file(city, api_key, city_number):
-# def process_file():   
-    # for city_number, city in enumerate(get_cities(), start=1):
-    print(f'\nProcess: {city_number}, City: {city}')
-    
-    # getting all prompts and replace [city] tag with input city name    
-    prompts = recursive_replace(get_prompts_GPT(PROMPTS_DIR/'accomodations_seo_pmt.json'), '[city]', city)
-    
-    data = dict()
-    try:
-        data = json.loads(get_response_GPT(prompts['prompt'], api_key), strict=False)
-
-    except Exception as error:
-        missing_cities['cities'].append(city)
-        print(f'\nDuring processing {city_number}.{city} there was an error: {error}')
-    
-    # write result in json
-    SEO_ACCOMODATIONS_DIR.mkdir(parents=True, exist_ok=True)  
-    with open(f'{SEO_ACCOMODATIONS_DIR}/{city}.json', 'w') as json_file:
-        json.dump(data, json_file, indent=4) 
-                        
-    print(f'{city} processed successfully!')
-
-
-def run_processes(key_numbers):
-    # Get the list of input files
-    cities = get_cities()
-
-    # Get the list of API keys
-    api_keys = [f'OPENAI_API_KEY_CT_{i + 2}' for i in range(key_numbers)]
-    # api_keys = ['OPENAI_API_KEY_CT_2']
-    print(api_keys)
-
-    # Create a pool of processes with as many workers as there are API keys
-    pool = multiprocessing.Pool(len(api_keys))
-
-    # Loop through the files and create a thread for each one
-    for i, city in enumerate(cities):
-        # Get the corresponding API key by cycling through the list
-        api_key = api_keys[i % len(api_keys)]
-        # Create a thread object with the target function and the file name and API key as arguments
-        pool.apply_async(process_file, args=(city, api_key, i + 1))
-        
-    # Close the pool and wait for all processes to finish
-    pool.close()
-    pool.join()
-
-    with open(f'{SEO_ACCOMODATIONS_DIR}/missing_cities.json', 'w') as json_file:
-        json.dump(missing_cities, json_file)
+@functions.elapsed_time
+def gen_content():
+    category = 'accomodations'
+    base_url = f'http://20.240.63.21/files/images/{category}'
+    save_dir = Path(f'{SEO_TEXTS_DIR}/{category}/en')
+    save_dir.mkdir(parents=True, exist_ok=True)
+    logger.info(f'Making output dir...SUCCESSFULLY')
+    prompts = functions.get_prompts_GPT(f'{PROMPTS_DIR}/{category}_pmt.json')
+    logger.info(f'Getting prompts...SUCCESSFULLY')
+    j = 1
+    for city, country in dp.gen_data(from_=135, to_=145):
+        logger.info(f'Processing {city}, {country} started...')
+        city_ = city.replace(' ', '_').replace('-', '_')
+        # getting option list for the given city
+        try:
+            accomodations = functions.load_json(f'{SEO_TEXTS_DIR}/{category}/en_copy/{city_}.json')
+            processed_accomodations = functions.load_json(f'{SEO_TEXTS_DIR}/{category}/en/{city_}.json')
+            logger.info(f'Category options loading...SUCCESS')
+        except Exception as err:
+            logger.error(f'{type(err).__name__}: {err} while getting options. Continue to process with next city')
+            continue
+        # looping over the options
+        data = dict()
+        for key in accomodations.keys():
+            data[key] = dict()
+            name = accomodations[key]['name']
+            text = accomodations[key]['description']
+            if key in processed_accomodations.keys(): 
+                meta = processed_accomodations[key]['meta']
+                keywords = processed_accomodations[key]['keywords']
+                title = processed_accomodations[key]['title']
+                links = processed_accomodations[key]['links']
+                images = processed_accomodations[key]['images']
+            else:
+                logger.info(f'Starting process for "{key}.{name}"...')
+                # composing prompt for the given option
+                prompt = prompts['meta_keywords_links'].format(text=text)
+                # getting response from ChatGPT
+                try:
+                    response = functions.get_response_GPT(prompt)
+                    logger.info(f'Generating response for "{key}.{name}"...SUCCESS')
+                    parsed = json.loads(response)
+                    logger.info(f'Parsing response for "{key}.{name}"...SUCCESS')
+                    meta = parsed['meta']
+                    keywords = parsed['keywords']
+                    title = parsed['title']
+                    links = [link for link in parsed['links'] if functions.is_valid_link(link)]
+                    logger.info(f'Validation links...SUCCESS')
+                except Exception as err:
+                    logger.error(f'{type(err).__name__}: {err} while getting ChatGPT response. Continue to process with next option')
+                    del data[key]
+                    continue
+                prompt = prompts['images'].format(option=name, text=text)
+                try:
+                    url = functions.get_images_DALLE(prompt)
+                    logger.info(f'Generating image of option "{key}.{name}"...SUCCESS')
+                    img_name = functions.download_image(url[0], category, city, key, name)
+                    images = [f'{base_url}/{city_}/{img_name}']
+                    logger.info(f'Saving image of option "{key}.{name}"...SUCCESS')
+                except Exception as err:
+                    logger.error(f'{type(err).__name__}: {err} while generating or downloading image. Continue to process with next option')
+                    del data[key]
+                    continue
+            # Compose a data[key] subdict
+            data[key] = {'name': name,
+                        'location': f'{city}, {country}',
+                        'meta': meta,
+                        'keywords': keywords,
+                        'title': title,
+                        'text': text,
+                        'links': links,
+                        'images': images
+            }
+            logger.info(f'Adding option "{key}.{name}"...SUCCESS')
+        # avoid to save empty data dict
+        if not data: continue
+        # saving data dict to json
+        with open(Path(f'{save_dir}/{city_}.json'), 'w') as fp:
+            json.dump(data, fp, indent=4)
+        logger.info(f'Processing {city}, {country} completed SUCCESSFULLY. Total score {j}/{dp.get_numrows()}')
+        j += 1        
     
 
 if __name__ == '__main__':
-    start = perf_counter()
-    run_processes(2)
-    #process_file()
-    hours = (perf_counter() - start) // 3600
-    remained_seconds = (perf_counter() - start) % 3600 
-    print(f'\nTime elapsed: {hours} h {remained_seconds // 60} min.\n')
+    gen_content()

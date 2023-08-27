@@ -1,20 +1,25 @@
 from pathlib import Path
 import json
 from datetime import datetime
+from data_provider import CSVDataProvider
 
 
 from logger import logger_setup
-from functions import get_cities, elapsed_time, get_city_id
 from config import POSTS_DIR, SMM_CITY_ATTRACTIONS_FP_DIR, CITY_ATTRACTIONS_IMG_DIR
-     
+    
 
-posts_dir = Path(f'{POSTS_DIR}/city_attractions/ru')
+dp = CSVDataProvider()
+timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+logger = logger_setup(f'{Path(__file__).stem}_{timestamp}')
+
+
+posts_dir = Path(f'{POSTS_DIR}/city_attractions/en')
 base_url = 'http://20.240.63.21/files/images/city_attractions'
-logger = logger_setup(Path(__file__).stem)
 
 
 def get_texts(city: str) -> dict:
-    logger.info(f'getting texts...')
+    city = city.replace(' ', '_').replace('-', '_')
+    logger.info(f'Getting texts...')
     file_path = f'{SMM_CITY_ATTRACTIONS_FP_DIR}/{city}.json'
     try:
         with open(file_path, 'r') as fp:
@@ -24,7 +29,8 @@ def get_texts(city: str) -> dict:
 
 
 def get_images(city: str) -> list:
-    logger.info(f'getting images...')
+    city = city.replace(' ', '_').replace('-', '_')
+    logger.info(f'Getting images...')
     folder_path = f'{CITY_ATTRACTIONS_IMG_DIR}/{city}'
     try:
         images = list(Path(folder_path).glob('[0-9]*.jpg'))
@@ -45,13 +51,15 @@ def post_to_json(count: int, data: dict, city_id: int) -> None:
         logger.error(f'Disable posting to {file_path} because of error: {err}')
 
 
-missing = dict()
-def compose_post(city: str, images: list, texts: dict) -> None:
+def compose_post(city: str, country: str, images: list, texts: dict) -> None:
     if not texts or not images: return None
-    logger.info(f'composing posts...')
+    city_ = city.replace(' ', '_').replace('-', '_')
+    logger.info(f'Composing posts...')
+    data = dict()
     for image in images:        
-        url = f'{base_url}/{city}/{image.name}'
+        url = f'{base_url}/{city_}/{image.name}'
         index = image.name.split('_')[0]
+        data[index] = dict()
         try:
             # find hashtags and links in the 'text' and remove them
             paragraphs = texts[index]['text'].split('\n\n')
@@ -61,36 +69,38 @@ def compose_post(city: str, images: list, texts: dict) -> None:
             texts[index]['text'] = '\n\n'.join(paragraphs)
             # make hashtags as a list if aren't
             if not isinstance(texts[index]['hashtags'], list):
-                texts[index]['hashtags'] = texts[index]['hashtags'].split(" ")
-            # add a list of images' urls    
-            texts[index]['images'] = list()
-            texts[index]['images'].append(url)                                
+                texts[index]['hashtags'] = texts[index]['hashtags'].split(" ")                              
         except KeyError as err:
             logger.error(err)
             continue
         except TypeError as err:
             logger.error(err)
             continue
-    return {k:v for k, v in texts.items() if 'images' in v.keys()}
+        data[index] = {'name': texts[index]['name'],
+                       'location': f'{city}, {country}',
+                       'title': texts[index]['text'].split('\n')[0],
+                       'text': '\n'.join(texts[index]['text'].split('\n')[1:]),
+                       'hashtags': texts[index]['hashtags'],
+                       'links': [],
+                       'images': [url]}
+    return data
            
                       
-@elapsed_time
 def main():
     posts_dir.mkdir(parents=True, exist_ok=True)
-    cities = get_cities()
-    j = 0
-    for city in cities:
-        city_id = get_city_id(city)
-        logger.info(f'starting...{city.upper()} {city_id}')
-        city = city.replace(' ', '_').replace('-', '_')
+    j = 1
+    for city, country in dp.gen_data():
+        city_id = dp.get_city_id(city)
+        logger.info(f'Starting...{city.upper()} {city_id}')
+        # city = city.replace(' ', '_').replace('-', '_')
         try:
-            posts = compose_post(city, get_images(city), get_texts(city))
+            posts = compose_post(city, country, get_images(city), get_texts(city))
             for key, post in posts.items():
                 post_to_json(int(key), post, city_id)
         except AttributeError as err:
             logger.error(f'No posts for {city} {city_id} were composed because of error: {err}')
             continue
-        logger.info(f'completed successfully...{city.upper()} {city_id}, total processed: {j + 1}/{len(cities)}')
+        logger.info(f'completed successfully...{city.upper()} {city_id}, total processed: {j}/{dp.get_numrows()}')
         j += 1        
 
                 
