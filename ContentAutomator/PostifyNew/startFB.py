@@ -17,7 +17,7 @@ async def main():
 
     data_folder_path = '/Users/dima/PycharmProjects/PostifyNew/files/posts/city_attractions/ru'
     # posting_start_date = get_last_post_date('Facebook') + posting_interval
-    posting_start_date = datetime.strptime('8/16/2023, 10:30:00', '%m/%d/%Y, %H:%M:%S')
+    posting_start_date = datetime.strptime('9/14/2023, 10:30:00', '%m/%d/%Y, %H:%M:%S')
 
 
     await start_func(data_folder_path=data_folder_path, start_date=posting_start_date, interval=posting_interval,

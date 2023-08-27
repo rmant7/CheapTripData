@@ -1,6 +1,7 @@
 import asyncio
 import re
 from datetime import datetime, timedelta
+import calendar
 import json
 import logging
 import os
@@ -527,6 +528,36 @@ async def start_func(data_folder_path: str, start_date: datetime, interval: time
     await asyncio.sleep(post_date.timestamp() - datetime.now().timestamp())
 
 
+async def start_func_limit(data_folder_path: str, start_date: datetime, interval: timedelta, task, end_date, **kwargs):
+    all_paths = await get_json_names_list(path=data_folder_path)
+
+    if start_date >= end_date:
+        logging.warning(f'Start date after end date S: {start_date} E: {end_date}')
+        return False
+
+    if start_date <= datetime.now():
+        logging.warning(f'Start date in the past. {interval} HOUR ADDED')
+        start_date += interval
+
+    post_date = start_date
+
+    for path in all_paths:
+        try:
+            our_task = await task(post_path=path, post_date=post_date, **kwargs)
+
+            if our_task:
+                post_date = post_date + interval
+                await asyncio.sleep(1)
+            else:
+                continue
+
+        except Exception as e:
+            logging.error(f'\n{e}\n')
+            continue
+
+    await asyncio.sleep(post_date.timestamp() - datetime.now().timestamp())
+
+
 # returns last post's date by name of social. Input example 'Vkontakte' or 'Facebook'
 def get_last_post_date(social: str):
     with open('utils/posts_info.json') as json_file:
@@ -538,3 +569,11 @@ def get_last_post_date(social: str):
             for post in posts[post_name]:
                 if post['social'] == social:
                     return datetime.strptime(post['publish_date'], '%m/%d/%Y %H:%M')
+
+def get_first_last_day_of_month():
+    current_date = datetime.now()
+    current_year = current_date.year
+    current_month = current_date.month
+
+    _, last_day = calendar.monthrange(current_year, current_month)
+    return datetime(current_year, current_month, 1), datetime(current_year, current_month, last_day)
