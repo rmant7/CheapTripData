@@ -3,7 +3,7 @@
 At first, you have to download the code with the executable file of the counter (folder 'counter').
 To use that file you need Java version 8 (1.8.0 built) and Python version 3.10 (and higher) installed in your system.
 Then you need to open file "counter-1.0-SNAPSHOT-jar-with-dependencies" in 'target' folder. You can open that file 
-with extended output information using "cmd.exe" and command 'java -jar counter-1.0-SNAPSHOT-jar-with-dependencies' 
+with extended output information using "cmd.exe" and command 'java -jar counter-1.0-SNAPSHOT-jar-with-dependencies.jar' 
 in 'target' folder.
 
 ## Source
