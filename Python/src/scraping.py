@@ -58,22 +58,16 @@ def scrap_routine(cities_countries_pairs, injection=''):
 
     
 def scrap():
-    
     if csv_ok(CITIES_COUNTRIES_CSV):
-    
         print('Scraping process started...')
-        
         OUTPUT_JSON_DIR.mkdir(parents=True, exist_ok=True)
         OUTPUT_CSV_DIR.mkdir(parents=True, exist_ok=True)
-        
         # threads running 
         with concurrent.futures.ThreadPoolExecutor() as executor:
-            executor.map(scrap_routine, gen_city_country_pairs())
-            
+            executor.map(scrap_routine, gen_city_country_pairs())  
         print('\nScraping completed successfully!') 
          
          
 if __name__ == '__main__':
-   
     scrap()
   

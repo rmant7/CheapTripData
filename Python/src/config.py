@@ -17,7 +17,7 @@ CITIES_COUNTRIES_CSV = Path(INPUT_CSV_DIR/'cities_countries.csv')
 CITIES_CSV = Path(INPUT_CSV_DIR/'cities.csv')
 
 # set up outputs folders
-OUTPUT_JSON_DIR = Path('../output/output_5run/jsons')
+OUTPUT_JSON_DIR = Path('../output/output_6run/jsons')
 OUTPUT_CSV_DIR = Path('../output/csv')
 INNER_JSON_DIR = Path('../output/routes_info')
 HOTELS_DIR = Path('../files/hotels')
@@ -38,10 +38,13 @@ CURRENCY_JSON = Path(CURRENCY_EXCHANGE_RATES_DIR/'exchange_rates_EUR.json')
 CURRENCY_HRK = Path(CURRENCY_EXCHANGE_RATES_DIR/'last_HRK_EUR_rates.json')
 
 # excluded cities as unimportant
-EXCLUDED_CITIES = ('19', '47', '185', '221', '361', 
-                   '49', '110', '143', '144', '182', 
-                   '188', '223', '238', '298', '313', 
-                   '322', '328', '344', '355')
+EXCLUDED_CITIES = (19, 47, 185, 221, 361, 
+                   49, 110, 143, 144, 182, 
+                   188, 223, 238, 298, 313, 
+                   322, 328, 344, 355, 545,
+                   377, 378, 379, 380, 381,
+                   382, 383, 384, 385, 386,
+                   540, 541, 542)
 
 # set up output columns
 OUTPUT_COLUMNS = ('path_id', 'origin_id', 'destination_id', 'inner_path_id', 'route_id', 'from_id', 'to_id', 

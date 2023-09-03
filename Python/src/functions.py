@@ -64,7 +64,7 @@ def get_modify_url(url: str, params: dict):
     return new_url
     
     
-def get_bboxes(city_country):
+def get_bboxes(city_country: tuple):
     geolocator = Nominatim(user_agent='terraqwerty')
     
     try:          
@@ -347,5 +347,8 @@ if __name__ == '__main__':
     # #print(ct_link)
     # print(get_modify_url(ct_link, params))
     
-    print(get_cities())
+    # print(get_cities())
+    
+    print(get_bboxes(('Madrid', 'Spain')))
+    
     pass
