@@ -64,12 +64,14 @@ def get_modify_url(url: str, params: dict):
     return new_url
     
     
-def get_bboxes(city_country: tuple):
+def get_bboxes(city: str, country: str=None) -> tuple:
     geolocator = Nominatim(user_agent='terraqwerty')
-    
+    if not country: 
+        input_data = city
+    else:
+        input_data = f'{city}, {country}'
     try:          
-        location = geolocator.geocode(', '.join(city_country))
-                
+        location = geolocator.geocode(input_data)        
         bbox = list(map(lambda x: round(float(x), 4), list(filter(lambda x: x[0] == 'boundingbox', location.raw.items()))[0][1]))
         lat_min, lat_max, lon_min, lon_max = bbox
         
@@ -82,7 +84,7 @@ def get_bboxes(city_country: tuple):
         return None
         
     except AttributeError as err:
-        print(city_country, err)
+        print(f'{city}, {country}', err)
             
             
 # attempt to catch the bus or train stations at the airports by station name       
@@ -134,7 +136,7 @@ def get_id_from_acode(code: str) -> int:
 
 
 # compare actual price to predict one
-def price_to_predict(from_id: int, to_id: int, price: int, duration: int, ttype: str, path_id: int) -> int:
+def price_to_predict(path_id: int, from_id: int, to_id: int, ttype: str, price: int, duration: int) -> int:
     if (from_id in EURO_ZONE and to_id in EURO_ZONE):
         #K_1, K_2, Q = 0.5385133730326261, 0.10985332568233755, 0.3
         #predicted_price = 10**(K_1)*duration**(K_2)
@@ -349,6 +351,7 @@ if __name__ == '__main__':
     
     # print(get_cities())
     
-    print(get_bboxes(('Madrid', 'Spain')))
+    # print(get_bboxes('Madrid', 'Spain'))
+    print(get_bboxes('Milan'))
     
     pass

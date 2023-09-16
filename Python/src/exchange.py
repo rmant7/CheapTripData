@@ -2,6 +2,7 @@ import requests
 import json
 import logging
 from datetime import datetime, date
+import os
 
 from config import LOGS_DIR, CURRENCY_JSON, CURRENCY_EXCHANGE_RATES_DIR, NOT_FOUND, CURRENCY_HRK, CURRENCY_EXCHANGE_RATES_DIR
 from logger import logger_setup
@@ -13,8 +14,9 @@ logging.basicConfig(filename=LOGS_DIR/'currency_exchange.log', filemode='w',
                     format='%(name)s - %(levelname)s - %(message)s')
 
 def update_exchange_rates() -> bool:
+    apikey = os.getenv('CURRENCY_API_KEY')
     url = 'https://api.currencyapi.com/v3/latest'
-    pars = {'apikey': 'XdHFU6mfUp0T3E7EQe0SNtGTfdE0JLgaxz8FDrSf', 'base_currency': 'EUR'}
+    pars = {'apikey': apikey, 'base_currency': 'EUR'}
        
     try:
         r = requests.get(url, params=pars)

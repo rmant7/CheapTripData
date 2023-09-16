@@ -2,6 +2,11 @@
 .venv
 files/output/
 files/csv/arch/
+files/csv/sources
+files/airports
+files/currencies
+files/hotels
+files/routes_to_fix
 notebooks/
 output_4run/
 output_5run/
@@ -9,7 +14,6 @@ output_5_3run/
 output_5_4run/
 src/try.py
 src/airports.py
-files/airports/iata_codes.json
 pexels.py
 output/
 cities_data/images
@@ -20,4 +24,6 @@ cities_data/option_lists/attractions
 cities_data/option_lists/attractions_children
 cities_data/prompts
 __pycache__/
-files/csv/sources
+notebooks/
+logs/
+files/csv
