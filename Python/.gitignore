@@ -2,7 +2,7 @@
 .venv
 files/output/
 files/csv/arch/
-files/csv/sources
+files/csv/sources/
 files/airports
 files/currencies
 files/hotels
