@@ -7,6 +7,7 @@ files/
 utils/.env
 basic.py
 basic2.py
+.venvpostify/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
