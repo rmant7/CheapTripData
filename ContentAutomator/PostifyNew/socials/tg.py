@@ -10,9 +10,9 @@ from utils.methods import add_task, record_post_info, get_post_data, check_if_po
 async def add_task_telegram(post_path: str, post_date: datetime):
     async def post_telegram_immediate(image_urls: [str], post_text: str):
         image_urls = [
-            "http://20.240.63.21/files/images/city_attractions/Tehran/1_Golestan_Palace.jpg",
-            "http://20.240.63.21/files/images/city_attractions/Tehran/2_National_Museum_of_Iran.jpg",
-            "http://20.240.63.21/files/images/city_attractions/Tehran/3_Tehran_Bazaar.jpg"
+            "https://cheaptrip.guru/files/images/city_attractions/Tehran/1_Golestan_Palace.jpg",
+            "https://cheaptrip.guru/files/images/city_attractions/Tehran/2_National_Museum_of_Iran.jpg",
+            "https://cheaptrip.guru/files/images/city_attractions/Tehran/3_Tehran_Bazaar.jpg"
         ]
         media = [types.InputMediaPhoto(media=url) for url in image_urls]
         post = await bot.send_media_group(chat_id=config.channel_id.get_secret_value(), media=media)

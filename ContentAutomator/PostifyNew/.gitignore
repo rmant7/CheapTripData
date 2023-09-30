@@ -8,6 +8,7 @@ utils/.env
 basic.py
 basic2.py
 .venvpostify/
+utils/image_url_change.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

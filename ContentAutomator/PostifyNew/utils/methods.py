@@ -14,6 +14,8 @@ from io import BytesIO
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse
 from instagrapi import Client
+import time
+import random
 
 
 # Asynchronous function to add a task to the scheduler
@@ -239,12 +241,14 @@ async def get_data_directory_old(all_paths: dict, path: str):
 async def get_json_names_list(path: str, all_paths=None):
     if all_paths is None:
         all_paths = {}
-    for element in os.listdir(path):
+    file_list = os.listdir(path)
+    random.shuffle(file_list)
+    for element in file_list:
         if '.json' not in element:
             continue
         new_path = path + '/' + element
         json_path = new_path
-        all_paths[json_path] = {}
+        all_paths[json_path] = {}        
     return all_paths
 
 
@@ -311,7 +315,7 @@ def check_if_post_exists(path, social=None):
     fileName = path.split('/')[-2:]
     name = f'{fileName[0]}/{fileName[1]}'
 
-    with open('utils/posts_info.json') as json_file:
+    with open('utils/posts_info.json', 'r') as json_file:
         all_posts = json.load(json_file)
         post_socials = all_posts.get(name)
         if not social:
@@ -504,7 +508,9 @@ async def get_names_from_link(url):
 # Method for automatic planning of several posts. Check uses
 async def start_func(data_folder_path: str, start_date: datetime, interval: timedelta, task, **kwargs):
     all_paths = await get_json_names_list(path=data_folder_path)
-
+    # print(all_paths)
+    # print(task, sep='\n')
+    # time.sleep(3)
     if start_date <= datetime.now():
         logging.warning(f'Start date in the past. {interval} HOUR ADDED')
         start_date += interval
@@ -513,8 +519,9 @@ async def start_func(data_folder_path: str, start_date: datetime, interval: time
 
     for path in all_paths:
         try:
-            our_task = await task(post_path=path, post_date=post_date, **kwargs)
-
+            # logging.warning(f'\n***************Before await task. path = {path}\n')
+            our_task = await task(path, post_date, **kwargs)
+            # logging.warning(f'\n****************After await task\n')
             if our_task:
                 post_date = post_date + interval
                 await asyncio.sleep(1)
@@ -522,7 +529,8 @@ async def start_func(data_folder_path: str, start_date: datetime, interval: time
                 continue
 
         except Exception as e:
-            logging.error(f'\n{e}\n')
+            # logging.error(f'\n{e}\n*******************************\n')
+            logging.error(f'\n******************\n{type(e).__name__}: {e}\n********************\n')
             continue
 
     await asyncio.sleep(post_date.timestamp() - datetime.now().timestamp())
@@ -577,3 +585,7 @@ def get_first_last_day_of_month():
 
     _, last_day = calendar.monthrange(current_year, current_month)
     return datetime(current_year, current_month, 1), datetime(current_year, current_month, last_day)
+
+
+if __name__ == '__main__':
+   ...

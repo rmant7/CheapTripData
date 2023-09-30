@@ -16,9 +16,9 @@ async def main():
     posting_interval = timedelta(hours=24)
 
     # data_folder_path = '/Users/dima/PycharmProjects/PostifyNew/files/posts/city_attractions/ru'
-    data_folder_path = '/home/azureuser/files/posts/city_attractions/ru'
+    data_folder_path = '/home/azureuser/files/posts/city_attractions/en'
     # posting_start_date = get_last_post_date('Facebook') + posting_interval
-    posting_start_date = datetime.strptime('9/30/2023, 17:00:00', '%m/%d/%Y, %H:%M:%S')
+    posting_start_date = datetime.strptime('9/30/2023, 18:00:00', '%m/%d/%Y, %H:%M:%S')
 
 
     await start_func(data_folder_path=data_folder_path, start_date=posting_start_date, interval=posting_interval,

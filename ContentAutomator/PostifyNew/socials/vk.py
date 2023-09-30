@@ -127,7 +127,7 @@ async def add_post_with_pic(token, owner_id, post_path, post_date=None):
 
 
 def download_photo(url: str) -> Path:
-    host = 'http://20.240.63.21/'
+    host = 'https://cheaptrip.guru/'
     url = host + url
     image = Image.open(BytesIO(requests.get(url).content))
 
