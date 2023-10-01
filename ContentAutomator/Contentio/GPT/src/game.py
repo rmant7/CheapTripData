@@ -128,11 +128,11 @@ def main() -> None:
     cases_path = Path('../output/game/cases')
     files = sorted(list(cases_path.glob('*.json')))
     for file in files:
-        if int(file.stem.split('_')[1]) < 15: continue
+        if int(file.stem.split('_')[1]) < 19: continue
         with open(file, 'r') as f:
             cases = json.load(f)
         for case_ru, case_en in zip(cases['cases'], cases['cases_en']):
-            if int(case_ru.split('. ')[0]) < 1511 and int(case_en.split('. ')[0]) < 1511: continue
+            if int(case_ru.split('. ')[0]) < 1919 and int(case_en.split('. ')[0]) < 1919: continue
             print('\n', case_ru)
             gen_options(case_ru)
             gen_image(case_en)
