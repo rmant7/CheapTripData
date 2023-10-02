@@ -44,7 +44,7 @@ EXCLUDED_CITIES = (19, 47, 185, 221, 361,
                    322, 328, 344, 355, 545,
                    377, 378, 379, 380, 381,
                    382, 383, 384, 385, 386,
-                   540, 541, 542)
+                   540, 541, 542, 729, 733)
 
 # set up output columns
 OUTPUT_COLUMNS = ('path_id', 'origin_id', 'destination_id', 'inner_path_id', 'route_id', 'from_id', 'to_id', 
