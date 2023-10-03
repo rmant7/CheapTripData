@@ -2,9 +2,10 @@ from pathlib import Path
 import json
 
 
-partly_folder = Path('/home/andrii/code/projects/CheapTripData/Java/target/output/output_02_10_23/partly')
-direct_routes_path = Path('/home/andrii/code/projects/CheapTripData/Java/target/output/output_02_10_23/direct_routes.json')
-partly_adapted_folder = Path('/home/andrii/code/projects/CheapTripData/Java/target/output/output_02_10_23/partly_adapted')
+source_folder = Path('/home/andrii/code/projects/CheapTripData/Java/target/output/output_02_10_23')
+partly_folder = Path(f'{source_folder}/partly')
+partly_adapted_folder = Path(f'{source_folder}/partly_adapted')
+direct_routes_path = Path(f'{source_folder}/direct_routes.json')
 
 
 # direct_routes is apart because it`s a bit more complicated to adapt than other types of routes (other_routes_adapt())
