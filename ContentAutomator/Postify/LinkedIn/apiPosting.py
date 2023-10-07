@@ -1,172 +1,208 @@
 import json
-
+from env import ACCESS_TOKEN, ID_COMPANY, TARGET_URL
 import requests
+from pathlib import Path
+import random
+import sys
+from datetime import datetime
+from logger import logger_setup
 
-access_token="AQUHl_E7hHOy8NetEGphppwDXRCQfA8wCkFWzX4LbvqRXsGAjZfrHUFDw1exvMIityminyxEbsugbBX3IabgsO_t50M8L-JYrnhEmVF8sxGa085f98Cw05qsTcGrQ_ZSm0oBjTOywX0NEIM9JqrMHMpULwEvaxthoJYjB4U2APDG5IyYvUWeKhgCxN_dNXG8JpA_av24AvdMOzaehtDPZ7o4eDpuS4yFd_p58RH-iw4OKIZo8bqXslZsvLwrLZzAtXnarhtbrSHjG68HkpKP_N0FGHAWEJ2Ul_dAOxXmUBIR1tPh2x_BNn7Ct238fgIiIaT3mcodxQDo9XpHgxXR5xOrKIfQMQ"
 
-def get_url():
-    api_url = 'https://api.linkedin.com/v2/assets?action=registerUpload'
+timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+logger = logger_setup(f'{Path(__file__).stem}')
+# logger = logger_setup(f'{Path(__file__).stem}_{timestamp}')
 
-    headers = {
-        'Authorization': f'Bearer {access_token}',
-        'Connection': 'Keep-Alive',
-        'Content-Type': 'application/json',
-    }
-    """https://www.linkedin.com/company/35430256/admin/feed/posts/"""
-    post_body = {
-        "registerUploadRequest": {
-            "recipes": [
-                "urn:li:digitalmediaRecipe:feedshare-image"
-            ],
-            "owner": "urn:li:company:35430256",
-            "serviceRelationships": [
-                {
-                    "relationshipType": "OWNER",
-                    "identifier": "urn:li:userGeneratedContent"
-                }
-            ]
-        }
-    }
 
-    response = requests.post(api_url, headers=headers, json=post_body)
-    if response.status_code == 200:
-        print('Url successfully created!\n')
-        print(response.text)
-        # Parse the JSON string into a Python dictionary
+def get_request_data(request_data_path: str) -> tuple:
+    try:
+        with open(Path(request_data_path), 'r') as f:
+            request_data = json.load(f)
+        return request_data['api_url'], request_data['headers'], request_data['request_body']
+    except Exception as err:
+        print(f'{type(err).__name__:} {err}')
+        
+
+def get_post_to_share(post_folder: str) -> Path:
+    try:
+        post_folder = Path(post_folder)
+        
+        posted_path = Path('linkedin_posted.json')
+        with open(posted_path, 'r') as f:
+            posted = json.load(f)
+        
+        json_ids = set(v.stem for v in post_folder.glob('*.json'))
+        random_json_id = random.choice(list(json_ids.difference(posted['posted'])))
+        to_post_path = next(post_folder.glob(f'{random_json_id}.json'))
+        logger.info(f'Post to share: {to_post_path.name}')
+        
+        return to_post_path
+    
+    except Exception as err:
+        logger.error(f'{type(err).__name__}: {err}')
+
+
+def get_post_content(file_path: Path) -> dict:
+    try:
+        with open(file_path, 'r') as f:
+            post_content=json.load(f)
+            logger.info(f'post content extracted from: {file_path.name}')
+        return post_content
+    except Exception as err:
+        print(f'{type(err).__name__:} {err}')
+    
+    
+def prepare_text_to_share(data: dict) -> str:
+    try:
+        hashtags_top = f'#{"".join(data["name"].split())} '\
+                    f'#{"".join(data["location"].split(", ")[0])} '\
+                    f'#{"".join(data["location"].split(", ")[1])}'    
+        
+        constant_hashtags= '#CheapTripGuru #travel #cheaptrip #budgettravel #travelonabudget #lowcosttravel '\
+                            '#affordabletravel #backpackerlife #travelhacks #cheapholidays #travelbudgeting #frugaltravel '\
+                            '#savvytraveler #travelblogger #traveltips #traveladvice #travelhacks #travelinspiration #wanderlust '\
+                            '#explore #seetheworld'
+        
+        title = data['title']
+        text = data['text']
+        hashtags_bottom = constant_hashtags + ' ' + ' '.join(data['hashtags'])
+    
+        text_to_share = f'{hashtags_top}\n\n{title}\n\n{text}\n\nFind out more at {TARGET_URL}\n\n{hashtags_bottom}\n'
+        
+        logger.info(f'Text to share is prepared: {data["name"]} in {data["location"]}')
+        
+        return text_to_share
+    
+    except Exception as err:
+        logger.error(f'{type(err).__name__}: {err}')
+    
+    
+def register_image() -> tuple():
+    try:
+        api_url, headers, request_body = get_request_data('schema_request_register_image.json')
+        logger.info(f'Request schema is parsed')
+        
+        # insert credentials
+        headers['Authorization'] = headers['Authorization'].format(access_token = ACCESS_TOKEN)
+        request_body['registerUploadRequest']['owner'] = request_body['registerUploadRequest']['owner'].format(id_company = ID_COMPANY)
+        logger.info(f'Credentials are added into the request body')
+        
+        logger.info(f'POST request is started')
+        response = requests.post(api_url, json=request_body, headers=headers)
+        response.raise_for_status()
+        logger.info(f'Response received with a status code: {response.status_code}')
+       
         data = json.loads(response.text)
-
-        # Extract the 'uploadUrl' and 'asset' values
-        upload_url = data['value']['uploadMechanism']['com.linkedin.digitalmedia.uploading.MediaUploadHttpRequest'][
-            'uploadUrl']
+        upload_url = data['value']['uploadMechanism']['com.linkedin.digitalmedia.uploading.MediaUploadHttpRequest']['uploadUrl']
         asset = data['value']['asset']
+        logger.info(f'Upload Url and asset are parsed')
+        
+        return upload_url, asset
+    
+    except requests.HTTPError as err:
+        logger.error(f'Post creation failed with status code: {response.status_code}')
+    except Exception as err:
+        logger.error(f'{type(err).__name__}: {err}')
+    
+    
+def upload_binary_image(image_path: str, upload_url: str) -> None:
+    try:
+        image_path = Path(image_path.replace('https://cheaptrip.guru', '/home/azureuser'))
+        with open(image_path, 'rb') as f:
+            binary_image = f.read()
+        logger.info(f'The binary mode image is obtained: {image_path.name}')
+        
+        headers = {
+            'Authorization': f'Bearer {ACCESS_TOKEN}', 
+            'X-Restli-Protocol-Version': '2.0.0'
+        }
 
-        print("Upload URL:", upload_url)
-        print("Asset:", asset)
-        return  upload_url,asset
+        logger.info(f'POST request is started')
+        response = requests.post(upload_url, binary_image, headers=headers)
+        response.raise_for_status()
+        logger.info(f'Response received with a status code: {response.status_code}')
+    
+    except Exception as err:
+        logger.error(f'{type(err).__name__}: {err}')
+    
+    
+def share_text_and_image(text_to_share: str, asset: str) -> None:
+    try:
+        api_url, headers, request_body = get_request_data('schema_request_text_image_share.json')
+        logger.info(f'Request schema is parsed')
+        
+        # insert credentials
+        headers['Authorization'] = headers['Authorization'].format(access_token = ACCESS_TOKEN)
+        request_body['author'] = request_body['author'].format(id_company = ID_COMPANY)
+        logger.info(f'Credentials are added into the request body')
+        
+        # assign input values
+        request_body['specificContent']['com.linkedin.ugc.ShareContent']['shareCommentary']['text'] = text_to_share
+        request_body['specificContent']['com.linkedin.ugc.ShareContent']['media'][0]['media'] = asset
+        logger.info(f'Text to share and asset are added into the request body')
+
+        logger.info(f'POST request is started')
+        response = requests.post(api_url, headers=headers, json=request_body)
+        response.raise_for_status()
+        if response.status_code == 201:
+            logger.info('Post successfully created!')
+            print('Post successfully created!')
+            
+    except Exception as err:
+        logger.error(f'{type(err).__name__}: {err}') 
+
+
+def add_to_posted(file_path: Path) -> None:
+    try:
+        posted_path = Path('linkedin_posted.json')
+        
+        with open(posted_path, 'r') as f:
+            posted = json.load(f)
+            
+        posted['posted'].append(file_path.stem)
+        
+        with open(posted_path, 'w') as f:
+            json.dump(posted, f, indent=4)
+
+        logger.info(f'File {file_path.name} is added to posted files list')
+        
+    except Exception as err:
+        logger.error(f'{type(err).__name__}: {err}') 
+
+
+def main(post_folder: str='/home/azureuser/files/posts/city_attractions/en'):
+    # choice *.json from the posts folder en/ by default
+    logger.info(f'Posting process is started with source: {post_folder}')
+    post_to_share = get_post_to_share(post_folder)
+    
+    # get content of choiced json
+    post_content = get_post_content(post_to_share)
+    
+    # from json content compile name, location, title, text, hashtags into the one object
+    text_data = {k: v for k, v in post_content.items() if k not in ('links', 'images')}
+    text_to_share = prepare_text_to_share(text_data)
+    
+    # get image url and make requests to register image and ...
+    upload_url, asset = register_image()
+    
+    # ... then upload binary image file
+    image_path = post_content['images'][0]
+    upload_binary_image(image_path, upload_url)
+    
+    # share the text and the image
+    share_text_and_image(text_to_share, asset)
+    
+    # add file name in posted file
+    add_to_posted(post_to_share)
+    
+    logger.info(f'Posting process is finished successfully!')
+
+
+if __name__ == '__main__':
+    if len(sys.argv) > 2:
+        print(f'Usage: python3 {Path(__file__).name} [path_to/source/folder]')
+        sys.exit(1)
+    elif len(sys.argv) == 2:
+        main(sys.argv[1])
     else:
-        print(f'Post creation failed with status code {response.status_code}: {response.text}')
-
-def add_hashtags_location(input_string):
-    # Remove leading and trailing whitespaces and split the string by commas and spaces
-    parts = input_string.strip().split(", ")
-
-    # Extract the attraction and location names
-    attraction = parts[0]
-    location = parts[1]
-
-    # Remove spaces from attraction name and add a '#' in front of it
-    attraction_hashtag = "#" + attraction.replace(" ", "")
-
-    # Remove spaces from location name and add a '#' in front of it
-    location_hashtag = "#" + location.replace(" ", "")
-
-    # Concatenate the attraction and location hashtags
-    result_string = attraction_hashtag + " " + location_hashtag
-
-    return result_string,location
-def upload_binary(image_path, upload_url):
-    # Replace 'YOUR_IMAGE_PATH' with the path to your image file
-    image_path = image_path
-
-    # Replace 'YOUR_UPLOAD_URL' with the upload URL received from Step 1
-    upload_url = upload_url
-
-   # Read the image as binary
-    with open(image_path, 'rb') as image_file:
-        image_data = image_file.read()
-
-    # Set the headers for the request
-    headers = {
-        'Authorization': f'Bearer {access_token}',
-        'Content-Type': 'application/octet-stream',
-    }
-
-    # Send the POST request with the image data
-    response = requests.post(upload_url, data=image_data, headers=headers)
-
-    # Print the response status code and content (if needed)
-    print(f"Response status code: {response.status_code}")
-    print(f"Response content: {response.content}")
-def add_hashtags_to_words(input_string):
-    words = input_string.split()  # Split the string into words
-    modified_words = ['#' + word for word in words]  # Add '#' to each word
-    result_string = ' '.join(modified_words)  # Join the modified words back into a single string
-    return result_string
-
-
-def generate_hashtag_string(attraction, city, country):
-    # Generate hashtags based on conditions
-    attraction_hashtag = f"#{attraction.replace(' ', '')}" if ' ' in attraction else f"#{attraction}"
-    city_hashtag = f"#{city.replace(' ', '')}" if ' ' in city else f"#{city}"
-    country_hashtag = f"#{country.replace(' ', '')}" if ' ' in country else f"#{country}"
-    attraction_hashtag= attraction_hashtag.strip().split(",")[0]
-    # Combine the hashtags
-    hashtag_string = f"{attraction_hashtag} {city_hashtag} {country_hashtag}"
-    return hashtag_string
-
-api_url = 'https://api.linkedin.com/v2/ugcPosts'
-with open('text.json', 'r') as file:
-    data = json.load(file)
-
-with open('locations.json', 'r') as file:
-    locations = json.load(file)
-
-hashtags= "#CheapTripGuru #travel #cheaptrip #budgettravel #travelonabudget #lowcosttravel #affordabletravel #backpackerlife #travelhacks #cheapholidays #travelbudgeting #frugaltravel #savvytraveler #travelblogger #traveltips #traveladvice #travelhacks #travelinspiration #wanderlust #explore #seetheworld"
-text = data['text']
-hashtags +=' '+ ' '.join(data['hashtags'])
-location = data['location']
-city_name = location.split(',')[1].strip()
-# Find the matching city data in the JSON
-matching_city_data = None
-for key, city_data in locations.items():
-    if city_data["name"].lower() == city_name.lower():
-        matching_city_data = city_data
-        break
-country_name = matching_city_data["country_name"]
-location=generate_hashtag_string(location,city_name,country_name)
-post_text = f"{location}\n{text}\n\nFind out more at https://cheaptrip.guru\n\n{hashtags}"
-url,urn=get_url()
-upload_binary(r"C:\Users\faisal\Desktop\CheapTripData\ContentAutomator\Postify\LinkedIn\image.jpg",url)
-
-
-headers = {
-    'Authorization': f'Bearer {access_token}',
-    'Connection': 'Keep-Alive',
-    'Content-Type': 'application/json',
-}
-"""https://www.linkedin.com/company/35430256/admin/feed/posts/"""
-post_body = {
-    'author': 'urn:li:company:35430256',
-    'lifecycleState': 'PUBLISHED',
-    'specificContent': {
-        'com.linkedin.ugc.ShareContent': {
-            'shareCommentary': {
-                'text': post_text,
-            },
-            'shareMediaCategory': 'IMAGE',
-            'media': [
-                {
-                    'status': 'READY',
-                    'description': {
-                        'text': 'Aalborg Zoo',
-                    },
-                    "media": urn,
-                    "title": {
-                        "text": "Aalborg Zoo"
-                    }
-                },
-            ],
-        },
-    },
-    'visibility': {
-        'com.linkedin.ugc.MemberNetworkVisibility': 'PUBLIC',
-    },
-}
-
-response = requests.post(api_url, headers=headers, json=post_body)
-if response.status_code == 201:
-    print('Post successfully created!')
-else:
-    print(f'Post creation failed with status code {response.status_code}: {response.text}')
-
-
+        main()
+  
