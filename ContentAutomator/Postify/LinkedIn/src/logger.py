@@ -1,13 +1,9 @@
 import logging
-from pathlib import Path
+from env import LOGS_DIR
 
 
-# logging set up 
-LOGS_DIR = Path('../logs/')
-LOG_CRITICAL = Path(LOGS_DIR/'critical_errors.log')
+# logger format set up 
 LOG_FORMATTER = '%(asctime)s - %(levelname)s - %(funcName)s - %(message)s'
-LOG_DEBUG = Path(LOGS_DIR/'debug.log')
-
 
 # logging parameters set up and create logger
 def logger_setup(name):
@@ -32,4 +28,4 @@ def logger_setup(name):
     logger.addHandler(log_handler_file)
     logger.addHandler(log_handler_console)
     
-    return logger         
+    return logger

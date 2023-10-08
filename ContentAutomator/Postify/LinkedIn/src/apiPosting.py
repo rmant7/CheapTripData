@@ -6,7 +6,7 @@ import sys
 from datetime import datetime
 
 from logger import logger_setup
-from env import ACCESS_TOKEN, ID_COMPANY, TARGET_URL, DEFAULT_POST_FOLDER, CONSTANT_HASHTAGS
+from env import ACCESS_TOKEN, ID_COMPANY, TARGET_URL, DEFAULT_POST_FOLDER, FILES_FOLDER, CONSTANT_HASHTAGS
 
 
 timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
@@ -27,7 +27,7 @@ def get_post_to_share(post_folder: str) -> Path:
     try:
         post_folder = Path(post_folder)
         
-        posted_path = Path('../files/linkedin_posted.json')
+        posted_path = Path(f'{FILES_FOLDER}/linkedin_posted.json')
         with open(posted_path, 'r') as f:
             posted = json.load(f)
         
@@ -74,7 +74,7 @@ def prepare_text_to_share(data: dict) -> str:
     
 def register_image() -> tuple():
     try:
-        api_url, headers, request_body = get_request_data('../files/schema_request_register_image.json')
+        api_url, headers, request_body = get_request_data(f'{FILES_FOLDER}/schema_request_register_image.json')
         logger.info(f'Request schema is parsed')
         
         # insert credentials
@@ -123,7 +123,7 @@ def upload_binary_image(image_path: str, upload_url: str) -> None:
     
 def share_text_and_image(text_to_share: str, asset: str) -> None:
     try:
-        api_url, headers, request_body = get_request_data('../files/schema_request_text_image_share.json')
+        api_url, headers, request_body = get_request_data(f'{FILES_FOLDER}/schema_request_text_image_share.json')
         logger.info(f'Request schema is parsed')
         
         # insert credentials
@@ -149,7 +149,7 @@ def share_text_and_image(text_to_share: str, asset: str) -> None:
 
 def add_to_posted(file_path: Path) -> None:
     try:
-        posted_path = Path('../files/linkedin_posted.json')
+        posted_path = Path(f'{FILES_FOLDER}/linkedin_posted.json')
         
         with open(posted_path, 'r') as f:
             posted = json.load(f)
