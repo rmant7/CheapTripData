@@ -6,7 +6,7 @@ import sys
 from datetime import datetime
 
 from logger import logger_setup
-from env import ACCESS_TOKEN, ID_COMPANY, TARGET_URL
+from env import ACCESS_TOKEN, ID_COMPANY, TARGET_URL, DEFAULT_POST_FOLDER, CONSTANT_HASHTAGS
 
 
 timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
@@ -58,14 +58,9 @@ def prepare_text_to_share(data: dict) -> str:
                     f'#{"".join(data["location"].split(", ")[0])} '\
                     f'#{"".join(data["location"].split(", ")[1])}'    
         
-        constant_hashtags= '#CheapTripGuru #travel #cheaptrip #budgettravel #travelonabudget #lowcosttravel '\
-                            '#affordabletravel #backpackerlife #travelhacks #cheapholidays #travelbudgeting #frugaltravel '\
-                            '#savvytraveler #travelblogger #traveltips #traveladvice #travelhacks #travelinspiration #wanderlust '\
-                            '#explore #seetheworld'
-        
         title = data['title']
         text = data['text']
-        hashtags_bottom = constant_hashtags + ' ' + ' '.join(data['hashtags'])
+        hashtags_bottom = CONSTANT_HASHTAGS + ' ' + ' '.join(data['hashtags'])
     
         text_to_share = f'{hashtags_top}\n\n{title}\n\n{text}\n\nFind out more at {TARGET_URL}\n\n{hashtags_bottom}\n'
         
@@ -107,7 +102,7 @@ def register_image() -> tuple():
     
 def upload_binary_image(image_path: str, upload_url: str) -> None:
     try:
-        image_path = Path(image_path.replace('https://cheaptrip.guru', '/home/azureuser'))
+        image_path = Path(image_path.replace(TARGET_URL, '/home/azureuser'))
         with open(image_path, 'rb') as f:
             binary_image = f.read()
         logger.info(f'The binary mode image is obtained: {image_path.name}')
@@ -170,8 +165,9 @@ def add_to_posted(file_path: Path) -> None:
         logger.error(f'{type(err).__name__}: {err}') 
 
 
-def main(post_folder: str='/home/azureuser/files/posts/city_attractions/en'):
+def main(lang: str='en'):
     # choice *.json from the posts folder en/ by default
+    post_folder = f'{DEFAULT_POST_FOLDER}/{lang}'
     logger.info(f'Posting process is started with source: {post_folder}')
     post_to_share = get_post_to_share(post_folder)
     
@@ -200,7 +196,7 @@ def main(post_folder: str='/home/azureuser/files/posts/city_attractions/en'):
 
 if __name__ == '__main__':
     if len(sys.argv) > 2:
-        print(f'Usage: python3 {Path(__file__).name} [path_to/source/folder]')
+        print(f'Usage: python3 {Path(__file__).name} [ru]')
         sys.exit(1)
     elif len(sys.argv) == 2:
         main(sys.argv[1])
