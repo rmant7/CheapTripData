@@ -3,7 +3,7 @@ from pathlib import Path
 
 
 # logging set up 
-LOGS_DIR = Path('logs/')
+LOGS_DIR = Path('../logs/')
 LOG_CRITICAL = Path(LOGS_DIR/'critical_errors.log')
 LOG_FORMATTER = '%(asctime)s - %(levelname)s - %(funcName)s - %(message)s'
 LOG_DEBUG = Path(LOGS_DIR/'debug.log')
