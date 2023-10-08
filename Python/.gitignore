@@ -27,3 +27,4 @@ __pycache__/
 notebooks/
 logs/
 files/csv
+jsons/
