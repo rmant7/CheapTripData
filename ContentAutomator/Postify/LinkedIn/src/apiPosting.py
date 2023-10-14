@@ -7,7 +7,7 @@ from datetime import datetime
 import re
 
 from logger import logger_setup
-from env import ACCESS_TOKEN, ID_COMPANY, TARGET_URL, DEFAULT_POST_FOLDER, FILES_FOLDER, CONSTANT_HASHTAGS
+from env import ACCESS_TOKEN, ID_COMPANY, TARGET_URL, DEFAULT_POST_FOLDER, FILES_FOLDER
 
 
 timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
@@ -15,8 +15,12 @@ logger = logger_setup(f'{Path(__file__).stem}')
 
 
 def remove_non_alphanumeric(raw: str) -> str:
-    invalid_symbols = r'[^a-zA-Z0-9äöüÄÖÜßàáâãäåæçèéêëìíîïðòóôõöøùúûüýÿ]'
-    return re.sub(invalid_symbols, '', raw)
+    try:
+        invalid_symbols = r'[^a-zA-Z0-9äöüÄÖÜßàáâãäåæçèéêëìíîïðòóôõöøùúûüýÿ]'
+        return re.sub(invalid_symbols, '', raw)
+    except Exception as err:
+        logger.error(f'{type(err).__name__}: {err}')
+        raise err 
 
 
 def get_request_data(request_data_path: str) -> tuple:
@@ -32,6 +36,7 @@ def get_request_data(request_data_path: str) -> tuple:
         
     except Exception as err:
         logger.error(f'{type(err).__name__}: {err}')
+        raise err
         
 
 def choice_post_to_share(post_folder: str) -> Path:
@@ -55,37 +60,44 @@ def choice_post_to_share(post_folder: str) -> Path:
         
             return choice_post_to_share(post_folder)
         
-        logger.error(f'{type(err).__name__}: {err.filename}')   
+        logger.error(f'{type(err).__name__}: {err.filename}')
+        raise err
                 
     except Exception as err:
         logger.error(f'{type(err).__name__}: {err}')
-
+        raise err
+        
 
 def get_post_content(file_path: Path) -> dict:
     try:
         with open(file_path, 'r') as f:
             post_content=json.load(f)
-            
+        if not all(key in ('name', 'location', 'title', 'text', 'hashtags', 'links', 'images') for key in post_content.keys()): 
+            raise Exception(f'Unexpected data structure in: {file_path.name}')
         return post_content
     
     except Exception as err:
         logger.error(f'{type(err).__name__}: {err}')
+        raise err
     
     
 def prepare_text_to_share(name: str, location: str, title: str, text: str, hashtags: list) -> str:
     try:
-        city, country = location.split(', ')
-        name, city, country = map(remove_non_alphanumeric, (name, city, country))
-                
-        hashtags_top = f'#{name} #{city} #{country}'
-        hashtags_bottom = ' '.join(CONSTANT_HASHTAGS.union(hashtags))
-    
-        text_to_share = f'{hashtags_top}\n\n{title}\n\n{text}\n\nFind out more at {TARGET_URL}\n\n{hashtags_bottom}\n'
+        const_hashtags = {'#CheapTripGuru', '#travel', '#cheaptrip', '#budgettravel', '#travelonabudget', '#lowcosttravel',
+                            '#affordabletravel', '#backpackerlife', '#cheapholidays', '#travelbudgeting', '#frugaltravel', 
+                            '#savvytraveler', '#travelblogger', '#traveltips', '#traveladvice', '#travelhacks',
+                            '#travelinspiration', '#wanderlust', '#explore', '#seetheworld'}
+               
+        hashtags_top = f'#{" #".join(map(remove_non_alphanumeric, (name, *location.split(", "))))}'
+        hashtags_bottom = ' '.join(const_hashtags.union(hashtags))
         
-        return text_to_share
+        if text.endswith('\n'): text = text.rstrip('\n')
+    
+        return '\n\n'.join((hashtags_top, title, text, f"Find out more at {TARGET_URL}", hashtags_bottom))
     
     except Exception as err:
         logger.error(f'{type(err).__name__}: {err}')
+        raise err
     
     
 def register_image() -> tuple():
@@ -107,8 +119,10 @@ def register_image() -> tuple():
     
     except requests.HTTPError as err:
         logger.error(f'Post creation failed with status code: {response.status_code}')
+        raise err
     except Exception as err:
         logger.error(f'{type(err).__name__}: {err}')
+        raise err
     
     
 def upload_binary_image(image_path: str, upload_url: str) -> None:
@@ -127,6 +141,7 @@ def upload_binary_image(image_path: str, upload_url: str) -> None:
     
     except Exception as err:
         logger.error(f'{type(err).__name__}: {err}')
+        raise err
     
     
 def share_text_and_image(text_to_share: str, asset: str) -> str:
@@ -149,7 +164,8 @@ def share_text_and_image(text_to_share: str, asset: str) -> str:
             
     except Exception as err:
         logger.error(f'{type(err).__name__}: {err}') 
-
+        raise err
+        
 
 def add_to_posted(post_id: str) -> None:
     try:
@@ -165,37 +181,41 @@ def add_to_posted(post_id: str) -> None:
     except FileNotFoundError as err:
         file_path = Path(err.filename)
         logger.critical(f'Input file: "../{file_path.parent.name}/{file_path.name}" not found')
+        raise err
         
     except Exception as err:
         logger.error(f'{type(err).__name__}: {err}') 
-
+        raise err
+        
 
 def main(lang: str='en'):
-    # choice *.json from the posts folder en/ (by default)
-    post_folder = f'{DEFAULT_POST_FOLDER}/{lang}'
-    post_to_share = choice_post_to_share(post_folder)
+    try:
+        # choice *.json from the posts folder en/ (by default)
+        post_to_share = choice_post_to_share(f'{DEFAULT_POST_FOLDER}/{lang}')
+        
+        # get content of choiced json
+        post_content = get_post_content(post_to_share)
+        
+        # from json content compile name, location, title, text, hashtags into the one object
+        text_data = {k: v for k, v in post_content.items() if k not in ('links', 'images')}
+        text_to_share = prepare_text_to_share(**text_data)
+        
+        # request to register image and ...
+        upload_url, asset = register_image()
+            
+        # ... then upload binary image file ...in order to ...
+        upload_binary_image(post_content['images'][0], upload_url)
+            
+        # ... share both the text and the image
+        result = share_text_and_image(text_to_share, asset)
+        logger.info(result.format(from_=post_to_share.name, about_=text_data['name'], in_=text_data['location']))
+            
+        # add file name in posted file
+        add_to_posted(post_to_share.stem)
     
-    # get content of choiced json
-    post_content = get_post_content(post_to_share)
-    
-    # from json content compile name, location, title, text, hashtags into the one object
-    text_data = {k: v for k, v in post_content.items() if k not in ('links', 'images')}
-    text_to_share = prepare_text_to_share(**text_data)
-    
-    # request to register image and ...
-    upload_url, asset = register_image()
-    
-    # ... then upload binary image file ...in order to ...
-    image_path = post_content['images'][0]
-    upload_binary_image(image_path, upload_url)
-    
-    # ... share both the text and the image
-    result = share_text_and_image(text_to_share, asset)
-    logger.info(result.format(from_=post_to_share.name, about_=text_data['name'], in_=text_data['location']))
-    
-    # add file name in posted file
-    add_to_posted(post_to_share.stem)
-
+    except Exception:
+        pass
+            
 
 if __name__ == '__main__':
     if len(sys.argv) > 2:
