@@ -78,7 +78,7 @@ EURO_ZONE = range(100, 371)
 EURO_ZONE_LOWEST_PRICE, EURO_ZONE_DURATION_LIMIT = 5, 60
 
 # logging set up 
-LOGS_DIR = Path('../logs')
+LOGS_DIR = Path('/home/andrii/code/projects/CheapTripData/Python/logs')
 LOG_CRITICAL = Path(LOGS_DIR/'critical_errors.log')
 LOG_CRITICAL_FORMAT = '%(asctime)s - %(levelname)s - %(message)s'
 
