@@ -77,8 +77,8 @@ def prepare_text_to_share(name: str, location: str, title: str, text: str, hasht
         city, country = location.split(', ')
         name, city, country = map(remove_non_alphanumeric, (name, city, country))
                 
-        hashtags_top = f'#{name} #{city} #{country}'    
-        hashtags_bottom = CONSTANT_HASHTAGS + ' ' + ' '.join(hashtags)
+        hashtags_top = f'#{name} #{city} #{country}'
+        hashtags_bottom = ' '.join(CONSTANT_HASHTAGS.union(hashtags))
     
         text_to_share = f'{hashtags_top}\n\n{title}\n\n{text}\n\nFind out more at {TARGET_URL}\n\n{hashtags_bottom}\n'
         
@@ -160,7 +160,7 @@ def add_to_posted(post_id: str) -> None:
         posted['posted'].append(post_id)
         
         with open(posted_path, 'w') as f:
-            json.dump(posted, f, indent=4)
+            json.dump(posted, f)
             
     except FileNotFoundError as err:
         file_path = Path(err.filename)
