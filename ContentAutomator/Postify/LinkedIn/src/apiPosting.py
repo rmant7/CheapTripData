@@ -5,6 +5,7 @@ import random
 import sys
 from datetime import datetime
 import re
+from asyncio import run, gather
 
 from logger import logger_setup
 from env import ACCESS_TOKEN, ID_COMPANY, TARGET_URL, DEFAULT_POST_FOLDER, FILES_FOLDER
@@ -13,6 +14,9 @@ from env import ACCESS_TOKEN, ID_COMPANY, TARGET_URL, DEFAULT_POST_FOLDER, FILES
 timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
 logger = logger_setup(f'{Path(__file__).stem}')
 
+class FuncException(Exception):
+    pass
+
 
 def remove_non_alphanumeric(raw: str) -> str:
     try:
@@ -20,7 +24,7 @@ def remove_non_alphanumeric(raw: str) -> str:
         return re.sub(invalid_symbols, '', raw)
     except Exception as err:
         logger.error(f'{type(err).__name__}: {err}')
-        raise err 
+        raise FuncException from err 
 
 
 def get_request_data(request_data_path: str) -> tuple:
@@ -33,13 +37,14 @@ def get_request_data(request_data_path: str) -> tuple:
     except FileNotFoundError as err:
         file_path = Path(err.filename)
         logger.critical(f'Input file: "../{file_path.parent.name}/{file_path.name}" is not found')
+        raise FuncException from err
         
     except Exception as err:
         logger.error(f'{type(err).__name__}: {err}')
-        raise err
+        raise FuncException from err
         
 
-def choice_post_to_share(post_folder: str) -> Path:
+def get_post_to_share(post_folder: str) -> Path:
     try:
         post_folder = Path(post_folder)
         posted_path = Path(f'{FILES_FOLDER}/linkedin_posted.json')
@@ -58,30 +63,35 @@ def choice_post_to_share(post_folder: str) -> Path:
                 json.dump({'posted':[]}, f, indent=4)
             logger.warning(f'File "{posted_path.parent.name}/{posted_path.name}" was created from scratch')
         
-            return choice_post_to_share(post_folder)
+            return get_post_to_share(post_folder)
         
         logger.error(f'{type(err).__name__}: {err.filename}')
-        raise err
+        raise FuncException from err
                 
     except Exception as err:
         logger.error(f'{type(err).__name__}: {err}')
-        raise err
+        raise FuncException from err
         
 
 def get_post_content(file_path: Path) -> dict:
     try:
         with open(file_path, 'r') as f:
             post_content=json.load(f)
-        if not all(key in ('name', 'location', 'title', 'text', 'hashtags', 'links', 'images') for key in post_content.keys()): 
+            
+        if not all(key in ('name', 'location', 'title', 'text', 'hashtags', 'links', 'images') 
+                   for key in post_content.keys()): 
             raise Exception(f'Unexpected data structure in: {file_path.name}')
+        if len(post_content['images']) == 0:
+            raise Exception(f'There is no image in the "images" list in: {file_path.name}')
+        
         return post_content
     
     except Exception as err:
         logger.error(f'{type(err).__name__}: {err}')
-        raise err
+        raise FuncException from err
     
     
-def prepare_text_to_share(name: str, location: str, title: str, text: str, hashtags: list) -> str:
+def prepare_text_to_share(name: str, location: str, title: str, text: str, hashtags: list, **_) -> str:
     try:
         const_hashtags = {'#CheapTripGuru', '#travel', '#cheaptrip', '#budgettravel', '#travelonabudget', '#lowcosttravel',
                             '#affordabletravel', '#backpackerlife', '#cheapholidays', '#travelbudgeting', '#frugaltravel', 
@@ -97,10 +107,10 @@ def prepare_text_to_share(name: str, location: str, title: str, text: str, hasht
     
     except Exception as err:
         logger.error(f'{type(err).__name__}: {err}')
-        raise err
+        raise FuncException from err
     
     
-def register_image() -> tuple():
+async def register_image() -> tuple():
     try:
         api_url, headers, request_body = get_request_data(f'{FILES_FOLDER}/schema_request_register_image.json')
         
@@ -119,18 +129,25 @@ def register_image() -> tuple():
     
     except requests.HTTPError as err:
         logger.error(f'Post creation failed with status code: {response.status_code}')
-        raise err
+        raise FuncException from err
     except Exception as err:
         logger.error(f'{type(err).__name__}: {err}')
-        raise err
+        raise FuncException from err
     
     
-def upload_binary_image(image_path: str, upload_url: str) -> None:
+async def get_binary_image(images: list, **_):
     try:
-        image_path = Path(image_path.replace(TARGET_URL, '/home/azureuser'))
+        image_path = Path(images[0].replace(TARGET_URL, '/home/azureuser'))
         with open(image_path, 'rb') as f:
-            binary_image = f.read()
-                
+            return f.read()
+        
+    except Exception as err:
+        logger.error(f'{type(err).__name__}: {err}')
+        raise FuncException from err
+    
+    
+def upload_binary_image(upload_url: str, binary_image: bytes) -> None:
+    try:                
         headers = {
             'Authorization': f'Bearer {ACCESS_TOKEN}', 
             'X-Restli-Protocol-Version': '2.0.0'
@@ -141,7 +158,7 @@ def upload_binary_image(image_path: str, upload_url: str) -> None:
     
     except Exception as err:
         logger.error(f'{type(err).__name__}: {err}')
-        raise err
+        raise FuncException from err
     
     
 def share_text_and_image(text_to_share: str, asset: str) -> str:
@@ -164,7 +181,7 @@ def share_text_and_image(text_to_share: str, asset: str) -> str:
             
     except Exception as err:
         logger.error(f'{type(err).__name__}: {err}') 
-        raise err
+        raise FuncException from err
         
 
 def add_to_posted(post_id: str) -> None:
@@ -181,40 +198,42 @@ def add_to_posted(post_id: str) -> None:
     except FileNotFoundError as err:
         file_path = Path(err.filename)
         logger.critical(f'Input file: "../{file_path.parent.name}/{file_path.name}" not found')
-        raise err
+        raise FuncException from err
         
     except Exception as err:
         logger.error(f'{type(err).__name__}: {err}') 
-        raise err
+        raise FuncException from err
         
 
-def main(lang: str='en'):
+async def main(lang: str='en'):
     try:
         # choice *.json from the posts folder en/ (by default)
-        post_to_share = choice_post_to_share(f'{DEFAULT_POST_FOLDER}/{lang}')
+        post_to_share = get_post_to_share(f'{DEFAULT_POST_FOLDER}/{lang}')
         
         # get content of choiced json
         post_content = get_post_content(post_to_share)
         
-        # from json content compile name, location, title, text, hashtags into the one object
-        text_data = {k: v for k, v in post_content.items() if k not in ('links', 'images')}
-        text_to_share = prepare_text_to_share(**text_data)
+        # joining hashtags, removing the last line break, etc.
+        text_to_share = prepare_text_to_share(**post_content)
         
-        # request to register image and ...
-        upload_url, asset = register_image()
+        # get binary image from path and register image concurrently
+        binary_image, (upload_url, asset) = await gather(get_binary_image(**post_content), register_image()) 
+       
+        # upload binary image file
+        upload_binary_image(upload_url, binary_image)
             
-        # ... then upload binary image file ...in order to ...
-        upload_binary_image(post_content['images'][0], upload_url)
-            
-        # ... share both the text and the image
+        # share both the text and the image
         result = share_text_and_image(text_to_share, asset)
-        logger.info(result.format(from_=post_to_share.name, about_=text_data['name'], in_=text_data['location']))
             
         # add file name in posted file
         add_to_posted(post_to_share.stem)
-    
-    except Exception:
+        
+        logger.info(result.format(from_=post_to_share.name, about_=post_content['names'], in_=post_content['location']))
+        
+    except FuncException:
         pass
+    except Exception as err:
+        logger.error(f'{type(err).__name__}: {err}')
             
 
 if __name__ == '__main__':
@@ -222,6 +241,6 @@ if __name__ == '__main__':
         print(f'Usage: python3 {Path(__file__).name} [ru]')
         sys.exit(1)
     elif len(sys.argv) == 2:
-        main(sys.argv[1])
+        run(main(sys.argv[1]))
     else:
-        main()
+        run(main())
