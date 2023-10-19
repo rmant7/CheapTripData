@@ -1,3 +1,8 @@
 .venvbtt/
 assets/
-src/
+tree/
+other_cities/
+seo_jsons/
+examples/
+html_templates/
+BudgetTravelTips_intern/

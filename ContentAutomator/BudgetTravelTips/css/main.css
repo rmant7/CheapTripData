@@ -108,11 +108,15 @@ img {
 /*==========================================ATTRACTIONS + description====================================================*/
 
 .flex-container {
+  max-width: 100%;
   margin: 15px auto;
   text-align: justify;
-  max-width: 800px;
   padding: 0 15px;
   box-sizing: border-box;
+  flex-direction: column;
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap
 }
 
 .section-title {
@@ -122,8 +126,7 @@ img {
 }
 
 .city-img-main {
-  max-width: 1024px;
-  width: 30%;
+  max-width: 100%;
 }
 
 .city-details__subtitle {
@@ -204,7 +207,7 @@ img {
   text-align: center;
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (min-width: 1024px) {
   .block {
       flex-direction: column;
       align-items: center;
@@ -220,16 +223,50 @@ img {
 .buttons {
   text-align: center;
   margin: 20px auto;
-  display: block;
-  justify-content: center;
+  max-width: 100%;
+justify-content: center;
   font-size: 1.3rem;
+  display: flex;
+  flex-wrap: nowrap;
 }
 
 .buttons div {
+  text-align: center;
+  justify-content: center;
   margin-bottom: 15px;
+  max-width: 100%;
+  display: flex;
   padding: 5px;
 }
-
+@media screen and (max-width: 768px){
+  .buttons{
+    text-align: center;
+    margin: 20px auto;
+    /* justify-content: space-between; */
+    flex-direction: column;
+    font-size: 1.3rem;
+    display: flex;
+    flex-wrap: wrap;
+  }
+}
+@media screen and (max-width: 1442px){
+  .buttons{
+    text-align: center;
+    margin: 20px auto;
+    justify-content: space-between;
+    font-size: 1.3rem;
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .act-btn-cont{
+    text-align: center;
+    margin: 20px auto;
+    justify-content: center;
+    font-size: 1.3rem;
+    display: flex;
+    flex-wrap: wrap;
+  }
+}
 /*========================================Also check this=================================================*/
 
 .city-details__title {
