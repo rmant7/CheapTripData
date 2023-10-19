@@ -55,7 +55,7 @@ def make_descriptions():
         h1_section_title_tag = soup.find('h1', {'class': 'section-title'})
         if h1_section_title_tag: h1_section_title_tag.string = content['name']
             
-        main_img_tag = soup.find('img', class_="city-img-main")
+        main_img_tag = soup.find('img', class_="city-img-attraction")
         if main_img_tag: main_img_tag['src'] = content['images'][0]
 
         p_tag = soup.find('p', {'id': 'text'})
@@ -64,7 +64,7 @@ def make_descriptions():
         a_tag_routes = soup.find('a', class_='action-btn', href='routes.html')
         if a_tag_routes: a_tag_routes.string = f'Routes from {content["name"]}'
             
-        a_tag_booking = soup.find('a', class_='action-btn', href='booking.com')
+        a_tag_booking = soup.find('a', class_='action-btn', href='https://www.booking.com')
         if a_tag_booking: a_tag_booking['href'] = booking_link
     
         output_folder = Path(f'../tree/{path.stem}')
