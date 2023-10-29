@@ -1,0 +1,465 @@
+/*==========================================common====================================================*/
+
+p {
+  text-align: justify;
+  padding: 0 20px;
+  font-size: 1.1rem;
+  color: black;
+  margin-top: 15px;
+}
+
+img {
+  border-radius: 20px;
+}
+
+.photos {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+/*==========================================header====================================================*/
+
+.header {
+  background-color: #ff5722;
+}
+
+.headline {
+  display: flex;
+  align-items: center;
+  height: 65px;
+}
+
+.headline__logo {
+  font-style: italic;
+  font-weight: bold;
+  color: #fff;
+  font-size: 3.5rem;
+}
+
+.headline__slogan {
+  margin-left: 80px;
+  font-style: italic;
+  font-weight: bold;
+  color: #fff;
+  font-size: 2rem;
+  margin-top: 5px;
+  letter-spacing: 2px;
+  font-family: "Roboto", sans-serif;
+}
+
+/*==========================================main button====================================================*/
+
+.section-btn {
+  text-align: center;
+  margin: 20px auto;
+  display: flex;
+  justify-content: center;
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+
+.action-btn {
+  color: #ff5722;
+  padding: 7px;
+  border: #ff5722 solid 2px;
+  border-radius: 15px;
+  margin: 2px 2px;
+}
+
+.action-btn:hover {
+  color: white;
+  background-color: #ff5722;
+}
+
+.budget-btn {
+  padding: 7px;
+  border: #ff5722 solid 2px;
+  border-radius: 15px;
+  background-color: #ff5722;
+  margin: 2px 2px;
+  color: white;
+}
+
+.budget-btn:hover {
+  color: white;
+}
+
+.action-btn-active {
+  color: #ffffff;
+  padding: 7px;
+  border: #ff5722 solid 1px;
+  border-radius: 15px;
+  background-color: #ff5722;
+  font-size: 1.3rem;
+}
+
+.action-btn-active:hover {
+  color: white;
+}
+
+.here-btn:hover {
+  color: black;
+}
+
+.budget-btn:hover {
+  color: white;
+}
+
+/*==========================================ATTRACTIONS + description====================================================*/
+.flex-container {
+  max-width: 100%;
+  height: auto;
+  justify-items: center;
+  margin: 15px auto;
+  text-align: justify;
+  padding: 0 15px;
+  box-sizing: border-box;
+  display: flex;
+  flex-wrap: nowrap
+}
+
+@media screen and (max-width: 768px){
+  .flex-container {
+    max-width: 100%;
+    margin: 15px auto;
+    text-align: justify;
+    padding: 0 15px;
+    box-sizing: border-box;
+    flex-direction: column;
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap
+  }
+  .city-img-attraction {
+    max-width: 100%;
+
+  }
+
+}
+
+@media screen and (max-width: 1442px){
+  .flex-container {
+    max-width: 100%;
+    margin: 15px auto;
+    text-align: justify;
+    padding: 0 15px;
+    box-sizing: border-box;
+    flex-direction: column;
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap
+  }
+
+    .city-img-attraction {
+      max-width: 60%;
+
+    }
+
+}
+
+
+.section-title {
+  color: #000;
+  font-size: 2.5rem;
+  text-align: center;
+}
+
+.city-details__subtitle {
+  font-weight: bold;
+  font-size: 1.2rem;
+  color: black;
+  margin-top: 15px;
+  text-align: center;
+}
+
+.attractions-container {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.aalborg-img {
+  display: flex;
+  justify-content: space-around;
+  padding: 20px;
+}
+
+.aalborg-img img {
+  margin: 20px;
+}
+
+
+
+@media screen and (max-width: 2560px) {
+
+  .city-img-attraction {
+      min-width: 35%;
+
+  }
+}
+
+@media screen and (max-width: 720px) {
+
+
+  .city-img-attraction {
+      max-width:100%;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+  }
+}
+
+.attractions-container {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/*========================================for accommodations=================================================*/
+
+.block {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin: 10px;
+  padding: 10px;
+  border: #ff5722 solid 2px;
+  border-radius: 15px;
+}
+
+.divImg {
+  width: 130px;
+  height: 130px;
+}
+
+.titleBtn {
+  flex: 1;
+  margin-top: 10px;
+  text-align: center;
+}
+
+@media screen and (min-width: 1024px) {
+  .block {
+      flex-direction: column;
+      align-items: center;
+  }
+
+  .divImg {
+      margin-top: 10px;
+  }
+}
+
+/*========================================buttons under description=================================================*/
+
+.buttons {
+  text-align: center;
+  margin: 20px auto;
+  max-width: 100%;
+justify-content: center;
+  font-size: 1.3rem;
+  display: flex;
+  flex-wrap: nowrap;
+}
+
+.buttons div {
+  text-align: center;
+  justify-content: center;
+  margin-bottom: 15px;
+  max-width: 100%;
+  display: flex;
+  padding: 5px;
+}
+@media screen and (max-width: 768px){
+  .buttons{
+    text-align: center;
+    margin: 20px auto;
+    flex-direction: column;
+    font-size: 1.3rem;
+    display: flex;
+    flex-wrap: wrap;
+  }
+}
+@media screen and (max-width: 1442px){
+  .buttons{
+    text-align: center;
+    margin: 20px auto;
+    justify-content: space-between;
+    font-size: 1.3rem;
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .act-btn-cont{
+    text-align: center;
+    margin: 20px auto;
+    justify-content: center;
+    font-size: 1.3rem;
+    display: flex;
+    flex-wrap: wrap;
+  }
+}
+/*========================================Also check this=================================================*/
+
+.city-details__title {
+  font-weight: bold;
+  color: #000;
+  font-size: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.city-item__image {
+  width: 100%;
+  height: auto;
+}
+
+@media screen and (min-width: 1025px) {
+  .city-item__image {
+      width: 65%;
+      height: auto;
+      margin: 0 5px;
+  }
+}
+
+.city-item__name {
+  display: flex;
+  flex-direction: row-reverse;
+  position: absolute;
+  bottom: 10px;
+  left: 0;
+  width: 50%;
+  padding: 10px;
+  font-size: 26px;
+  color: #000;
+  background-color: rgba(255, 255, 255, 0.7);
+  text-align: center;
+  transition: background-color 0.3s ease;
+}
+
+.city-item__name:hover {
+  background-color: rgba(255, 255, 255, 0.9);
+}
+
+/*=============================================MEDIA-710=========================================================*/
+
+@media screen and (max-width: 710px) {
+  .headline {
+      height: 50px;
+  }
+
+  .headline__logo {
+      font-size: 2rem;
+  }
+
+  .headline__slogan {
+      font-size: 1.2rem;
+      letter-spacing: normal;
+      margin-left: 10px;
+  }
+}
+
+/*==========================================Updated code=============================================*/
+
+.image-container {
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
+}
+
+.image-container a {
+  position: relative;
+  text-decoration: none;
+  color: #000;
+}
+
+.city-container {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.city-item {
+  position: relative;
+  margin: 0 10px 20px;
+  text-decoration: none;
+}
+
+.city-image {
+  width: 100%;
+  max-width: 250px;
+}
+
+.city-name {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.7);
+  color: #000;
+  padding: 5px;
+  text-align: center;
+  margin: 0;
+}
+
+@media (max-width: 767px) {
+  .city-container {
+      flex-direction: column;
+      align-items: center;
+  }
+
+  .city-image {
+      max-width: 100%;
+  }
+
+  .content {
+      font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .city-image {
+      max-width: 250px;
+  }
+}
+
+.ads {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.centered-container {
+  text-align: center;
+}
+
+.custom-divider {
+  height: 1px;
+  background-color: #000;
+  margin: 20px 0;
+}
+
+.attractions-container__item {
+  display: flex;
+  margin: 10px;
+  padding: 10px 10px 15px;
+  border: #ff5722 solid 2px;
+  border-radius: 15px;
+  gap: 20px;
+  align-items: center;
+}
+
+.attractions-container__inner {
+  text-align: center;
+}
+
+.attractions-container__img {
+  flex-basis: 130px;
+  max-width: 130px;
+  max-height: 130px;
+}
+
+textarea:focus,
+input:focus {
+  outline: none;
+}

@@ -3,28 +3,13 @@ from pathlib import Path
 import json
 
 
-def index_href_modify():
-    with open('../index.html', 'r', encoding='utf-8') as file:
-        html_content = file.read()
-
-    soup = BeautifulSoup(html_content, 'html.parser')
-
-    for li_tag in soup.find_all('li'):
-        a_tag = li_tag.find('a')
-        if a_tag and a_tag.has_attr('href') and a_tag['href'] == '#':
-            a_tag['href'] = f'tree/{a_tag.text.replace(" ", "_").replace("-", "_")}/description.html'
-
-    with open('../index.html', 'w', encoding='utf-8') as file:
-        file.write(str(soup))
-
-
-def make_descriptions():
+def make_city_descriptions():
     booking_ids_path = '/home/andrii/code/projects/CheapTripData/Python/files/hotels/booking_ids.json'
     with open(booking_ids_path, 'r') as f:
         booking_ids = json.load(f)
     
-    with open('../html_templates/description.html', 'r') as file:
-        description = file.read()
+    with open('/home/andrii/code/projects/CheapTripData/ContentAutomator/BudgetTravelTips/html_templates/city_descriptions/en/description.html', 'r') as f:
+        description = f.read()
     
     descriptions_folder = '/home/andrii/code/projects/CheapTripData/ContentAutomator/Contentio/GPT/content/seo/texts/city_descriptions/en'
     for path in Path(descriptions_folder).glob('*.json'):
@@ -60,18 +45,24 @@ def make_descriptions():
 
         p_tag = soup.find('p', {'id': 'text'})
         if p_tag: p_tag.string = content['text']
-            
-        a_tag_routes = soup.find('a', class_='action-btn', href='routes.html')
-        if a_tag_routes: a_tag_routes.string = f'Routes from {content["name"]}'
+        
+        a_tag_routes = soup.find('a', class_='action-btn', href='../../routes/en/{city_name}.html')
+        if a_tag_routes: a_tag_routes.string += f' {content["name"]}'
+        
+        for a_tag in soup.find_all('a', class_='action-btn'):
+            a_tag['href'] = a_tag['href'].format(city_name=path.stem)
+        
+        for a_tag in soup.find_all('a', class_='action-btn-active'):
+            a_tag['href'] = a_tag['href'].format(city_name=path.stem)
             
         a_tag_booking = soup.find('a', class_='action-btn', href='https://www.booking.com')
         if a_tag_booking: a_tag_booking['href'] = booking_link
     
-        output_folder = Path(f'../tree/{path.stem}')
+        output_folder = Path(f'../tree/city_descriptions/en')
         output_folder.mkdir(parents=True, exist_ok=True)
-        with open(f'{output_folder}/description.html', 'w') as file:
-            file.write(soup.prettify(formatter=None))
+        with open(f'{output_folder}/{path.stem}.html', 'w') as f:
+            f.write(soup.prettify(formatter=None))
 
 
 if __name__ == '__main__':
-    make_descriptions()
+    make_city_descriptions()
