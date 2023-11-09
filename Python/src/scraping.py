@@ -38,7 +38,7 @@ def scrap_routine(cities_countries_pairs, injection=''):
         r = session.get(tmp_url) # get response
         r.raise_for_status()
         soup = BeautifulSoup(r.text, 'html.parser')
-        pathes_info = soup.find('meta', id="deeplinkTrip") # this tag contists info about all pathes
+        pathes_info = soup.find('meta', id="deeplinkTrip") # this tag consists info about all pathes
         parsed = json.loads(pathes_info["content"])[2][1]
         print(f'Recording path in {from_city_id}-{to_city_id}-{from_city}-{to_city}.json.gz')
         target_file = f'{OUTPUT_JSON_DIR}/{from_city_id}-{to_city_id}-{from_city}-{to_city}.json.gz'

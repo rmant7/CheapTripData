@@ -1,135 +1,9 @@
-/*==========================================common====================================================*/
-
-.body {
-  overflow-x: hidden;
-}
-
-p {
-  text-align: justify;
-  text-indent: 2em;
-  font-size: 1.1rem;
-}
-
-img {
-  border-radius: 20px;
-}
-
-/*==========================================header====================================================*/
-
-.header {
-  background-color: #ff5722;
-}
-
-.headline {
-  display: flex;
-  align-items: center;
-  height: 65px;
-}
-
-.headline__logo {
-  font-style: italic;
-  font-weight: bold;
-  color: #fff;
-  font-size: 3.5rem;
-}
-
-.headline__slogan {
-  margin-left: 80px;
-  font-style: italic;
-  font-weight: bold;
-  color: #fff;
-  font-size: 2rem;
-  margin-top: 5px;
-  letter-spacing: 2px;
-  font-family: "Roboto", sans-serif;
-}
-
-/*==========================================main button====================================================*/
-
-.section-btn {
-  text-align: center;
-  margin: 20px auto;
-  display: flex;
-  justify-content: center;
-  font-size: 1.1rem;
-  font-weight: bold;
-}
-
-.action-btn {
-  color: #ff5722;
-  padding: 7px;
-  border: #ff5722 solid 2px;
-  border-radius: 15px;
-  margin: 2px 2px;
-}
-
-.action-btn:hover {
-  color: white;
-  background-color: #ff5722;
-}
-
-.budget-btn {
-  padding: 7px;
-  border: #ff5722 solid 2px;
-  border-radius: 15px;
-  background-color: #ff5722;
-  margin: 2px 2px;
-  color: white;
-}
-
-.budget-btn:hover {
-  color: white;
-}
-
-.action-btn-active {
-  color: #ffffff;
-  padding: 7px;
-  border: #ff5722 solid 1px;
-  border-radius: 15px;
-  background-color: #ff5722;
-  font-size: 1.3rem;
-}
-
-.action-btn-active:hover {
-  color: white;
-}
-
-.here-btn:hover {
-  color: black;
-}
-
-.budget-btn:hover {
-  color: white;
-}
-
-/*==========================================city + description====================================================*/
-
+/*========================================== title + details ====================================================*/
 .section-title {
   color: #000;
   font-size: 3rem;
   text-align: center;
   padding: 5px;
-}
-
-@media (max-width: 320px) and (max-height: 568px) {
-  .section-title {
-    font-size: 1.5rem;
-  }
-}
-
-@media only screen and (max-width: 375px) and (max-height: 667px) {
-  .section-title {
-    font-size: 1.5rem;
-  }
-}
-
-@media only screen and (max-width: 375px) and (max-height: 667px) {
-  .city-details-main {
-    color: #000;
-    text-align: center;
-    font-size: 0.8rem;
-    text-indent: 0;
-  }
 }
 
 .city-details-main {
@@ -141,13 +15,9 @@ img {
 }
 
 .city-item__image {
-  width: 20%;
-  max-width: 80%;
-  margin: 0 auto;
-}
-
-.city-item__image {
   width: 100%;
+  padding: 15px;
+  border-radius: 40px;
 }
 
 .city-item__name {
@@ -167,134 +37,23 @@ img {
   background-color: rgba(255, 255, 255, 0.9);
 }
 
-/*=============================================MEDIA-710=========================================================*/
-
-@media screen and (max-width: 710px) {
-  .headline {
-    height: 50px;
-  }
-
-  .headline__logo {
-    font-size: 2rem;
-  }
-
-  .headline__slogan {
-    font-size: 1.2rem;
-    letter-spacing: normal;
-    margin-left: 10px;
+@media screen and (max-width: 320px) {
+  .section-title {
+    font-size: 1.5rem;
   }
 }
+
+@media screen and (max-width: 375px) and (max-height: 667px) {
+  .city-details-main {
+    color: #000;
+    text-align: center;
+    font-size: 0.8rem;
+    text-indent: 0;
+  }
+}
+
 
 /*==========================================carousel====================================================*/
-
-@media screen and (max-width: 320px) {
-  .city-carousel .item {
-    width: 55%;
-    height: auto;
-    margin: 0 auto;
-  }
-}
-
-@media screen and (min-width: 321px) and (max-width: 375px) {
-  .city-carousel .item {
-    width: 55%;
-    height: auto;
-    margin: 0 auto;
-  }
-}
-
-@media screen and (max-width: 700px) {
-  .city-carousel .item {
-    width: 115%;
-    height: auto;
-    margin: 0 auto;
-  }
-}
-
-@media screen and (min-width: 701px) {
-  .city-carousel {
-    width: 35%;
-    height: auto;
-    margin: 0 auto;
-  }
-}
-
-@media screen and (max-width: 767px) {
-  .city-carousel .item {
-    width: 90%;
-  }
-}
-
-@media screen and (min-width: 768px) and (max-width: 991px) {
-  .city-carousel .item {
-    width: 70%;
-    height: auto;
-    margin: 0 auto;
-  }
-}
-
-@media screen and (min-width: 992px) and (max-width: 1199px) {
-  .city-carousel .item {
-    width: 70%;
-    height: auto;
-    margin: 0 auto;
-  }
-}
-
-@media screen and (min-width: 1200px) and (max-width: 1365px) {
-  .city-carousel .item {
-    width: 50%;
-    height: auto;
-    margin: 0 auto;
-  }
-}
-
-@media screen and (min-width: 1366px) and (max-width: 1440px) {
-  .city-carousel .item {
-    width: 55%;
-    height: auto;
-    margin: 0 auto;
-  }
-}
-
-@media screen and (min-width: 1441px) and (max-width: 1600px) {
-  .city-carousel .item {
-    width: 60%;
-    height: auto;
-    margin: 0 auto;
-  }
-}
-
-@media screen and (min-width: 1601px) {
-  .city-carousel .item {
-    width: 65%;
-    height: auto;
-    margin: 0 auto;
-  }
-}
-
-@media screen and (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
-  .city-carousel .item {
-    width: 80%;
-    height: auto;
-    margin: 0 auto;
-  }
-}
-
-.owl-carousel .owl-stage-outer {
-  padding: 0;
-}
-
-.owl-carousel .owl-stage {
-  display: flex;
-  align-items: center;
-}
-
-.owl-carousel .owl-item {
-  flex-basis: auto;
-  width: auto;
-}
-
 .owl-carousel .owl-nav {
   position: absolute;
   top: 50%;
@@ -342,159 +101,30 @@ img {
   background-color: #ff5722;
 }
 
-.city-buttons {
-  display: flex;
-  justify-content: center;
+
+/*========================================== ruler + headline======================================================*/
+hr.ruler {
+  border: 1px solid orangered
 }
 
-.city-button {
-  background-color: #ff5722;
-  color: white;
-  border-radius: 50px;
-  padding: 10px 20px;
-  text-decoration: none;
+h3{
+  margin: 0;
+  text-align: center;
 }
 
-@media screen and (max-width: 710px) {
-  .headline {
-    height: 50px;
-  }
-
-  .headline__logo {
-    font-size: 2rem;
-  }
-
-  .headline__slogan {
-    font-size: 1.2rem;
-    letter-spacing: normal;
-    margin-left: 10px;
-  }
-}
 
 /*==========================================city list====================================================*/
-
-.alphabet-list {
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-wrap: wrap;
-  position: relative;
-}
-
-.alphabet-list-link {
-  flex-grow: 1;
-  width: calc(100% / 5);
-  color: #ff5722;
-  font-weight: bold;
-  font-size: 1.2rem;
-  border: 2px solid #ff5722;
-  border-radius: 10px;
-  transition: color 0.3s ease, background-color 0.3s ease;
-  cursor: pointer;
-  margin: 0;
-}
-
-.alphabet-list-link:hover {
-  color: #fff;
-  background-color: #ff5722;
-}
-
-.dropdown-content {
-  display: none;
-  position: absolute;
-  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
-  border: 2px solid #ff5722;
-  border-radius: 10px;
-  z-index: 100;
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-  background-color: white;
-}
-
-.dropdown-content li a {
-  color: #ff5722;
-}
-
-.dropdown-content li:hover {
-  background-color: #ff5722;
-}
-
-.dropdown-content li:hover a {
-  color: white;
-}
-
-.custom-divider {
-  height: 2px;
-  background-color: #ff5722;
-  margin: 20px 0;
-}
-
-.dropdown-content {
-  display: none;
-}
-
-.dropdown-content li {
-  list-style-type: none;
-  margin-bottom: 5px;
-}
-
-.alphabet-list-link:hover .dropdown-content {
-  display: block;
-}
-
-/*==========================================city list====================================================*/
-
-.flex-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  margin-top: 2em;
-  color: #000;
-}
-
-.city-list {
-  width: 100%;
-  margin-left: 10em;
-}
-
 .city-list ul {
+  width: 100%;
+  margin: 0;
+  padding: 15px;
   display: grid;
-  grid-template-columns: repeat(4, 14%);
-  gap: 10px; /* Adjust the gap value as needed */
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 10px;
   list-style: none;
-
-  justify-content: center;
-  font-size: 20px;
-  padding-top: 10px;
+  font-size: 1.23em;
+  text-align: center;
 }
 .city-list li a {
   color: #ff5722;
-}
-
-@media screen and (max-width: 700px) {
-  .city-list ul{
-    grid-template-columns: repeat(2, 50%);
-    margin-left: 0;
-    font-size: 24px;
-  }
-}
-
-@media screen and (max-width: 700px) {
-  .city-list {
-    grid-template-columns: repeat(2, 40%);
-    margin-left: 2em;
-    font-size: 23px;
-  }
-}
-
-.flex-container hr.solid {
-  all: unset !important; /* Reset all inherited styles */
-}
-
-
-hr.solid {
-  color: #ff5722;
-  border-top: 3px solid #ff5722;
 }
