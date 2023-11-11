@@ -124,6 +124,7 @@ h3{
   list-style: none;
   font-size: 1.23em;
   text-align: center;
+  align-items: center;
 }
 .city-list li a {
   color: #ff5722;
