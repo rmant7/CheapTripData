@@ -9,7 +9,7 @@
     },
 
     "request_body": {
-        "author": "urn:li:organization:{id_company}",
+        "author": "urn:li:organization:{company_id}",
         "lifecycleState": "PUBLISHED",
         "specificContent": {
             "com.linkedin.ugc.ShareContent": {

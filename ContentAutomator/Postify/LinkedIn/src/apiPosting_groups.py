@@ -7,9 +7,8 @@ from datetime import datetime
 import re
 from asyncio import run, gather
 
-
 from logger import logger_setup
-from env import ACCESS_TOKEN, COMPANY_ID, TARGET_URL, DEFAULT_POST_FOLDER, FILES_FOLDER
+from env import ACCESS_TOKEN, TARGET_URL, DEFAULT_POST_FOLDER, FILES_FOLDER, COMPANY_ID, GROUP_ID, PERSON_ID
 
 
 timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
@@ -163,17 +162,19 @@ def upload_binary_image(upload_url: str, binary_image: bytes) -> None:
         raise FuncException from err
     
     
-def post_text_and_image(text_to_share: str, asset: str) -> str:
+def post_text_and_image(text_to_share: str, image_url: str) -> str:
     try:
-        api_url, headers, request_body = get_request_data(f'{FILES_FOLDER}/schema_request_text_image_share.json')
-                
+        api_url, headers, request_body = get_request_data(f'{FILES_FOLDER}/schema_request_groups_post.json')
+              
         # insert credentials into request body
         headers['Authorization'] = headers['Authorization'].format(access_token = ACCESS_TOKEN)
-        request_body['author'] = request_body['author'].format(company_id = COMPANY_ID)
+        request_body['author'] = request_body['author'].format(person_id = PERSON_ID)
+        request_body['containerEntity'] = request_body['containerEntity'].format(group_id=GROUP_ID)
         
         # assign input values
         request_body['specificContent']['com.linkedin.ugc.ShareContent']['shareCommentary']['text'] = text_to_share
-        request_body['specificContent']['com.linkedin.ugc.ShareContent']['media'][0]['media'] = asset
+        # request_body['specificContent']['com.linkedin.ugc.ShareContent']['media'][0]['media'] = asset
+        request_body['specificContent']['com.linkedin.ugc.ShareContent']['media'][0]['thumbnails'][0]['resolvedUrl'] = image_url
 
         response = requests.post(api_url, headers=headers, json=request_body)
         response.raise_for_status()
@@ -226,7 +227,8 @@ async def main(lang: str='en'):
             
         # share both the text and the image
         result = post_text_and_image(text_to_post, asset)
-            
+        result = post_text_and_image(text_to_post, content['images'][0])
+        
         # add file name in posted file
         add_to_posted(json_path.stem)
         
