@@ -297,63 +297,18 @@ public class CounterMenu {
                                    String jsonFolderPath, String sqlFolderPath){
         if (routesTypes.isRoutesDefault()) {
             ArrayList<TravelData> dataAll = Calculator.getDataWithoutRideShare(travelData);
-            ArrayList<Route> routes = Calculator.calculateRoutes(locations,dataAll,
-                    loadTypes.isValidationLoad(),validationFolderPath,"routes");
-            if (loadTypes.isCsvLoad() && !csvFolderPath.equals("")) {
-                CSVMaker.routesToFile(CSVMaker.routesToCSV(routes), csvFolderPath, "routes");
-            }
-            if (loadTypes.isJsonLoad() && !jsonFolderPath.equals("")) {
-                NewJSONMaker.jsonToFile(NewJSONMaker.routesJson(routes),jsonFolderPath,
-                        "routes");
-                try {
-                    NewJSONMaker.routesJsonPartly(routes,locations,jsonFolderPath,"routes");
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                }
-            }
-            if (loadTypes.isSqlLoad() && !jsonFolderPath.equals("")) {
-                SQLMaker.routesSQL(SQLMaker.routesToString(routes,"routes"),"routes",sqlFolderPath);
-            }
+            Calculator.calculateRoutes(locations,dataAll,
+                    loadTypes,validationFolderPath,"routes",csvFolderPath,jsonFolderPath,sqlFolderPath);
         }
         if (routesTypes.isFixedRoutesDefault()) {
             ArrayList<TravelData> dataFixed = Calculator.getFixedDataWithoutRideShare(travelData);
-            ArrayList<Route> fixed_routes = Calculator.calculateRoutes(locations,dataFixed,
-                    loadTypes.isValidationLoad(),validationFolderPath,"fixed_routes");
-            if (loadTypes.isCsvLoad() && !csvFolderPath.equals("")) {
-                CSVMaker.routesToFile(CSVMaker.routesToCSV(fixed_routes), csvFolderPath, "fixed_routes");
-            }
-            if (loadTypes.isJsonLoad() && !jsonFolderPath.equals("")) {
-                NewJSONMaker.jsonToFile(NewJSONMaker.routesJson(fixed_routes),jsonFolderPath,
-                        "fixed_routes");
-                try {
-                    NewJSONMaker.routesJsonPartly(fixed_routes,locations,jsonFolderPath,"fixed_routes");
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                }
-            }
-            if (loadTypes.isSqlLoad() && !jsonFolderPath.equals("")) {
-                SQLMaker.routesSQL(SQLMaker.routesToString(fixed_routes,"fixed_routes"),"fixed_routes",sqlFolderPath);
-            }
+            Calculator.calculateRoutes(locations,dataFixed,
+                    loadTypes,validationFolderPath,"fixed_routes",csvFolderPath,jsonFolderPath,sqlFolderPath);
         }
         if (routesTypes.isFlyingRoutesDefault()) {
             ArrayList<TravelData> dataFlying = Calculator.getFlyingData(travelData);
-            ArrayList<Route> flying_routes = Calculator.calculateRoutes(locations,dataFlying,
-                    loadTypes.isValidationLoad(),validationFolderPath,"flying_routes");
-            if (loadTypes.isCsvLoad() && !csvFolderPath.equals("")) {
-                CSVMaker.routesToFile(CSVMaker.routesToCSV(flying_routes), csvFolderPath, "flying_routes");
-            }
-            if (loadTypes.isJsonLoad() && !jsonFolderPath.equals("")) {
-                NewJSONMaker.jsonToFile(NewJSONMaker.routesJson(flying_routes),jsonFolderPath,
-                        "flying_routes");
-                try {
-                    NewJSONMaker.routesJsonPartly(flying_routes,locations,jsonFolderPath,"flying_routes");
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                }
-            }
-            if (loadTypes.isSqlLoad() && !jsonFolderPath.equals("")) {
-                SQLMaker.routesSQL(SQLMaker.routesToString(flying_routes,"flying_routes"),"flying_routes",sqlFolderPath);
-            }
+            Calculator.calculateRoutes(locations,dataFlying,
+                    loadTypes,validationFolderPath,"flying_routes",csvFolderPath,jsonFolderPath,sqlFolderPath);
         }
 
         if (loadTypes.isCsvLoad() && !csvFolderPath.equals("")) {

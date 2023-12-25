@@ -44,7 +44,7 @@ public class ParserForCounter {
         int k = input.length;
         ArrayList<Location> locations = new ArrayList<>();
         for (int i = 0; i < k; i++) {
-            if (!input[i].startsWith("id_city")) {
+            if (!input[i].startsWith("id")) {
                 String[] arr = input[i].split(",");
                 int id = Integer.parseInt(arr[0]);
                 String name = arr[1];
