@@ -111,6 +111,8 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+.venvkiwi/
+.venv312/
 
 # Spyder project settings
 .spyderproject
@@ -139,3 +141,10 @@ dmypy.json
 
 # Generated CSV files
 *.csv
+
+# project settings
+config.py
+
+#outputs
+outputs/
+inputs/
