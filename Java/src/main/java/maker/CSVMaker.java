@@ -26,11 +26,12 @@ public class CSVMaker {
                     .append(route.getEuro_price()).append(",")
                     .append(route.getTrip_duration()).append(",")
                     .append(route.getTravel_data()).append(")");
-            if (i == list.size() - 1) {
-                builder.append(";");
-            } else {
-                builder.append(",");
-            }
+//            if (i == list.size() - 1) {
+//                builder.append(";");
+//            } else {
+//                builder.append(",");
+//            }
+            builder.append(",");
         }
         return builder.toString();
     }
@@ -88,10 +89,10 @@ public class CSVMaker {
     }
 
     public static void routesToFile(String input, String folder, String routeType) {
-        try (FileWriter file = new FileWriter(folder + "/" + routeType + ".csv")) {
+        try (FileWriter file = new FileWriter(folder + "/" + routeType + ".csv",true)) {
             file.write(input);
             file.flush();
-            stringMaker(routeType + ".csv created");
+//            stringMaker(routeType + ".csv created");
         } catch (IOException e) {
             e.printStackTrace();
         }

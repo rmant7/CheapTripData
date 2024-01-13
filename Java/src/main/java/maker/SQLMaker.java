@@ -166,7 +166,7 @@ public class SQLMaker {
     }
 
     public static void sqlToFile(String input, String filename) {
-        try (FileWriter file = new FileWriter(filename)) {
+        try (FileWriter file = new FileWriter(filename,true)) {
             file.write(input);
             file.flush();
         } catch (IOException e) {

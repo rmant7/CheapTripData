@@ -150,7 +150,7 @@ public class NewJSONMaker {
     }
 
     public static void jsonToFile(JsonObject object, String folder, String filename) {
-        try (FileWriter file = new FileWriter(folder + "/" + filename + ".json")) {
+        try (FileWriter file = new FileWriter(folder + "/" + filename + ".json",true)) {
             System.out.println(object.toString());
             file.write(object.toString());
             file.flush();

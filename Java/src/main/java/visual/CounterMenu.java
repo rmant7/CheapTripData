@@ -1,22 +1,30 @@
 package visual;
 
 import functional.Calculator;
+import functional.classes.CheapTripWeightedEdge;
 import functional.classes.Location;
 import functional.classes.Route;
 import functional.classes.TransportationType;
 import functional.classes.TravelData;
 import maker.CSVMaker;
+import maker.CSVPartlyMaker;
 import maker.NewJSONMaker;
+import maker.NewJSONPartlyMaker;
 import maker.SQLMaker;
+import maker.SQLPartlyMaker;
 import maker.classes.TTMaker;
 import parser.ParserForCounter;
 import pystarter.pypart.src.PyStarter;
 import visual.classes.*;
 
 import javax.swing.*;
+
+import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -72,6 +80,8 @@ public class CounterMenu {
     JTextField validationPathField;
     JPanel buttonPanel;
     JButton start;
+    
+    
 
     public CounterMenu() {
         pipeline = new PipelineRequirement(false);
@@ -296,19 +306,20 @@ public class CounterMenu {
                                    String validationFolderPath, String csvFolderPath,
                                    String jsonFolderPath, String sqlFolderPath){
         if (routesTypes.isRoutesDefault()) {
-            ArrayList<TravelData> dataAll = Calculator.getDataWithoutRideShare(travelData);
-            Calculator.calculateRoutes(locations,dataAll,
-                    loadTypes,validationFolderPath,"routes",csvFolderPath,jsonFolderPath,sqlFolderPath);
+        	ArrayList<TravelData> dataAll = Calculator.getDataWithoutRideShare(travelData);
+        	Calculator.calculateAndOutputToFiles(locations, dataAll, loadTypes, 
+        			csvFolderPath, jsonFolderPath, sqlFolderPath, "routes");
+        	
         }
         if (routesTypes.isFixedRoutesDefault()) {
-            ArrayList<TravelData> dataFixed = Calculator.getFixedDataWithoutRideShare(travelData);
-            Calculator.calculateRoutes(locations,dataFixed,
-                    loadTypes,validationFolderPath,"fixed_routes",csvFolderPath,jsonFolderPath,sqlFolderPath);
+        	ArrayList<TravelData> dataFixed = Calculator.getFixedDataWithoutRideShare(travelData);
+        	Calculator.calculateAndOutputToFiles(locations, dataFixed, loadTypes, 
+        			csvFolderPath, jsonFolderPath, sqlFolderPath, "fixed_routes");
         }
         if (routesTypes.isFlyingRoutesDefault()) {
-            ArrayList<TravelData> dataFlying = Calculator.getFlyingData(travelData);
-            Calculator.calculateRoutes(locations,dataFlying,
-                    loadTypes,validationFolderPath,"flying_routes",csvFolderPath,jsonFolderPath,sqlFolderPath);
+        	ArrayList<TravelData> dataFlying = Calculator.getFlyingData(travelData);
+        	Calculator.calculateAndOutputToFiles(locations, dataFlying, loadTypes, 
+        			csvFolderPath, jsonFolderPath, sqlFolderPath, "flying_routes");
         }
 
         if (loadTypes.isCsvLoad() && !csvFolderPath.equals("")) {
@@ -332,7 +343,8 @@ public class CounterMenu {
         if (loadTypes.isSqlLoad() && !sqlFolderPath.equals("")) {
             SQLMaker.locationsSQL(SQLMaker.locationsToString(locations),sqlFolderPath);
             SQLMaker.transportationTypesSQL(SQLMaker.transportationTypesToString(types),sqlFolderPath);
-            SQLMaker.travelDataSQL(SQLMaker.travelDataToString(travelData),sqlFolderPath);
+//            SQLMaker.travelDataSQL(SQLMaker.travelDataToString(travelData),sqlFolderPath);
+            SQLPartlyMaker.outputIntoTravelDataFile(travelData, sqlFolderPath);
         }
     }
 }
