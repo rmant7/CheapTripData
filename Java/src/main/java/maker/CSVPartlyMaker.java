@@ -1,5 +1,6 @@
 package maker;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -21,13 +22,16 @@ public class CSVPartlyMaker {
 	}
 	
 	public static void endingFile(String folder, String routeType) {
-        try (FileWriter file = new FileWriter(folder + "/" + routeType + ".csv",true)) {
-            file.write(";");
-            file.flush();
-            stringMaker(routeType + ".csv created");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+		File checkingfile = new File(folder + "/" + routeType + ".csv");
+		if (checkingfile.length() > 0) {
+			try (FileWriter file = new FileWriter(folder + "/" + routeType + ".csv",true)) {
+	            file.write(";");
+	            file.flush();
+	            stringMaker(routeType + ".csv created");
+	        } catch (IOException e) {
+	            e.printStackTrace();
+	        }
+		}      
     }
 	
 	public static void stringMaker (String input) {

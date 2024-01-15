@@ -2,6 +2,8 @@ package functional;
 
 import functional.classes.*;
 import maker.CSVMaker;
+import parser.ParserForCounter;
+
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultEdge;
@@ -167,4 +169,39 @@ public class Validator {
         }
         return builder.toString();
     }
+
+	public static String newWayValidate(ArrayList<Location> locations, ArrayList<TravelData> travelData,
+			String csvFolderPath, String routesType) {
+		SimpleDirectedWeightedGraph<Integer, DefaultEdge> routeGraph = buildGraph(locations,travelData);
+		HashMap<Integer, Integer> counter = ParserForCounter.parseRoutesForValidation(csvFolderPath,routesType);
+		
+		return validate(counter, travelData, routeGraph);
+	}
+
+	private static SimpleDirectedWeightedGraph<Integer, DefaultEdge> buildGraph(ArrayList<Location> locations,
+			ArrayList<TravelData> travelData) {
+		SimpleDirectedWeightedGraph<Integer, DefaultEdge> routeGraph =
+                new SimpleDirectedWeightedGraph<>(DefaultEdge.class);
+        for (int i = 0; i < locations.size(); i++) {
+            routeGraph.addVertex(locations.get(i).getId());
+        }
+        for (int j = 0; j < travelData.size(); j++) {
+            TravelData data = travelData.get(j);
+            int Id = data.getId();
+            int fromID = data.getFrom();
+            int toID = data.getTo();
+            float price = data.getEuro_price();
+            DefaultEdge e = routeGraph.getEdge(fromID, toID);
+            if (e != null) {
+                if (routeGraph.getEdgeWeight(e) > price) routeGraph.setEdgeWeight(e, price);
+            } else {
+                if (fromID != toID) {
+
+                    e = routeGraph.addEdge(fromID, toID);
+                    routeGraph.setEdgeWeight(e, price);
+                }
+            }
+        }
+		return routeGraph;
+	}
 }
