@@ -1,4 +1,5 @@
 #!/home/azureuser/ChipTripData/Python/scraping/Kiwi/.venv38/bin/python3.8
+from csv import writer
 import gzip
 import json
 import pandas as pd
@@ -6,61 +7,73 @@ from pathlib import Path
 import traceback
 
 
-from config import OUTPUTS_DIR, LOCATIONS_PATH, TRANSPORT_TYPES_ID
+from config import OUTPUTS_DIR, LOCATIONS_PATH, TRANSPORT_TYPES_ID, EXTRACTED_ROUTES_FILE_NAME, LOCATIONS_EXT_PATH
 from logger import logger_setup
 
 
 logger = logger_setup(Path(__file__).stem, 'w')
 
 
-def gen_routes_data():
-    source_folder = Path(OUTPUTS_DIR)
+def gen_routes_data(source: str) -> dict:
+    source_folder = Path(f'{OUTPUTS_DIR}/{source}')
     for file_path in source_folder.rglob('*.json.gz'):
         with gzip.open(file_path, 'r') as f:
-            routes_data = json.load(f)
-        yield routes_data['data']
+            routes = json.load(f)
+        yield routes['data']
 
 
-def extract_routes() -> None:
-    df_locations = pd.read_csv(Path(LOCATIONS_PATH), index_col='id')
-    extracted_routes = set()  
-    for route_data in gen_routes_data():
-        for route in route_data:
-            try:
-                from_id, to_id = [df_locations.query('name == @city_name').index.values[0] for 
-                                    city_name in (route['cityFrom'], route['cityTo'])]
-                if from_id == to_id: continue
-                print((from_id,
-                        to_id,
-                        TRANSPORT_TYPES_ID[route['route'][0]['vehicle_type']],
-                        route['price'],
-                        route['duration']['total'] // 60))
-                extracted_routes.add((from_id,
-                                 to_id,
-                                 TRANSPORT_TYPES_ID[route['route'][0]['vehicle_type']],
-                                 route['price'],
-                                 route['duration']['total'] // 60))
-            except IndexError:
-                continue
-    return extracted_routes
+def extract_routes(source: str) -> None:
+    df_locations_ext = pd.read_csv(Path(LOCATIONS_EXT_PATH), index_col='id')
+    inner_jsons_dir = Path(f'{OUTPUTS_DIR}/{source}/inner_jsons')
+    inner_jsons_dir.mkdir(parents=True, exist_ok=True)
+    path_id = {v: 10000 * v for v in df_locations_ext.index.values}
+    triples = set()
+    csv_path = Path(f'{OUTPUTS_DIR}/{source}/{EXTRACTED_ROUTES_FILE_NAME}')
+    with open(csv_path, 'w', newline='') as csvfile:
+        csv_writer = writer(csvfile)
+        for route_data in gen_routes_data(source):
+            for route in route_data:
+                try:
+                    from_id, to_id = [df_locations_ext.query('name == @city_name').index.values[0] for 
+                                        city_name in (route['cityFrom'], route['cityTo'])]
+                    
+                    vehicle_id = TRANSPORT_TYPES_ID[route['route'][0]['vehicle_type']]
+                    
+                    if from_id == to_id or (from_id, to_id, vehicle_id) in triples: 
+                        continue
+                        
+                    triples.add((from_id, to_id, vehicle_id))
+                    
+                    path_id[from_id] += 1
+                    price = route['price']
+                    duration = route['duration']['total'] // 60
+                    
+                    with open(Path(f'{inner_jsons_dir}/{path_id[from_id]}.json'), 'w') as jsonfile:
+                        json.dump(route, jsonfile, indent=4)
+                        
+                    csv_writer.writerow((path_id[from_id], from_id, to_id, vehicle_id, price, duration))
+                    
+                except IndexError:
+                    continue
     
     
-def process_routes(extracted_routes: set) -> pd.DataFrame:
-    df_extracted_routes = pd.DataFrame(list(extracted_routes),
-                                       columns=['from_id', 'to_id', 'transport_id', 'price_EUR', 'duration_min'])
+def process_csv(source: str) -> None:
+    csv_path = Path(f'{OUTPUTS_DIR}/{source}/{EXTRACTED_ROUTES_FILE_NAME}')
+    df_extracted_routes = pd.read_csv(csv_path, header=None,
+                                       names=['path_id', 'from_id', 'to_id', 'transport_id', 'price_EUR', 'duration_min'])
     df_extracted_routes.sort_values(by=['from_id', 'to_id', 'transport_id', 'price_EUR'], ascending=True, inplace=True)
-    df_extracted_routes.drop_duplicates(subset=['from_id', 'to_id', 'transport_id'], inplace=True, ignore_index=True)              
-    return df_extracted_routes
+    df_extracted_routes.drop_duplicates(subset=['from_id', 'to_id', 'transport_id'], inplace=True, ignore_index=True)
+    df_extracted_routes.to_csv(csv_path, index=False)            
+    
 
 
-def main():
-    extracted_routes = extract_routes()
-    df_processed = process_routes(extracted_routes)
-    df_processed.to_csv(Path(f'{OUTPUTS_DIR}/extracted_routes.csv'), index=False)
+def main(source: str):
+    # extract_routes(source)
+    process_csv(source)
 
 
 if __name__ == '__main__':
-    main()
+    main('run_2')
 
     
   

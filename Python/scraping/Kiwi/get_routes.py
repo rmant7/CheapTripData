@@ -17,7 +17,7 @@ from logger import logger_setup
 
 
 timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
-logger = logger_setup(Path(__file__).stem, 'w')
+logger = logger_setup(Path(__file__).stem, 'a')
 
 SESSION = requests.session()
 
@@ -41,7 +41,7 @@ def save_json(data: dict, from_: str, to_: str, vehicle_type: str) -> None:
         raise FuncException from err
 
  
-def process_response(from_: str, to_: str, routes: bytes, vehicle_type: str):
+def process_response(from_: str, to_: str, routes: bytes, vehicle_type: str) -> None:
     try:
         routes = json.loads(routes.decode("utf-8"))
         if routes['_results'] != 0:
@@ -78,20 +78,25 @@ def get_routes(from_: str, to_: str, vehicle_type: str) -> None:
         response.raise_for_status()
         process_response(from_, to_, response.content, vehicle_type)
     except Exception as err:
-        logger.error(f'''There was an error {type(err).__name__} while getting routes: {from_} - {to_}:
+        logger.error(f'''There was an error {type(err).__name__} while getting {vehicle_type} routes: {from_} - {to_}:
                         {traceback.format_exc()}''')
         raise FuncException from err
 
 
-def get_countries_by_continent(continent_codes: list=['EU']):
+def gen_countries(by_continent: list=[]):
     file_path = f'{INPUTS_DIR}/kiwi_countries.json'
     try:
         with open(file_path, 'r') as f:
             locations = json.load(f)
-        countries = [country['id'] for country in locations['locations'] if 
-                        country['continent']['code'] in continent_codes and
-                        country['id'] not in EXCLUDED_COUNTRIES 
-        ]
+        if by_continent:
+            countries = (country['id'] for country in locations['locations'] if 
+                            country['continent']['code'] in by_continent and
+                            country['id'] not in EXCLUDED_COUNTRIES 
+            )
+        else:
+            countries = (country['id'] for country in locations['locations'] if 
+                            country['id'] not in EXCLUDED_COUNTRIES 
+            )    
         return countries
     except Exception as err:
         logger.error(f'''There was an error {type(err).__name__} while getting list of countries from: {file_path}:
@@ -99,26 +104,41 @@ def get_countries_by_continent(continent_codes: list=['EU']):
         raise FuncException from err
 
 
-@functions.elapsed_time
-def main(vehicle_type: str='aircraft'):
+def submit_tasks(country_pairs: tuple, vehicle_type: str) -> None:
     logger.info(f'Process started for {vehicle_type.upper()}')
-    countries = get_countries_by_continent() + COUNTED_COUNTRIES
-    routes = tuple(product(countries, repeat=2))
-    for i in range(0, len(routes), BATCH_SIZE):
-        batched_routes = routes[i : i + BATCH_SIZE]
+    for i in range(0, len(country_pairs), BATCH_SIZE):
+        batched_country_pairs = country_pairs[i : i + BATCH_SIZE]
         try:
             with ThreadPoolExecutor(max_workers=BATCH_SIZE) as executor:
-                _ = [executor.submit(get_routes, *route, vehicle_type) for route in batched_routes]
+                _ = [executor.submit(get_routes, *country_pair, vehicle_type) for country_pair in batched_country_pairs]
         except FuncException:
             continue
         except Exception as err:
             logger.error(f'{type(err).__name__}: {err}')
             continue
-    logger.info(f'Process completed for {vehicle_type.upper()}: SUCCESS')
 
+
+@functions.elapsed_time
+def main() -> None:
+    country_pairs = tuple(product(gen_countries(), repeat=2))
+    # successed_pairs = [tuple(x.stem.split('.')[0].split('__')) for x in Path(f'{OUTPUTS_DIR}/train').glob('*.json.gz')]
+    # processed_pairs = successed_pairs + error_pairs
+    # unprocessed_country_pairs = tuple(country_pairs.difference(set(processed_pairs)))
+    # print(successed_pairs)
+    # print(len(country_pairs), len(error_pairs), len(successed_pairs), len(processed_pairs), len(unprocessed_country_pairs))
+    for vehicle_type in VEHICLE_TYPES:
+        # if vehicle_type == 'train':
+        submit_tasks(country_pairs, vehicle_type)
+        logger.info(f'Process completed for {vehicle_type.upper()}: SUCCESS')
+
+
+def process_errors(log_path: str='/home/azureuser/ChipTripData/Python/scraping/Kiwi/logs/get_routes.log') -> tuple:
+    with open(log_path, 'r') as logfile:
+        lines = [(line.split(' - ')[-2].split(' ')[-1], line.split(' - ')[-1].split(':')[0]) 
+                 for line in logfile.readlines()[301988 :] if 'ERROR' in line.split(' ')]
+    # print(lines, len(lines))
+    return tuple(lines)
         
+
 if __name__ == '__main__':
-    _ = list(map(main, VEHICLE_TYPES))
-    
-
-        
+    main()

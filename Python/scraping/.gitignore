@@ -146,6 +146,6 @@ dmypy.json
 # project settings
 config.py
 
-#outputs
+# outputs, inputs
 outputs/
 inputs/

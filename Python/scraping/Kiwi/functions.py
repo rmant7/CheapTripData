@@ -172,7 +172,7 @@ def limit_function_calls_per_api(max_calls, period_seconds):
     return decorator
 
 
-def get_cities(vehicle_type: str) -> list[str]:
+def get_cities(vehicle_type: str) -> list:
     cities = []
     for fp in Path(f'{INPUTS_DIR}/kiwi_cities_by_country').glob('*.json'):
         if fp.stem in EXCLUDED_COUNTRIES: continue
