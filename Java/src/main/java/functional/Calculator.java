@@ -48,9 +48,9 @@ public class Calculator {
             }
             if (loadTypes.isJsonLoad() && !jsonFolderPath.equals("")) {
             	if (location.equals(locations.get(locations.size()-1))){
-            		NewJSONPartlyMaker.jsonToFile(routes,jsonFolderPath,routeType,false);
-            	} else {
             		NewJSONPartlyMaker.jsonToFile(routes,jsonFolderPath,routeType,true);
+            	} else {
+            		NewJSONPartlyMaker.jsonToFile(routes,jsonFolderPath,routeType,false);
             	}
                 try {
                     NewJSONMaker.routesJsonPartly(routes,locations,jsonFolderPath,routeType);

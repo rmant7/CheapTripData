@@ -19,7 +19,7 @@ public class ParserForCounter {
 		File file = new File(fileName);
 		FileReader fr = new FileReader(file);
 		BufferedReader reader = new BufferedReader(fr);
-		String line = "";
+		StringBuilder line = new StringBuilder("");
 		String add = "";
 		while (add != null) {
 			String str = "";
@@ -29,10 +29,10 @@ public class ParserForCounter {
 			} else {
 				str = "(" + add + "),";
 			}
-			line = line + str;
+			line.append(str);
 		}
 
-		String[] lines = line.split("\\),\\(");
+		String[] lines = line.toString().split("\\),\\(");
 		for (int i = 0; i < lines.length; i++) {
 			lines[i] = lines[i].replaceAll("[(')]", "");
 			lines[i] = lines[i].replaceAll("null", "");
