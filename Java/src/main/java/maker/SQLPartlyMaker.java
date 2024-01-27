@@ -29,6 +29,8 @@ public class SQLPartlyMaker {
                 ") ENGINE = InnoDB" + "\n" +
                 "DEFAULT CHARSET = utf8;" + "\n" +
                 "LOCK TABLES " + routeType + " WRITE;" + "\n";
+		result += "INSERT INTO " + routeType + " (id, `from`,`to`, euro_price, trip_duration, travel_data) " +
+                "VALUES " + "\n";
 		
         try (FileWriter file = new FileWriter(folder + "/" + routeType + ".sql")) {
             file.write(result);
@@ -38,9 +40,8 @@ public class SQLPartlyMaker {
         }
     }
 	
-	public static void routesSQL(List<Route> routes,String folder, String routeType) {
-		String result = "INSERT INTO " + routeType + " (id, `from`,`to`, euro_price, trip_duration, travel_data) " +
-                "VALUES ";
+	public static void routesSQL(List<Route> routes,String folder, String routeType, boolean isLastVertex) {
+		String result = "";
 		for (int i = 0; i < routes.size(); i++) {
             Route route = routes.get(i);
             result = result + "(" + route.getId() + "," +
@@ -49,10 +50,10 @@ public class SQLPartlyMaker {
                     route.getEuro_price() + "," +
                     route.getTrip_duration() + ",'" +
                     route.getTravel_data() + "')";
-            if (i < routes.size() - 1) {
-                result = result + ",\n";
+            if (i == routes.size() - 1 && isLastVertex) {
+            	result = result + ";\n";
             } else {
-                result = result + ";\n";
+            	result = result + ",\n";
             }
         }
 		

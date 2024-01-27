@@ -8,6 +8,7 @@ import maker.NewJSONPartlyMaker;
 import maker.SQLMaker;
 import maker.SQLPartlyMaker;
 import visual.classes.LoadType;
+import visual.classes.RoutesType;
 
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.interfaces.ShortestPathAlgorithm.SingleSourcePaths;
@@ -23,64 +24,64 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Calculator {
-	
-	static Integer finalCount = 1;
-	
-	public static void calculateAndOutputToFiles(ArrayList<Location> locations, 
-												ArrayList<TravelData> dataAll,
-												LoadType loadTypes,
-												String csvFolderPath,
-				                                String jsonFolderPath, 
-				                                String sqlFolderPath,
-				                                String routeType) {
+
+//	static Integer finalCount = 1;
+
+	public static void calculateAndOutputToFiles(ArrayList<Location> locations, ArrayList<TravelData> dataAll,
+			LoadType loadTypes, String csvFolderPath, String jsonFolderPath, String sqlFolderPath, String routeType) {
+		int finalCount = 1;
 		DijkstraShortestPath<Integer, CheapTripWeightedEdge> dsp = Calculator.buildGraph(locations, dataAll);
-    	
+
 		CSVPartlyMaker.settingFile(csvFolderPath, routeType);
-    	NewJSONPartlyMaker.settingFile(jsonFolderPath,routeType);
-    	SQLPartlyMaker.settingFile(sqlFolderPath,routeType);
-    	for (Location location : locations) {
-    		ArrayList<Route> routes = Calculator.calculateRoutesForOneVertex(location, dsp);
-            if (loadTypes.isCsvLoad() && !csvFolderPath.equals("")) {
-                CSVMaker.routesToFile(CSVMaker.routesToCSV(routes), csvFolderPath, routeType);
-            }
-            if (loadTypes.isJsonLoad() && !jsonFolderPath.equals("")) {
-            	if (location.equals(locations.get(locations.size()-1))){
-            		NewJSONPartlyMaker.jsonToFile(routes,jsonFolderPath,routeType,true);
-            	} else {
-            		NewJSONPartlyMaker.jsonToFile(routes,jsonFolderPath,routeType,false);
-            	}
-                try {
-                    NewJSONMaker.routesJsonPartly(routes,locations,jsonFolderPath,routeType);
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                }
-            }
-            if (loadTypes.isSqlLoad() && !jsonFolderPath.equals("")) {
-                SQLPartlyMaker.routesSQL(routes,sqlFolderPath,routeType);
-            }
+		NewJSONPartlyMaker.settingFile(jsonFolderPath, routeType);
+		SQLPartlyMaker.settingFile(sqlFolderPath, routeType);
+		boolean isLastVertex = false;
+		for (Location location : locations) {
+			if (location.equals(locations.get(locations.size() - 1))) {
+				isLastVertex = true;
+			}
+			ArrayList<Route> routes = Calculator.calculateRoutesForOneVertex(location, dsp, finalCount);
+			finalCount += routes.size();
+			if (loadTypes.isCsvLoad() && !csvFolderPath.equals("")) {
+				CSVMaker.routesToFile(CSVMaker.routesToCSV(routes), csvFolderPath, routeType);
+			}
+			if (loadTypes.isJsonLoad() && !jsonFolderPath.equals("")) {
+				NewJSONPartlyMaker.jsonToFile(routes, jsonFolderPath, routeType, isLastVertex);
+				try {
+					NewJSONMaker.routesJsonPartly(routes, locations, jsonFolderPath, routeType);
+				} catch (IOException ex) {
+					throw new RuntimeException(ex);
+				}
+			}
+			if (loadTypes.isSqlLoad() && !jsonFolderPath.equals("")) {
+				SQLPartlyMaker.routesSQL(routes, sqlFolderPath, routeType, isLastVertex);
+			}
 		}
-    	
-    	CSVPartlyMaker.endingFile( csvFolderPath, routeType);
-    	NewJSONPartlyMaker.endingFile(jsonFolderPath,routeType);
-    	SQLPartlyMaker.endingFile(sqlFolderPath,routeType);
-    	finalCount = 1;
+
+		CSVPartlyMaker.endingFile(csvFolderPath, routeType);
+		NewJSONPartlyMaker.endingFile(jsonFolderPath, routeType);
+		SQLPartlyMaker.endingFile(sqlFolderPath, routeType);
+//    	finalCount = 1;
 	}
-	
+
 	public static ArrayList<Route> calculateRoutesForOneVertex(Location vertexFrom,
-			DijkstraShortestPath<Integer, CheapTripWeightedEdge> dsp){
-		
+			DijkstraShortestPath<Integer, CheapTripWeightedEdge> dsp, int finalCount) {
+
 		ArrayList<Route> routes_final = new ArrayList<>();
 		SingleSourcePaths<Integer, CheapTripWeightedEdge> sourcePathGraph = dsp.getPaths(vertexFrom.getId());
-		Set<Integer> vertexSet =  sourcePathGraph.getGraph().vertexSet();
+		Set<Integer> vertexSet = sourcePathGraph.getGraph().vertexSet();
 		for (Integer vertexTo : vertexSet) {
 			if (vertexFrom.getId() == vertexTo || sourcePathGraph.getPath(vertexTo) == null) {
 				continue;
 			}
 			List<CheapTripWeightedEdge> fromToEdgesList = sourcePathGraph.getPath(vertexTo).getEdgeList();
-			if(fromToEdgesList.isEmpty()) {
+			if (fromToEdgesList.isEmpty()) {
 				continue;
 			}
 			AtomicInteger fromToduration = new AtomicInteger(0);
@@ -93,14 +94,14 @@ public class Calculator {
 			travelData.deleteCharAt(travelData.length() - 1);
 			float totalPrice = (float) sourcePathGraph.getPath(vertexTo).getWeight();
 
-			Route route = new Route(finalCount, vertexFrom.getId(), vertexTo, totalPrice,
-					fromToduration.get(), travelData.toString());
+			Route route = new Route(finalCount, vertexFrom.getId(), vertexTo, totalPrice, fromToduration.get(),
+					travelData.toString());
 			routes_final.add(route);
 			finalCount++;
 		}
 		return routes_final;
 	}
-	
+
 	public static DijkstraShortestPath<Integer, CheapTripWeightedEdge> buildGraph(ArrayList<Location> locations,
 			ArrayList<TravelData> directRoutes) {
 		SimpleDirectedWeightedGraph<Integer, CheapTripWeightedEdge> graph = new SimpleDirectedWeightedGraph<>(
@@ -136,13 +137,13 @@ public class Calculator {
 
 		for (Location vertexFrom : locations) {
 			SingleSourcePaths<Integer, CheapTripWeightedEdge> sourcePathGraph = dsp.getPaths(vertexFrom.getId());
-			Set<Integer> vertexSet =  sourcePathGraph.getGraph().vertexSet();
+			Set<Integer> vertexSet = sourcePathGraph.getGraph().vertexSet();
 			for (Integer vertexTo : vertexSet) {
 				if (vertexFrom.getId() == vertexTo) {
 					continue;
 				}
 				List<CheapTripWeightedEdge> fromToEdgesList = sourcePathGraph.getPath(vertexTo).getEdgeList();
-				if(fromToEdgesList.isEmpty()) {
+				if (fromToEdgesList.isEmpty()) {
 					continue;
 				}
 				AtomicInteger fromToduration = new AtomicInteger(0);
@@ -155,8 +156,8 @@ public class Calculator {
 				travelData.deleteCharAt(travelData.length() - 1);
 				float totalPrice = (float) sourcePathGraph.getPath(vertexTo).getWeight();
 
-				Route route = new Route(finalCount, vertexFrom.getId(), vertexTo, totalPrice,
-						fromToduration.get(), travelData.toString());
+				Route route = new Route(finalCount, vertexFrom.getId(), vertexTo, totalPrice, fromToduration.get(),
+						travelData.toString());
 				routes_final.add(route);
 				finalCount++;
 			}
@@ -204,5 +205,59 @@ public class Calculator {
 			int count = counter.get(travelData);
 			counter.put(travelData, count + 1);
 		}
+	}
+
+	public static void parallelCalculation(RoutesType routesTypes, LoadType loadTypes, ArrayList<TravelData> travelData,
+			ArrayList<Location> locations, String csvFolderPath, String jsonFolderPath, String sqlFolderPath,
+			String validationFolderPath) {
+
+		ExecutorService executorService = Executors.newFixedThreadPool(3);
+
+		executorService.execute(() -> {
+			if (routesTypes.isRoutesDefault()) {
+				ArrayList<TravelData> dataAll = Calculator.getDataWithoutRideShare(travelData);
+				Calculator.calculateAndOutputToFiles(locations, dataAll, loadTypes, csvFolderPath, jsonFolderPath,
+						sqlFolderPath, "routes");
+				if (loadTypes.isValidationLoad()) {
+					String validateData = Validator.newWayValidate(locations, travelData, csvFolderPath, "routes");
+					CSVMaker.validationToFile(validateData, validationFolderPath, "routes");
+				}
+
+			}
+		});
+
+		executorService.execute(() -> {
+			if (routesTypes.isFixedRoutesDefault()) {
+				ArrayList<TravelData> dataFixed = Calculator.getFixedDataWithoutRideShare(travelData);
+				Calculator.calculateAndOutputToFiles(locations, dataFixed, loadTypes, csvFolderPath, jsonFolderPath,
+						sqlFolderPath, "fixed_routes");
+				if (loadTypes.isValidationLoad()) {
+					String validateData = Validator.newWayValidate(locations, travelData, csvFolderPath,
+							"fixed_routes");
+					CSVMaker.validationToFile(validateData, validationFolderPath, "fixed_routes");
+				}
+			}
+		});
+
+		executorService.execute(() -> {
+			if (routesTypes.isFlyingRoutesDefault()) {
+				ArrayList<TravelData> dataFlying = Calculator.getFlyingData(travelData);
+				Calculator.calculateAndOutputToFiles(locations, dataFlying, loadTypes, csvFolderPath, jsonFolderPath,
+						sqlFolderPath, "flying_routes");
+				if (loadTypes.isValidationLoad()) {
+					String validateData = Validator.newWayValidate(locations, travelData, csvFolderPath,
+							"flying_routes");
+					CSVMaker.validationToFile(validateData, validationFolderPath, "flying_routes");
+				}
+			}
+		});
+		executorService.shutdown();
+		try {
+			executorService.awaitTermination(1, TimeUnit.DAYS);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 }
