@@ -4,7 +4,7 @@ id,name
 3,Algeria
 4,Andorra
 5,Angola
-6,Antigua and Barbuda
+6,Antigua & Barbuda
 7,Argentina
 8,Armenia
 9,Australia
@@ -20,15 +20,15 @@ id,name
 19,Benin
 20,Bhutan
 21,Bolivia
-22,Bosnia and Herzegovina
+22,Bosnia & Herzegovina
 23,Botswana
 24,Brazil
 25,Brunei
 26,Bulgaria
 27,Burkina Faso
 28,Burundi
-29,Côte d'Ivoire
-30,Cabo Verde
+29,Côte d’Ivoire
+30,Cape Verde
 31,Cambodia
 32,Cameroon
 33,Canada
@@ -38,13 +38,13 @@ id,name
 37,China
 38,Colombia
 39,Comoros
-40,Congo (Congo-Brazzaville)
+40,Democratic Republic of the Congo
 41,Costa Rica
 42,Croatia
-43,Cuba
+43,República de Cuba
 44,Cyprus
-45,Czech Republic
-46,Democratic Republic of the Congo
+45,Czechia
+46,Republic of the Congo
 47,Denmark
 48,Djibouti
 49,Dominica
@@ -55,7 +55,7 @@ id,name
 54,Equatorial Guinea
 55,Eritrea
 56,Estonia
-57,Eswatini (Swaziland)
+57,Swaziland
 58,Ethiopia
 59,Fiji
 60,Finland
@@ -118,7 +118,7 @@ id,name
 117,Montenegro
 118,Morocco
 119,Mozambique
-120,Myanmar
+120,Myanmar (Burma)
 121,Namibia
 122,Nauru
 123,Nepal
@@ -128,7 +128,7 @@ id,name
 127,Niger
 128,Nigeria
 129,North Korea
-130,North Macedonia
+130,Republic of North Macedonia
 131,Norway
 132,Oman
 133,Pakistan
@@ -145,12 +145,12 @@ id,name
 144,Romania
 145,Russia
 146,Rwanda
-147,Saint Kitts and Nevis
-148,Saint Lucia
-149,Saint Vincent and the Grenadines
+147,St. Kitts & Nevis
+148,St. Lucia
+149,St. Vincent & Grenadines
 150,Samoa
 151,San Marino
-152,Sao Tome and Principe
+152,Sao Tome & Principe
 153,Saudi Arabia
 154,Senegal
 155,Serbia
@@ -178,7 +178,7 @@ id,name
 177,Timor-Leste
 178,Togo
 179,Tonga
-180,Trinidad and Tobago
+180,Trinidad & Tobago
 181,Tunisia
 182,Turkey
 183,Turkmenistan
@@ -187,7 +187,7 @@ id,name
 186,Ukraine
 187,United Arab Emirates
 188,United Kingdom
-189,USA
+189,United States
 190,Uruguay
 191,Uzbekistan
 192,Vanuatu
@@ -198,11 +198,35 @@ id,name
 197,Zimbabwe
 198,Cape Verde
 199,Cook Islands
-200,East Timor
-201,Falkland Islands
+200,Timor-Leste
+201,Falkland Islands (Islas Malvinas)
 202,Guernsey
 203,Isle of Man
 204,Jersey
 205,Niue
 206,Puerto Rico
-207,São Tomé and Príncipe
+207,São Tomé & Príncipe
+208,St. Pierre & Miquelon
+209,Sint Maarten
+210,Aruba
+211,Macau
+212,New Caledonia
+213,Cayman Islands
+214,St. Martin
+215,Greenland
+216,Anguilla
+217,Curaçao
+218,Faroe Islands
+219,Hong Kong
+220,Åland Islands
+221,St. Helena
+222,Turks & Caicos Islands
+223,British Virgin Islands
+224,Norfolk Island
+225,St. Barthélemy
+226,French Polynesia
+227,Svalbard & Jan Mayen
+228,Gibraltar
+229,Wallis & Futuna
+230,Christmas Island
+231,Cocos (Keeling) Islands

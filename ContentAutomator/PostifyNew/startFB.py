@@ -1,3 +1,4 @@
+#!/home/azureuser/ChipTripData/ContentAutomator/PostifyNew/.venvpostify/bin/python3
 import asyncio
 from datetime import datetime, timedelta
 
@@ -18,7 +19,7 @@ async def main():
     # data_folder_path = '/Users/dima/PycharmProjects/PostifyNew/files/posts/city_attractions/ru'
     data_folder_path = '/home/azureuser/files/posts/city_attractions/ru'
     # posting_start_date = get_last_post_date('Facebook') + posting_interval
-    posting_start_date = datetime.strptime('12/01/2023, 17:00:00', '%m/%d/%Y, %H:%M:%S')
+    posting_start_date = datetime.strptime('01/23/2024, 17:00:00', '%m/%d/%Y, %H:%M:%S')
 
 
     await start_func(data_folder_path=data_folder_path, start_date=posting_start_date, interval=posting_interval,
