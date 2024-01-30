@@ -206,6 +206,41 @@ public class Calculator {
 			counter.put(travelData, count + 1);
 		}
 	}
+	
+	public static void sequentialCalculation(RoutesType routesTypes, LoadType loadTypes, ArrayList<TravelData> travelData,
+			ArrayList<Location> locations, String csvFolderPath, String jsonFolderPath, String sqlFolderPath,
+			String validationFolderPath) {
+		if (routesTypes.isRoutesDefault()) {
+			ArrayList<TravelData> dataAll = Calculator.getDataWithoutRideShare(travelData);
+			Calculator.calculateAndOutputToFiles(locations, dataAll, loadTypes, csvFolderPath, jsonFolderPath,
+					sqlFolderPath, "routes");
+			if (loadTypes.isValidationLoad()) {
+				String validateData = Validator.newWayValidate(locations, travelData, csvFolderPath, "routes");
+				CSVMaker.validationToFile(validateData, validationFolderPath, "routes");
+			}
+
+		}
+		if (routesTypes.isFixedRoutesDefault()) {
+			ArrayList<TravelData> dataFixed = Calculator.getFixedDataWithoutRideShare(travelData);
+			Calculator.calculateAndOutputToFiles(locations, dataFixed, loadTypes, csvFolderPath, jsonFolderPath,
+					sqlFolderPath, "fixed_routes");
+			if (loadTypes.isValidationLoad()) {
+				String validateData = Validator.newWayValidate(locations, travelData, csvFolderPath,
+						"fixed_routes");
+				CSVMaker.validationToFile(validateData, validationFolderPath, "fixed_routes");
+			}
+		}
+		if (routesTypes.isFlyingRoutesDefault()) {
+			ArrayList<TravelData> dataFlying = Calculator.getFlyingData(travelData);
+			Calculator.calculateAndOutputToFiles(locations, dataFlying, loadTypes, csvFolderPath, jsonFolderPath,
+					sqlFolderPath, "flying_routes");
+			if (loadTypes.isValidationLoad()) {
+				String validateData = Validator.newWayValidate(locations, travelData, csvFolderPath,
+						"flying_routes");
+				CSVMaker.validationToFile(validateData, validationFolderPath, "flying_routes");
+			}
+		}
+	}
 
 	public static void parallelCalculation(RoutesType routesTypes, LoadType loadTypes, ArrayList<TravelData> travelData,
 			ArrayList<Location> locations, String csvFolderPath, String jsonFolderPath, String sqlFolderPath,

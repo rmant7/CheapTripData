@@ -304,6 +304,7 @@ public class CounterMenu {
 		Calculator.parallelCalculation(routesTypes, loadTypes, travelData, locations, csvFolderPath, jsonFolderPath,
 				sqlFolderPath, validationFolderPath);
 
+
 		if (loadTypes.isCsvLoad() && !csvFolderPath.equals("")) {
 			CSVMaker.stringToFile(CSVMaker.locationsToCSV(locations), csvFolderPath, "locations");
 			CSVMaker.stringToFile(CSVMaker.transportationTypesToCSV(types), csvFolderPath, "transport");

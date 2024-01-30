@@ -46,22 +46,31 @@ public class ParserForCounter {
 		ArrayList<Location> locations = new ArrayList<>();
 		for (int i = 0; i < k; i++) {
 			if (!input[i].startsWith("id")) {
-				String[] arr = input[i].split(",");
+				String[] arr = input[i].split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
 				int id = Integer.parseInt(arr[0]);
-				String name = arr[1];
-				double latitude = Float.parseFloat(arr[2]);
-				double longitude = Float.parseFloat(arr[3]);
-				String country_name = null;
-				for (int j = 0; j < oldLocation.size(); j++) {
-					Location location = oldLocation.get(j);
-					if (id == location.getId() && name.equals(location.getName())) {
-						country_name = location.getCountry_name();
-					} else if (id == location.getId()) {
-						country_name = location.getCountry_name();
+				try {
+					String name = arr[1];
+					double latitude = Float.parseFloat(arr[2]);
+					double longitude = Float.parseFloat(arr[3]);
+					String country_name = null;
+					for (int j = 0; j < oldLocation.size(); j++) {
+						Location location = oldLocation.get(j);
+						if (id == location.getId() && name.equals(location.getName())) {
+							country_name = location.getCountry_name();
+						} else if (id == location.getId()) {
+							country_name = location.getCountry_name();
+						}
 					}
+					Location result = new Location(id, name, latitude, longitude, country_name);
+					locations.add(result);
+				} catch(Exception e) {
+					for (int j = 0; j < arr.length; j++) {
+						System.out.println(arr[j]);
+					}
+					System.out.println(i);
+					throw e;
 				}
-				Location result = new Location(id, name, latitude, longitude, country_name);
-				locations.add(result);
+				
 			}
 		}
 		stringMaker("Locations successfully parsed");
