@@ -87,10 +87,10 @@ def save_to_html(page: str, path: Path) -> None:
     
 
 if __name__ == '__main__':
-    source = '/home/andrii/code/projects/CheapTripData/ContentAutomator/Contentio/GPT/content/seo/texts/transportations/en'
-    target = '/home/andrii/code/projects/CheapTripData/ContentAutomator/BudgetTravelTips/tree/transportations/en'
-    template_path = '/home/andrii/code/projects/CheapTripData/ContentAutomator/BudgetTravelTips/html_templates/transportations/en/list.html'
-    for path in Path(source).glob('*.json'):
+    source = '/home/andrii/code/projects/CheapTripData/ContentAutomator/Contentio/GPT/content/seo/texts/accomodations/en'
+    target = '/home/andrii/code/projects/CheapTripData/ContentAutomator/BudgetTravelTips/tree/accomodations/en'
+    template_path = '/home/andrii/code/projects/CheapTripData/ContentAutomator/BudgetTravelTips/html_templates/accomodations/en/list.html'
+    for path in Path(source).glob('Tbilisi.json'):
         content = get_content(path)
         divs, city_name = make_divs(content), path.stem.replace('_', ' ')
         list_page = make_list_page(divs, path.stem, city_name, template_path)

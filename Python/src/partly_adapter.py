@@ -2,7 +2,7 @@ from pathlib import Path
 import json
 
 
-source_folder = Path('/home/andrii/code/projects/CheapTripData/Java/target/output/output_02_10_23')
+source_folder = Path('/home/andrii/code/projects/CheapTripData/Java/target/output/results/results_15_01_24')
 partly_folder = Path(f'{source_folder}/partly')
 partly_adapted_folder = Path(f'{source_folder}/partly_adapted')
 direct_routes_path = Path(f'{source_folder}/direct_routes.json')
