@@ -3,4 +3,3 @@ logs/
 __pycache__/
 via_selenium/
 .venvlinkedin/
-files/linkedin_posted.json
