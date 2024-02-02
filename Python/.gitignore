@@ -1,7 +1,8 @@
 .vscode/
 .venv
 files/output/
-files/csv/
+files/csv/arch/
+files/csv/sources/
 files/airports
 files/currencies
 files/hotels
