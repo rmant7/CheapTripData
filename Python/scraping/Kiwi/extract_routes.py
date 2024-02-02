@@ -95,21 +95,11 @@ def process_csv(source: str) -> None:
     df_extracted_routes.to_csv(csv_path, index=False)            
     
 
-
 def main(source: str):
     extract_routes(source)
     process_csv(source)
 
 
-def separate_kiwi_data():
-    df_locations_ext = pd.read_csv(Path(LOCATIONS_EXT_PATH), index_col='id')
-    df_kiwi = df_locations_ext.query('kiwi_id.notna()', engine='python').sort_index()
-    df_kiwi.to_csv('/home/azureuser/ChipTripData/Python/files/csv/locations_ext_kiwi_id_code.csv', 
-                            columns=['kiwi_id', 'kiwi_code'])
-    # df_locations_ext.to_csv('/home/azureuser/ChipTripData/Python/files/csv/locations_ext_1.csv', 
-    #                         columns=['id', 'name', 'latitude', 'longitude', 'country_id'], index=False)
-
-
 if __name__ == '__main__':
-    # main('run_2')
-    separate_kiwi_data()    
+    main('run_2')
+     

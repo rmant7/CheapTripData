@@ -34,8 +34,15 @@ def update_routes(source: str):
     df_merged.to_csv(Path(f'{OUTPUTS_DIR}/{source}/routes_upd_{date.today().strftime("%d%m%y")}.csv'), index=False)
 
 
+def del_same_id():
+    df_routes_upd = pd.read_csv('/home/azureuser/ChipTripData/Python/scraping/Kiwi/outputs/run_2/routes_upd_250124.csv')
+    df_same_id = df_routes_upd.query('from_id == to_id')
+    print(df_same_id)
+
+
 def main():
     update_routes('run_2')
+    # del_same_id()
 
 
 if __name__ == '__main__':
