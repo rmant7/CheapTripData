@@ -7,8 +7,11 @@ import visual.Console;
 import visual.MenuInitializer;
 
 import java.io.*;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class ParserForCounter {
 
@@ -41,40 +44,50 @@ public class ParserForCounter {
 	}
 
 	public static ArrayList<Location> insertLocations(String[] input) {
-		ArrayList<Location> oldLocation = OldLocationsMaker.getOldLocations();
+		
+		Map<Integer, String> countries = getCountries();
 		int k = input.length;
 		ArrayList<Location> locations = new ArrayList<>();
 		for (int i = 0; i < k; i++) {
-			if (!input[i].startsWith("id")) {
-				String[] arr = input[i].split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+			String[] arr = input[i].split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+			try {
 				int id = Integer.parseInt(arr[0]);
-				try {
-					String name = arr[1];
-					double latitude = Float.parseFloat(arr[2]);
-					double longitude = Float.parseFloat(arr[3]);
-					String country_name = null;
-					for (int j = 0; j < oldLocation.size(); j++) {
-						Location location = oldLocation.get(j);
-						if (id == location.getId() && name.equals(location.getName())) {
-							country_name = location.getCountry_name();
-						} else if (id == location.getId()) {
-							country_name = location.getCountry_name();
-						}
-					}
-					Location result = new Location(id, name, latitude, longitude, country_name);
-					locations.add(result);
-				} catch(Exception e) {
-					for (int j = 0; j < arr.length; j++) {
-						System.out.println(arr[j]);
-					}
-					System.out.println(i);
-					throw e;
-				}
-				
+				String name = arr[1];
+				double latitude = Float.parseFloat(arr[2]);
+				double longitude = Float.parseFloat(arr[3]);
+				String country_name = countries.get(Integer.parseInt(arr[4]));
+				Location result = new Location(id, name, latitude, longitude, country_name);
+				locations.add(result);
+			} catch (NumberFormatException e) {
+
 			}
+
 		}
 		stringMaker("Locations successfully parsed");
 		return locations;
+	}
+
+	public static Map<Integer, String> getCountries() {
+		Path currentDirectory = Paths.get("").toAbsolutePath();
+		HashMap<Integer, String> countries = new HashMap<Integer, String>();
+		try (BufferedReader reader = new BufferedReader(
+				new FileReader(new File(currentDirectory + "\\data_files\\" + "countries.csv")));) {
+			String line = null;
+			while ((line = reader.readLine()) != null) {
+				try {
+					String[] arr = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+					int countruId = Integer.parseInt(arr[0]);
+					countries.put(countruId, arr[1]);
+				} catch (NumberFormatException e) {
+					continue;
+				}
+
+			}
+		} catch (Exception e) {
+			System.out.println("Attempt to parse countries failed");
+			e.printStackTrace();
+		}
+		return countries;
 	}
 
 	public static ArrayList<TravelData> insertTravelData(String[] input) {

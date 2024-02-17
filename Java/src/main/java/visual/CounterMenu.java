@@ -303,6 +303,8 @@ public class CounterMenu {
 		
 		Calculator.parallelCalculation(routesTypes, loadTypes, travelData, locations, csvFolderPath, jsonFolderPath,
 				sqlFolderPath, validationFolderPath);
+//		Calculator.sequentialCalculation(routesTypes, loadTypes, travelData, locations, csvFolderPath, jsonFolderPath,
+//				sqlFolderPath, validationFolderPath);
 
 
 		if (loadTypes.isCsvLoad() && !csvFolderPath.equals("")) {

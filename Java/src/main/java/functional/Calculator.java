@@ -111,18 +111,24 @@ public class Calculator {
 		});
 
 		directRoutes.forEach(route -> {
-			if (graph.containsEdge(route.getFrom(), route.getTo())) {
-				CheapTripWeightedEdge e = graph.getEdge(route.getFrom(), route.getTo());
-				if (graph.getEdgeWeight(e) > route.getEuro_price()) {
-					graph.setEdgeWeight(e, route.getEuro_price());
-					e.setMyId(route.getId());
-					e.setDuration(route.getTime_in_minutes());
+			try {
+				if (graph.containsEdge(route.getFrom(), route.getTo())) {
+					CheapTripWeightedEdge e = graph.getEdge(route.getFrom(), route.getTo());
+					if (graph.getEdgeWeight(e) > route.getEuro_price()) {
+						graph.setEdgeWeight(e, route.getEuro_price());
+						e.setMyId(route.getId());
+						e.setDuration(route.getTime_in_minutes());
+					}
+				} else {
+					graph.addEdge(route.getFrom(), route.getTo()).setMyId(route.getId());
+					graph.getEdge(route.getFrom(), route.getTo()).setDuration(route.getTime_in_minutes());
+					graph.setEdgeWeight(route.getFrom(), route.getTo(), route.getEuro_price());
 				}
-			} else {
-				graph.addEdge(route.getFrom(), route.getTo()).setMyId(route.getId());
-				graph.getEdge(route.getFrom(), route.getTo()).setDuration(route.getTime_in_minutes());
-				graph.setEdgeWeight(route.getFrom(), route.getTo(), route.getEuro_price());
+			} catch (Exception e) {
+				System.out.println(route);
+				throw e;
 			}
+			
 		});
 
 		DijkstraShortestPath<Integer, CheapTripWeightedEdge> dsp = new DijkstraShortestPath<Integer, CheapTripWeightedEdge>(
