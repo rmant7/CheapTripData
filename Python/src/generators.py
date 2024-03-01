@@ -7,7 +7,7 @@ import polars as pl
 from config import OUTPUT_JSON_DIR, CITIES_COUNTRIES_CSV
 
 
-def gen_city_country_pairs(input_csv=CITIES_COUNTRIES_CSV) -> tuple:
+def gen_city_country_pairs(input_csv=CITIES_COUNTRIES_CSV):
    
     try:
         #input_csv = Path(input_csv)
@@ -34,7 +34,7 @@ def gen_city_country_pairs(input_csv=CITIES_COUNTRIES_CSV) -> tuple:
     
     
 # unzips files' content into json and generates tuple   
-def gen_jsons(source_dir=OUTPUT_JSON_DIR) -> tuple:
+def gen_jsons(source_dir=OUTPUT_JSON_DIR):
     # iterate over files in
     files = Path(source_dir).glob('*.json.gz')
     

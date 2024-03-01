@@ -38,7 +38,7 @@ df_cities_countries = pd.read_csv(CITIES_COUNTRIES_CSV, header=0, index_col=0)
 counter = {k: k * 10000 for k in df_bb.index.values}
     
     
-def extract_routine(input_data: tuple, euro_rates: dict) -> list():
+def extract_routine(input_data: tuple, euro_rates: dict) -> list:
     
     origin_id, destination_id, pathes = input_data
     
