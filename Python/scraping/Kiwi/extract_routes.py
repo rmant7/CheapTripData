@@ -15,7 +15,7 @@ from logger import logger_setup
 logger = logger_setup(Path(__file__).stem, 'w')
 
 
-def gen_routes_data(source: str) -> dict:
+def gen_routes_data(source: str):
     source_folder = Path(f'{OUTPUTS_DIR}/{source}')
     for file_path in (fp for fp in source_folder.rglob('*.json.gz') if fp.parent.name != 'inner_jsons_1'):
         with gzip.open(file_path, 'r') as f:

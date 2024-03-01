@@ -12,7 +12,7 @@ from logger import logger_setup
 logger = logger_setup(Path(__file__).stem, 'w')
 
 
-def update_routes(source: str):
+def merge_routes(source: str):
     columns_names = ('path_id', 'from_id', 'to_id', 'transport_id', 'price_EUR', 'duration_min')
     dict_dtypes = {k:'Int32' for k in columns_names} # allows to save data as integer not as float (by default)
     
@@ -28,7 +28,9 @@ def update_routes(source: str):
     df_merged.drop(['price_EUR_x', 'price_EUR_y', 'duration_min_x', 'duration_min_y', 'path_id_x', 'path_id_y'], axis=1, inplace=True)
     df_merged.sort_values(by=['from_id', 'to_id', 'transport_id', 'price_EUR'], ascending=True, inplace=True)
     df_merged.drop_duplicates(['from_id', 'to_id', 'transport_id'], inplace=True)
-    df_merged = df_merged[['path_id', 'from_id', 'to_id', 'transport_id', 'price_EUR', 'duration_min']]  
+    df_merged.drop(df_merged.query('from_id == to_id').index, inplace=True)
+    
+    df_merged = df_merged[['path_id', 'from_id', 'to_id', 'transport_id', 'price_EUR', 'duration_min']]    
     
     print(df_merged)
     df_merged.to_csv(Path(f'{OUTPUTS_DIR}/{source}/routes_upd_{date.today().strftime("%d%m%y")}.csv'), index=False)
@@ -41,8 +43,7 @@ def del_same_id():
 
 
 def main():
-    update_routes('run_2')
-    # del_same_id()
+    merge_routes()
 
 
 if __name__ == '__main__':

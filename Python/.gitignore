@@ -30,3 +30,4 @@ logs/
 files/csv
 files/csv_old
 jsons/
+src/config.py
